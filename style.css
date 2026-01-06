@@ -2,17 +2,24 @@
    VARIABLES
 ========================= */
 :root {
+  /* Tema Claro */
   --bg-light: #fff0f5;
   --card-light: #ffffff;
   --text-light: #5d5d5d;
-  --accent-light: #ffc0cb;
+  --accent-light: #ffc0cb;     /* Rosa suave */
+  --accent-dark-pink: #d81b60; /* Para textos destacados */
   --border-light: #f3b6c2;
+  --danger-light: #ffcdd2;
+  --danger-text-light: #c62828;
 
+  /* Tema Oscuro */
   --bg-dark: #0b1020;
   --card-dark: #161b2e;
   --text-dark: #e0e0e0;
-  --accent-dark: #283593;
-  --border-dark: #3949ab;
+  --accent-dark: #3949ab;      /* Indigo */
+  --border-dark: #283593;
+  --danger-dark: #4a1818;
+  --danger-text-dark: #ef9a9a;
 }
 
 /* =========================
@@ -26,9 +33,11 @@ body {
   margin: 0;
   font-family: 'Quicksand', sans-serif;
   height: 100vh;
-  overflow: hidden;
+  overflow: hidden; /* Evita scrollbars globales */
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* Aplicación de Temas */
 .theme-light {
   background: var(--bg-light);
   color: var(--text-light);
@@ -43,25 +52,37 @@ body {
    HEADER
 ========================= */
 header {
-  height: 56px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   background: var(--card-light);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   z-index: 1000;
+  position: relative;
 }
 
 .theme-dark header {
   background: var(--card-dark);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+h1 {
+  font-size: 1.2rem;
+  margin: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 /* =========================
-   SCREENS
+   SCREENS (Pantallas)
 ========================= */
 main {
   position: relative;
-  height: calc(100vh - 56px);
+  height: calc(100vh - 60px);
+  width: 100%;
 }
 
 .screen {
@@ -72,80 +93,134 @@ main {
   align-items: center;
   justify-content: center;
   text-align: center;
-  z-index: 1;
+  z-index: 10;
+  background: inherit; /* Hereda color de fondo del body para tapar otras pantallas */
+  padding: 20px;
+  transition: opacity 0.3s ease;
 }
 
 .hidden {
   display: none !important;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* =========================
-   MENÚS
+   MENÚS Y GRID
 ========================= */
 .menu-grid {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin: 20px 0;
+  width: 100%;
+  max-width: 300px; /* Evita botones gigantes en PC */
 }
 
+/* Estilo Base de Botones de Menú */
 .menu-btn {
-  padding: 16px 20px;
-  border-radius: 14px;
+  padding: 18px 20px;
+  border-radius: 12px;
   border: 2px solid var(--border-light);
   background: var(--card-light);
-  color: inherit;
-  font-weight: bold;
+  color: var(--text-light);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.1s ease, background 0.2s ease;
+  transition: all 0.2s ease;
+  
+  /* Flexbox para centrar iconos y texto */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px; 
 }
 
 .menu-btn:hover {
-  transform: scale(1.02);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+.menu-btn:active {
+  transform: scale(0.98);
+}
+
+/* Variantes de Botones */
 .menu-btn.primary {
   background: var(--accent-light);
-  border-color: var(--accent-light);
-  color: #8a0f3d;
+  border-color: var(--border-light);
+  color: #8a0f3d; /* Contraste fuerte sobre rosa */
 }
 
+.menu-btn.danger {
+  background: var(--danger-light);
+  border-color: #ef9a9a;
+  color: var(--danger-text-light);
+}
+
+/* Ajustes Botones Oscuros */
 .theme-dark .menu-btn {
   background: var(--card-dark);
   border-color: var(--border-dark);
+  color: var(--text-dark);
 }
 
 .theme-dark .menu-btn.primary {
   background: var(--accent-dark);
-  border-color: var(--accent-dark);
-  color: white;
+  border-color: #5c6bc0;
+  color: #fff;
+}
+
+.theme-dark .menu-btn.danger {
+  background: var(--danger-dark);
+  border-color: #5e2a2a;
+  color: var(--danger-text-dark);
 }
 
 /* =========================
-   BOTONES
+   BOTONES PEQUEÑOS
 ========================= */
 .icon-btn {
   background: none;
   border: none;
   font-size: 1.4rem;
+  padding: 8px;
+  border-radius: 50%;
   cursor: pointer;
   color: inherit;
+  transition: background 0.2s;
+}
+
+.icon-btn:hover {
+  background: rgba(0,0,0,0.05);
+}
+.theme-dark .icon-btn:hover {
+  background: rgba(255,255,255,0.1);
 }
 
 .btn-back {
-  margin-top: 20px;
-  padding: 8px 14px;
-  border-radius: 10px;
-  background: none;
+  margin-top: 10px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background: transparent;
   border: 1px solid currentColor;
+  color: inherit;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .btn-back.floating {
   position: absolute;
-  bottom: 20px;
+  bottom: 30px;
   left: 20px;
   z-index: 400;
+  background: var(--card-light);
+  border: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.theme-dark .btn-back.floating {
+  background: var(--card-dark);
 }
 
 /* =========================
@@ -155,30 +230,68 @@ main {
   width: 100%;
   height: 100%;
   z-index: 1;
+  background: #cad2d3; /* Color de fondo del océano por defecto */
 }
 
+/* HUD (Heads Up Display) */
 .game-hud {
   position: absolute;
-  top: 10px;
+  top: 15px;
   left: 50%;
   transform: translateX(-50%);
-  width: 92%;
-  padding: 10px 14px;
+  width: 90%;
+  max-width: 500px;
+  padding: 12px 18px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.9);
+  
+  /* Efecto cristal */
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  z-index: 300;
+  align-items: flex-start;
+  z-index: 400;
 }
 
 .theme-dark .game-hud {
-  background: rgba(20, 25, 55, 0.95);
+  background: rgba(22, 27, 46, 0.95);
+  border: 1px solid var(--border-dark);
+}
+
+.hud-info {
+  flex: 1;
+  text-align: left;
+}
+
+#question-text {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+  line-height: 1.3;
+  color: #333;
+}
+.theme-dark #question-text {
+  color: #fff;
 }
 
 .hud-stats {
+  display: flex;
+  gap: 15px;
   font-size: 0.85rem;
-  margin-top: 4px;
+  color: #666;
+  font-weight: 600;
+}
+.theme-dark .hud-stats {
+  color: #aaa;
+}
+
+.hud-stats i {
+  margin-right: 4px;
+  color: var(--accent-light);
+}
+.theme-dark .hud-stats i {
+  color: #7986cb;
 }
 
 /* =========================
@@ -187,29 +300,106 @@ main {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 500;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.modal.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .modal-content {
   background: var(--card-light);
-  padding: 24px;
-  border-radius: 16px;
-  width: 85%;
-  max-width: 340px;
+  padding: 30px 24px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 360px;
   text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  
+  max-height: 85vh;
+  overflow-y: auto; /* Scroll si es muy alto */
 }
 
 .theme-dark .modal-content {
   background: var(--card-dark);
+  border: 1px solid var(--border-dark);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: var(--accent-dark-pink);
+}
+.theme-dark .modal-content h2 {
+  color: #fff;
+}
+
+/* Caja de Resultados (Game Over) */
+.results-box {
+  background: rgba(0,0,0,0.03);
+  padding: 15px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+.theme-dark .results-box {
+  background: rgba(255,255,255,0.05);
+}
+
+.results-box p {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+
+.results-box strong {
+  font-size: 1.4rem;
+  color: var(--accent-dark-pink);
+}
+.theme-dark .results-box strong {
+  color: #9fa8da;
 }
 
 /* =========================
-   LEAFLET DARK MODE
+   LEAFLET TWEAKS (Map Styles)
 ========================= */
+
+/* Invertir colores del mapa base en modo oscuro */
 .theme-dark .leaflet-layer {
-  filter: invert(100%) hue-rotate(180deg) brightness(0.95);
+  filter: invert(100%) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
+
+/* CORRECCIÓN DE POPUPS EN MODO OSCURO
+   Los popups no deben invertirse con el filtro, deben estilizarse aparte */
+.theme-dark .leaflet-popup-content-wrapper,
+.theme-dark .leaflet-popup-tip {
+  background: var(--card-dark);
+  color: var(--text-dark);
+  box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+}
+
+.theme-dark .leaflet-popup-content {
+  color: var(--text-dark);
+}
+
+/* Estilo para las imágenes dentro de los popups */
+.leaflet-popup-content img {
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: #fff; /* Fondo blanco para banderas transparentes */
+}
+
+/* Animación de entrada suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal:not(.hidden) .modal-content {
+  animation: fadeIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
