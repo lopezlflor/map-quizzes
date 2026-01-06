@@ -120,6 +120,21 @@ function showScreen(id) {
     s.classList.add("hidden")
   );
   document.getElementById(id)?.classList.remove("hidden");
+
+  // 👉 HUD solo en el mapa
+  if (id === "screen-game") {
+    showHUD();
+  } else {
+    hideHUD();
+  }
+}
+
+function showHUD() {
+  document.getElementById("fixed-hud").style.display = "flex";
+}
+
+function hideHUD() {
+  document.getElementById("fixed-hud").style.display = "none";
 }
 
 function resetTimer() {
@@ -146,10 +161,15 @@ function updateTimer() {
 }
 
 // =====================
-// EVENTOS GENERALES
+// INICIALIZACIÓN
 // =====================
 
 document.body.className = `theme-${game.theme}`;
+hideHUD(); // 🔹 oculto por defecto
+
+// =====================
+// EVENTOS GENERALES
+// =====================
 
 document.addEventListener("click", e => {
   const btn = e.target.closest("button");
@@ -331,22 +351,20 @@ function nextQuestion() {
   const info =
     regionData[game.region][normalize(raw)] || {};
 
-  let text = "";
-
-  if (game.mode === "names") {
-    text = `¿Dónde está ${raw}?`;
-  }
-  if (game.mode === "capitals") {
-    text = `¿Dónde está la capital ${info.cap}?`;
-  }
   if (game.mode === "flags") {
-    text = "¿De dónde es esta bandera?";
     document.getElementById("question-text").innerHTML =
-      text + `<br><img src="flags/${info.flag}" height="40">`;
+      `¿De dónde es esta bandera?<br>
+       <img src="flags/${info.flag}" height="40">`;
     return;
   }
 
-  document.getElementById("question-text").innerText = text;
+  if (game.mode === "capitals") {
+    document.getElementById("question-text").innerText =
+      `¿Dónde está la capital ${info.cap}?`;
+  } else {
+    document.getElementById("question-text").innerText =
+      `¿Dónde está ${raw}?`;
+  }
 }
 
 function checkAnswer(layer, rawName) {
@@ -374,4 +392,4 @@ function checkAnswer(layer, rawName) {
     Math.round((game.correct / game.current) * 100) + "%";
 
   setTimeout(nextQuestion, 600);
-         }
+}
