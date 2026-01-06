@@ -70,7 +70,7 @@ const regionData = {
     "saskatchewan": { cap: "Regina", flag: "ca-saskatchewan.png" },
     "yukon": { cap: "whitehorse", flag: "ca-yukon.png" },
     "nunavut": { cap: "iqaluit", flag: "ca-nunavut.png" },
-    "northwest territories": { cap: "yellowknife", flag: "ca-nt.png" }
+    "northwest territories": { cap: "yellowknife", flag: "ca-nwt.png" }
   }
 };
 
