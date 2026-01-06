@@ -17,17 +17,17 @@ header {
 }
 .theme-dark header { background: var(--card-dark); }
 
-main { flex: 1; position: relative; width: 100%; }
+main { flex: 1; position: relative; width: 100%; display: flex; justify-content: center; }
 
 .screen {
     position: absolute; inset: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; background: inherit;
+    align-items: center; justify-content: center; background: inherit; text-align: center;
 }
 
 .hidden { display: none !important; }
 
 .menu-grid {
-    display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 320px;
+    display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 320px; margin: 20px 0;
 }
 
 .menu-btn {
@@ -51,7 +51,7 @@ main { flex: 1; position: relative; width: 100%; }
 }
 
 #question-box {
-    position: absolute; top: 75px; width: 100%; text-align: center; z-index: 100;
+    position: absolute; top: 75px; width: 100%; text-align: center; z-index: 100; pointer-events: none;
 }
 
 .modal {
@@ -60,6 +60,18 @@ main { flex: 1; position: relative; width: 100%; }
 }
 
 .modal-content {
+    background: var(--card-light); padding: 30px; border-radius: 25px;
+    width: 80%; max-width: 300px; text-align: center; display: flex; flex-direction: column; gap: 15px;
+}
+.theme-dark .modal-content { background: var(--card-dark); }
+
+.records-table { width: 100%; font-size: 0.8rem; border-collapse: collapse; margin-top: 10px; }
+.records-table td { padding: 5px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+
+.icon-btn { background: none; border: none; font-size: 1.5rem; color: inherit; cursor: pointer; }
+.btn-back { background: none; border: 1px solid gray; padding: 10px; border-radius: 10px; cursor: pointer; margin-top: 10px; color: inherit; }
+
+.theme-dark .leaflet-layer { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
     background: var(--card-light); padding: 30px; border-radius: 25px;
     width: 80%; max-width: 300px; text-align: center; display: flex; flex-direction: column; gap: 15px;
 }
