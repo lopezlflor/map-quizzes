@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=99">
 </head>
 <body class="theme-light">
     <header>
@@ -16,7 +16,7 @@
         <button id="show-achievements" class="icon-btn"><i class="fas fa-trophy"></i></button>
     </header>
 
-    <main id="main-container">
+    <main id="app-container">
         <section id="screen-start" class="screen active">
             <h2>¿Qué quieres hacer?</h2>
             <div class="menu-grid">
@@ -34,6 +34,61 @@
             </div>
             <button class="btn-back" id="back-to-start">Volver</button>
         </section>
+
+        <section id="screen-regions" class="screen hidden">
+            <h2>Selecciona Región</h2>
+            <div class="menu-grid">
+                <button class="menu-btn reg-sel" data-region="ar">Argentina</button>
+                <button class="menu-btn reg-sel" data-region="br">Brasil</button>
+                <button class="menu-btn reg-sel" data-region="ca">Canadá</button>
+            </div>
+            <button id="back-from-regions" class="btn-back">Volver</button>
+        </section>
+
+        <section id="screen-game" class="screen hidden">
+            <div class="game-hud">
+                <div id="hud-stats">
+                    <span id="game-progress">0/0</span> | <span id="game-accuracy">0%</span>
+                    <span id="timer-display" style="margin-left:10px; font-weight:bold;">0:00</span>
+                </div>
+                <button id="btn-pause" class="icon-btn"><i class="fas fa-pause"></i></button>
+            </div>
+            <div id="question-box">
+                <p id="question-text">Cargando mapa...</p>
+                <div id="question-content"></div>
+            </div>
+            <div id="map"></div>
+        </section>
+    </main>
+
+    <div id="modal-achievements" class="modal hidden">
+        <div class="modal-content">
+            <h2>Mejores Tiempos (100%)</h2>
+            <div id="achievements-list">No hay records aún</div>
+            <button class="btn-back" id="close-ach">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="modal-pause" class="modal hidden">
+        <div class="modal-content">
+            <h2>Pausa</h2>
+            <button id="resume-game" class="menu-btn">Continuar</button>
+            <button class="menu-btn danger" onclick="location.reload()">Salir al Menú</button>
+        </div>
+    </div>
+
+    <div id="modal-gameover" class="modal hidden">
+        <div class="modal-content">
+            <h2>¡Fin del Juego!</h2>
+            <p>Puntaje: <span id="final-score">0</span>%</p>
+            <button class="menu-btn primary" onclick="location.reload()">Menú Principal</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js?v=99"></script>
+</body>
+</html>
 
         <section id="screen-regions" class="screen hidden">
             <h2>Selecciona Región</h2>
