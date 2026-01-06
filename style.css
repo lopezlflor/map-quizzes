@@ -31,6 +31,7 @@ header {
   align-items: center;
   padding: 0 20px;
   background: var(--card-light);
+  z-index: 1000;
 }
 
 .theme-dark header { background: var(--card-dark); }
@@ -52,16 +53,133 @@ main {
 
 .hidden { display: none !important; }
 
+/* MENÚ */
 .menu-grid {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 25px;
+}
+
+.big-menu {
+  margin-top: 30px;
 }
 
 .menu-btn {
-  padding: 16px 20px;
-  border-radius: 14px;
+  padding: 22px 26px;
+  font-size: 1.2rem;
+  border-radius: 18px;
   border: 2px solid var(--border-light);
+  background: var(--card-light);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.menu-btn.primary {
+  background: var(--accent-light);
+  border-color: var(--accent-light);
+  color: #8a0f3d;
+}
+
+.theme-dark .menu-btn {
+  background: var(--card-dark);
+  border-color: var(--border-dark);
+}
+
+.theme-dark .menu-btn.primary {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+  color: white;
+}
+
+.flag-btn {
+  width: 34px;
+  margin-right: 12px;
+  vertical-align: middle;
+  border-radius: 4px;
+}
+
+/* MAPA */
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* HUD FIJO */
+#fixed-hud {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 999;
+  pointer-events: auto;
+}
+
+.theme-dark #fixed-hud {
+  background: rgba(20,25,55,0.97);
+}
+
+.hud-stats {
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: inherit;
+}
+
+.btn-back {
+  margin-top: 20px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: none;
+  border: 1px solid currentColor;
+  cursor: pointer;
+}
+
+.btn-back.floating {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 800;
+}
+
+/* MODALES */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--card-light);
+  padding: 24px;
+  border-radius: 16px;
+  width: 85%;
+  max-width: 340px;
+}
+
+.theme-dark .modal-content {
+  background: var(--card-dark);
+}
+
+.theme-dark .leaflet-layer {
+  filter: invert(100%) hue-rotate(180deg);
+}  border: 2px solid var(--border-light);
   background: var(--card-light);
   font-weight: bold;
   cursor: pointer;
