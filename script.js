@@ -261,18 +261,7 @@ document.addEventListener("click", (e) => {
     startMap();
     return;
 
-     const hudStats = document.querySelector(".hud-stats");
-const pauseBtn = document.getElementById("btn-pause");
-
-if (game.flow === "learn") {
-  hudStats.style.display = "none";
-  pauseBtn.innerHTML = '<i class="fas fa-home"></i>';
-  document.getElementById("question-text").innerText =
-    "Toca una provincia para ver su información";
-} else {
-  hudStats.style.display = "block";
-  pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-}
+   }
 
   // Logros
   if (id === "show-achievements") {
@@ -290,6 +279,20 @@ if (game.flow === "learn") {
 ===================================================== */
 async function startMap() {
   showScreen("screen-game");
+
+   const hudStats = document.querySelector(".hud-stats");
+const pauseBtn = document.getElementById("btn-pause");
+
+if (game.flow === "learn") {
+  hudStats.style.display = "none";
+  pauseBtn.innerHTML = '<i class="fas fa-home"></i>';
+  document.getElementById("question-text").innerText =
+    "Toca una provincia para ver su información";
+} else {
+  hudStats.style.display = "block";
+  pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+
+}
 
   // Limpiar mapa previo
   if (game.map) {
