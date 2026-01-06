@@ -6,17 +6,19 @@
   <title>Map Quizzes</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="theme-light">
 
 <header>
-  <button id="btn-theme" class="icon-btn"><i class="fas fa-sun"></i></button>
+  <button id="btn-theme" class="icon-btn" aria-label="Cambiar tema"><i class="fas fa-sun"></i></button>
   <h1>Map Quizzes</h1>
-  <button id="show-achievements" class="icon-btn"><i class="fas fa-trophy"></i></button>
+  <button id="show-achievements" class="icon-btn" aria-label="Logros"><i class="fas fa-trophy"></i></button>
 </header>
 
 <main>
@@ -24,8 +26,12 @@
   <section id="screen-start" class="screen">
     <h2>¿Qué quieres hacer?</h2>
     <div class="menu-grid">
-      <button id="go-learn" class="menu-btn primary">Aprender</button>
-      <button id="go-play" class="menu-btn primary">Jugar</button>
+      <button id="go-learn" class="menu-btn primary">
+        <i class="fas fa-book-open"></i> Aprender
+      </button>
+      <button id="go-play" class="menu-btn primary">
+        <i class="fas fa-gamepad"></i> Jugar
+      </button>
     </div>
   </section>
 
@@ -42,28 +48,35 @@
   <section id="screen-regions" class="screen hidden">
     <h2>Selecciona país</h2>
     <div class="menu-grid">
-      <button class="menu-btn reg-sel" data-region="ar">Argentina</button>
-      <button class="menu-btn reg-sel" data-region="br">Brasil</button>
-      <button class="menu-btn reg-sel" data-region="ca">Canadá</button>
+      <button class="menu-btn reg-sel" data-region="ar">
+        <img src="flags/ar-tierra.png" height="20" style="vertical-align:middle; margin-right:5px"> Argentina
+      </button>
+      <button class="menu-btn reg-sel" data-region="br">
+        <img src="flags/br-df.png" height="20" style="vertical-align:middle; margin-right:5px"> Brasil
+      </button>
+      <button class="menu-btn reg-sel" data-region="ca">
+        <img src="flags/ca-ontario.png" height="20" style="vertical-align:middle; margin-right:5px"> Canadá
+      </button>
     </div>
     <button id="back-from-regions" class="btn-back">Volver</button>
   </section>
 
   <section id="screen-game" class="screen hidden">
     <div class="game-hud">
-      <div>
+      <div class="hud-info">
         <div id="question-text">Cargando…</div>
         <div class="hud-stats">
-          <span id="hud-progress">0/0</span> |
-          <span id="hud-correct">0</span> |
-          <span id="hud-percent">0%</span> |
-          <span id="timer-display">0:00</span>
+          <span><i class="fas fa-layer-group"></i> <span id="hud-progress">0/0</span></span>
+          <span><i class="fas fa-check"></i> <span id="hud-correct">0</span></span>
+          <span><i class="fas fa-chart-pie"></i> <span id="hud-percent">0%</span></span>
+          <span class="timer"><i class="fas fa-stopwatch"></i> <span id="timer-display">0:00</span></span>
         </div>
       </div>
       <button id="btn-pause" class="icon-btn"><i class="fas fa-pause"></i></button>
     </div>
 
-    <button id="back-to-menu" class="btn-back floating">Menú</button>
+    <button id="back-to-menu" class="btn-back floating hidden">Menú</button>
+    
     <div id="map"></div>
   </section>
 
@@ -71,22 +84,41 @@
 
 <div id="modal-pause" class="modal hidden">
   <div class="modal-content">
-    <h2>Pausa</h2>
-    <button id="resume-game" class="menu-btn">Continuar</button>
-    <button id="restart-game" class="menu-btn">Reiniciar</button>
-    <button id="exit-game" class="menu-btn danger">Salir</button>
+    <h2>Juego Pausado</h2>
+    <div class="menu-grid">
+      <button id="resume-game" class="menu-btn">Continuar</button>
+      <button id="restart-game" class="menu-btn">Reiniciar</button>
+      <button id="exit-game" class="menu-btn danger">Salir al Menú</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-gameover" class="modal hidden">
+  <div class="modal-content">
+    <h2>¡Juego Terminado!</h2>
+    <div class="results-box">
+      <p>Aciertos: <strong id="final-score">0/0</strong></p>
+      <p>Tiempo: <strong id="final-time">0:00</strong></p>
+    </div>
+    <div class="menu-grid">
+      <button id="restart-game" class="menu-btn primary">Jugar de nuevo</button>
+      <button id="exit-game" class="menu-btn danger">Menú Principal</button>
+    </div>
   </div>
 </div>
 
 <div id="modal-achievements" class="modal hidden">
   <div class="modal-content">
     <h2>Logros</h2>
-    <div id="achievements-list"></div>
+    <div id="achievements-list">
+      <p style="color:#777; font-style:italic;">Próximamente...</p>
+    </div>
     <button id="close-ach" class="btn-back">Cerrar</button>
   </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
