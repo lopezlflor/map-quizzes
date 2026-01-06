@@ -1,5 +1,5 @@
 /* =====================================================
-   regionData (usa el que ya tenías; lo incluyo aquí)
+   regionData
    ===================================================== */
 const regionData = {
   ar: {
