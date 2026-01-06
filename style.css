@@ -6,8 +6,8 @@
   --bg-light: #fff0f5;
   --card-light: #ffffff;
   --text-light: #5d5d5d;
-  --accent-light: #ffc0cb;     /* Rosa suave */
-  --accent-dark-pink: #d81b60; /* Para textos destacados */
+  --accent-light: #ffc0cb;
+  --accent-dark-pink: #d81b60;
   --border-light: #f3b6c2;
   --danger-light: #ffcdd2;
   --danger-text-light: #c62828;
@@ -16,7 +16,7 @@
   --bg-dark: #0b1020;
   --card-dark: #161b2e;
   --text-dark: #e0e0e0;
-  --accent-dark: #3949ab;      /* Indigo */
+  --accent-dark: #3949ab;
   --border-dark: #283593;
   --danger-dark: #4a1818;
   --danger-text-dark: #ef9a9a;
@@ -33,11 +33,10 @@ body {
   margin: 0;
   font-family: 'Quicksand', sans-serif;
   height: 100vh;
-  overflow: hidden; /* Evita scrollbars globales */
+  overflow: hidden;
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Aplicación de Temas */
 .theme-light {
   background: var(--bg-light);
   color: var(--text-light);
@@ -77,7 +76,7 @@ h1 {
 }
 
 /* =========================
-   SCREENS (Pantallas)
+   SCREENS
 ========================= */
 main {
   position: relative;
@@ -94,7 +93,7 @@ main {
   justify-content: center;
   text-align: center;
   z-index: 10;
-  background: inherit; /* Hereda color de fondo del body para tapar otras pantallas */
+  background: inherit;
   padding: 20px;
   transition: opacity 0.3s ease;
 }
@@ -106,7 +105,7 @@ main {
 }
 
 /* =========================
-   MENÚS Y GRID
+   MENÚS
 ========================= */
 .menu-grid {
   display: flex;
@@ -114,10 +113,9 @@ main {
   gap: 15px;
   margin: 20px 0;
   width: 100%;
-  max-width: 300px; /* Evita botones gigantes en PC */
+  max-width: 300px;
 }
 
-/* Estilo Base de Botones de Menú */
 .menu-btn {
   padding: 18px 20px;
   border-radius: 12px;
@@ -129,12 +127,10 @@ main {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  
-  /* Flexbox para centrar iconos y texto */
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px; 
+  gap: 12px;
 }
 
 .menu-btn:hover {
@@ -146,11 +142,10 @@ main {
   transform: scale(0.98);
 }
 
-/* Variantes de Botones */
 .menu-btn.primary {
   background: var(--accent-light);
   border-color: var(--border-light);
-  color: #8a0f3d; /* Contraste fuerte sobre rosa */
+  color: #8a0f3d;
 }
 
 .menu-btn.danger {
@@ -159,7 +154,7 @@ main {
   color: var(--danger-text-light);
 }
 
-/* Ajustes Botones Oscuros */
+/* Oscuro */
 .theme-dark .menu-btn {
   background: var(--card-dark);
   border-color: var(--border-dark);
@@ -179,7 +174,7 @@ main {
 }
 
 /* =========================
-   BOTONES PEQUEÑOS
+   BOTONES
 ========================= */
 .icon-btn {
   background: none;
@@ -230,10 +225,9 @@ main {
   width: 100%;
   height: 100%;
   z-index: 1;
-  background: #cad2d3; /* Color de fondo del océano por defecto */
+  background: #cad2d3;
 }
 
-/* HUD (Heads Up Display) */
 .game-hud {
   position: absolute;
   top: 15px;
@@ -243,12 +237,9 @@ main {
   max-width: 500px;
   padding: 12px 18px;
   border-radius: 16px;
-  
-  /* Efecto cristal */
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(5px);
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -323,9 +314,8 @@ main {
   max-width: 360px;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  
   max-height: 85vh;
-  overflow-y: auto; /* Scroll si es muy alto */
+  overflow-y: auto;
 }
 
 .theme-dark .modal-content {
@@ -341,7 +331,7 @@ main {
   color: #fff;
 }
 
-/* Caja de Resultados (Game Over) */
+/* Resultados */
 .results-box {
   background: rgba(0,0,0,0.03);
   padding: 15px;
@@ -351,12 +341,10 @@ main {
 .theme-dark .results-box {
   background: rgba(255,255,255,0.05);
 }
-
 .results-box p {
   margin: 5px 0;
   font-size: 1.1rem;
 }
-
 .results-box strong {
   font-size: 1.4rem;
   color: var(--accent-dark-pink);
@@ -366,16 +354,12 @@ main {
 }
 
 /* =========================
-   LEAFLET TWEAKS (Map Styles)
+   LEAFLET DARK MODE & POPUPS
 ========================= */
-
-/* Invertir colores del mapa base en modo oscuro */
 .theme-dark .leaflet-layer {
   filter: invert(100%) hue-rotate(180deg) brightness(0.9) contrast(0.9);
 }
 
-/* CORRECCIÓN DE POPUPS EN MODO OSCURO
-   Los popups no deben invertirse con el filtro, deben estilizarse aparte */
 .theme-dark .leaflet-popup-content-wrapper,
 .theme-dark .leaflet-popup-tip {
   background: var(--card-dark);
@@ -387,14 +371,12 @@ main {
   color: var(--text-dark);
 }
 
-/* Estilo para las imágenes dentro de los popups */
 .leaflet-popup-content img {
   border-radius: 4px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  background: #fff; /* Fondo blanco para banderas transparentes */
+  background: #fff;
 }
 
-/* Animación de entrada suave */
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
