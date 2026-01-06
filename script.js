@@ -67,7 +67,10 @@ const regionData = {
     "ontario": { cap: "Toronto", flag: "ca-ontario.png" },
     "prince edward island": { cap: "Charlottetown", flag: "ca-pei.png" },
     "quebec": { cap: "Quebec City", flag: "ca-quebec.png" },
-    "saskatchewan": { cap: "Regina", flag: "ca-saskatchewan.png" }
+    "saskatchewan": { cap: "Regina", flag: "ca-saskatchewan.png" },
+    "yukon": { cap: "whitehorse", flag: "ca-yukon.png" },
+    "nunavut": { cap: "iqaluit", flag: "ca-nunavut.png" },
+    "northwest territories": { cap: "yellowknife", flag: "ca-nt.png" }
   }
 };
 
