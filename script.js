@@ -84,7 +84,7 @@ let game = {
   questions: [],
   current: 0,
   correct: 0,
-  processing: false, // CORRECCIÓN: Para evitar doble click rápido
+  processing: false, // Evitar doble click
 
   startTime: null,
   timerInterval: null,
@@ -94,6 +94,7 @@ let game = {
   theme: localStorage.getItem("theme") || "light"
 };
 
+// Aplicar tema inicial
 document.body.className = `theme-${game.theme}`;
 
 /* =====================================================
@@ -120,34 +121,40 @@ function formatTime(ms) {
 
 function updateHUD() {
   const total = game.questions.length || 0;
-  // Se usa min(game.current, total) para que al final no muestre ej: 11/10
-  const displayCurrent = Math.min(game.current, total); 
+  const displayCurrent = Math.min(game.current, total);
   
-  document.getElementById("hud-progress")?.innerText = `${displayCurrent}/${total}`;
-  document.getElementById("hud-correct")?.innerText = `${game.correct}`;
+  const elProg = document.getElementById("hud-progress");
+  const elCorr = document.getElementById("hud-correct");
+  const elPerc = document.getElementById("hud-percent");
+
+  if (elProg) elProg.innerText = `${displayCurrent}/${total}`;
+  if (elCorr) elCorr.innerText = `${game.correct}`;
   
-  // Evitar división por cero
   const attempted = Math.max(1, game.current);
   const pct = total === 0 ? 0 : Math.round((game.correct / attempted) * 100);
-  document.getElementById("hud-percent")?.innerText = `${pct}%`;
+  if (elPerc) elPerc.innerText = `${pct}%`;
 }
 
 /* =====================================================
-   Manejo global de clicks (único listener)
+   Manejo global de clicks
 ===================================================== */
 document.addEventListener("click", (e) => {
   const btn = e.target.closest("button");
   if (!btn) return;
   const id = btn.id;
 
-  // Inicio
+  // --- NAVEGACIÓN PRINCIPAL ---
+
+  // Botón: Aprender -> Ir directo a elegir mapa
   if (id === "go-learn") {
     resetGame();
     game.flow = "learn";
-    game.mode = null;
+    game.mode = null; // En aprender no hay modos de juego
     showScreen("screen-regions");
     return;
   }
+
+  // Botón: Jugar -> Ir a elegir modo
   if (id === "go-play") {
     resetGame();
     game.flow = "play";
@@ -156,21 +163,25 @@ document.addEventListener("click", (e) => {
     return;
   }
 
-  // Modos (solo para jugar)
+  // --- SELECCIONES ---
+
+  // Selección de Modo (Nombres, Capitales, Banderas)
   if (btn.classList.contains("mode-sel")) {
     game.mode = btn.dataset.mode;
-    showScreen("screen-regions");
+    showScreen("screen-regions"); // Siguiente paso: elegir mapa
     return;
   }
 
-  // Regiones: iniciar mapa
+  // Selección de Región (País) -> Iniciar Mapa
   if (btn.classList.contains("reg-sel")) {
     game.region = btn.dataset.region;
     startMap();
     return;
   }
 
-  // Tema
+  // --- UTILIDADES ---
+
+  // Cambiar Tema
   if (id === "btn-theme") {
     game.theme = game.theme === "light" ? "dark" : "light";
     document.body.className = `theme-${game.theme}`;
@@ -178,28 +189,34 @@ document.addEventListener("click", (e) => {
     return;
   }
 
-  // Volver
+  // Volver atrás
   if (id === "back-to-start") {
     resetGame();
     showScreen("screen-start");
     return;
   }
   if (id === "back-from-regions") {
-    resetGame();
-    showScreen("screen-start");
+    // Si veníamos de jugar, volver a modos. Si veníamos de aprender, volver a inicio.
+    if (game.flow === "play") {
+      showScreen("screen-modes");
+    } else {
+      showScreen("screen-start");
+    }
     return;
   }
   if (id === "back-to-menu" || id === "exit-game") {
     resetGame();
     showScreen("screen-start");
-    // Ocultar modal gameover si está abierto
     document.getElementById("modal-gameover")?.classList.add("hidden");
+    document.getElementById("modal-pause")?.classList.add("hidden");
     return;
   }
 
-  // Pausa / modal
+  // --- PAUSA / MODALES ---
+
   if (id === "btn-pause") {
     if (game.flow !== "play") {
+      // En modo aprender, el botón de pausa actúa como salir
       resetGame();
       showScreen("screen-start");
       return;
@@ -210,6 +227,7 @@ document.addEventListener("click", (e) => {
     document.getElementById("modal-pause")?.classList.remove("hidden");
     return;
   }
+
   if (id === "resume-game") {
     if (game.paused) {
       game.paused = false;
@@ -220,20 +238,29 @@ document.addEventListener("click", (e) => {
     document.getElementById("modal-pause")?.classList.add("hidden");
     return;
   }
+
   if (id === "restart-game") {
+    // Cerrar modales
     document.getElementById("modal-pause")?.classList.add("hidden");
     document.getElementById("modal-gameover")?.classList.add("hidden");
+    
+    // Reiniciar manteniendo configuración actual
+    const currentRegion = game.region;
+    const currentMode = game.mode;
+    const currentFlow = game.flow;
+    
     resetGame();
-    // Re-iniciar con la misma región/modo
-    // Necesitamos recordar region/flow/mode antes del reset, 
-    // pero resetGame limpia todo. Ajuste rápido:
-    // Mejor volver a screen-regions o re-llamar startMap con cuidado.
-    // Por simplicidad, mandamos al usuario a elegir región de nuevo:
-    showScreen("screen-regions");
+    
+    // Restaurar estado
+    game.region = currentRegion;
+    game.mode = currentMode;
+    game.flow = currentFlow;
+    
+    startMap();
     return;
   }
 
-  // Logros modal
+  // Logros
   if (id === "show-achievements") {
     document.getElementById("modal-achievements")?.classList.remove("hidden");
     return;
@@ -250,42 +277,45 @@ document.addEventListener("click", (e) => {
 async function startMap() {
   showScreen("screen-game");
 
-  // limpiar mapa previo
+  // Limpiar mapa previo
   if (game.map) {
-    try { game.map.remove(); } catch (e) { /* ignore */ }
+    try { game.map.remove(); } catch (e) {}
     game.map = null;
     game.geoLayer = null;
   }
 
-  // crear mapa
+  // Crear mapa
   game.map = L.map("map", { zoomControl: false, attributionControl: false }).setView([0,0], 2);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(game.map);
   
-  // Forzar redibujado
   setTimeout(() => game.map.invalidateSize(), 120);
 
-  // cargar geojson
+  // Cargar GeoJSON
   try {
     const res = await fetch(`data/${game.region}.json`);
     const geo = await res.json();
 
-    // preparar preguntas aleatorias para play
+    // Preparar juego
     game.questions = shuffle([...geo.features]);
     game.current = 0;
     game.correct = 0;
     game.processing = false;
     updateHUD();
 
-    // iniciar timer si es play
+    // Configurar interfaz según flujo
     if (game.flow === "play") {
       game.startTime = Date.now();
       startTimer();
       updateQuestionText();
+      document.getElementById("btn-pause").style.display = "block";
     } else {
-      document.getElementById("question-text").innerText = "Toca una provincia para ver su información";
+      // Modo aprender
+      document.getElementById("question-text").innerText = "Toca una provincia para ver información";
+      document.getElementById("timer-display").innerText = "--:--";
+      // Ocultar botón de pausa o cambiar ícono si quisieras
     }
 
-    // agregar capa
+    // Agregar capa GeoJSON
     game.geoLayer = L.geoJSON(geo, {
       style: () => ({ color: "#444", weight: 1.2, fillOpacity: 0.75, fillColor: "#ddd" }),
       onEachFeature: (feature, layer) => {
@@ -299,41 +329,42 @@ async function startMap() {
       }
     }).addTo(game.map);
 
-    // ajustar vista
+    // Zoom al país
     try {
-      game.map.fitBounds(game.geoLayer.getBounds(), { maxZoom: 6 }); // Zoom un poco menos agresivo
-    } catch (err) { /* ignorar */ }
+      game.map.fitBounds(game.geoLayer.getBounds(), { padding: [20, 20] });
+    } catch (err) {}
 
   } catch (err) {
-    console.error("Error cargando geojson:", err);
-    document.getElementById("question-text").innerText = "Error cargando el mapa";
+    console.error(err);
+    document.getElementById("question-text").innerText = "Error cargando mapa";
   }
 }
 
 /* =====================================================
-   Aprender -> popup con capital + bandera
+   Aprender: Popups
 ===================================================== */
 function learnPopup(feature, e) {
   const raw = feature.properties.nombre || feature.properties.name || "Desconocido";
   const key = normalize(raw);
   const info = regionData[game.region]?.[key] || {};
   
-  // CORRECCIÓN: Estilo mejorado para la bandera
-  const flagHtml = info.flag ? `<div style="margin-top:8px; text-align:center;"><img src="flags/${info.flag}" height="50" style="border:1px solid #ccc; border-radius:4px;" alt="bandera"></div>` : "";
+  const flagHtml = info.flag 
+    ? `<div style="margin-top:8px; text-align:center;"><img src="flags/${info.flag}" height="50" style="border:1px solid #ccc; border-radius:4px;"></div>` 
+    : "";
   
   L.popup()
     .setLatLng(e.latlng)
-    .setContent(`<div style="text-align:center"><strong>${raw}</strong><br><span style="font-size:0.9em; color:#555">Capital: ${info?.cap || "—"}</span>${flagHtml}</div>`)
+    .setContent(`<div style="text-align:center"><strong>${raw}</strong><br><span style="color:#666">Capital: ${info.cap || "—"}</span>${flagHtml}</div>`)
     .openOn(game.map);
 }
 
 /* =====================================================
-   Jugar -> manejo de clicks
+   Jugar: Lógica de aciertos
 ===================================================== */
 function updateQuestionText() {
   const total = game.questions.length;
   if (!total || game.current >= total) {
-    document.getElementById("question-text").innerText = "Completado";
+    document.getElementById("question-text").innerText = "¡Completado!";
     return;
   }
   
@@ -342,10 +373,9 @@ function updateQuestionText() {
   const info = regionData[game.region]?.[normalize(raw)] || {};
   
   let text = "";
-  // CORRECCIÓN: Uso de negritas y HTML para mejor lectura
   if (game.mode === "names") text = `¿Dónde está <strong>${raw}</strong>?`;
   else if (game.mode === "capitals") text = `¿Dónde está la capital <strong>${info.cap || "??"}</strong>?`;
-  else if (game.mode === "flags") text = `¿De dónde es esta bandera? <div style="margin-top:10px"><img src="flags/${info.flag || ''}" height="60" style="border:1px solid #ccc; border-radius:4px; display:inline-block;"></div>`;
+  else if (game.mode === "flags") text = `¿De dónde es esta bandera? <div style="margin-top:10px"><img src="flags/${info.flag || ''}" height="60" style="border:1px solid #ccc; border-radius:4px;"></div>`;
   
   const el = document.getElementById("question-text");
   if (el) el.innerHTML = text;
@@ -353,7 +383,6 @@ function updateQuestionText() {
 }
 
 function playClick(feature, layer, e) {
-  // CORRECCIÓN: Evitar clics si está pausado o procesando el anterior
   if (game.paused || game.processing) return;
   game.processing = true;
 
@@ -364,39 +393,32 @@ function playClick(feature, layer, e) {
   const isCorrect = (clicked === expected);
 
   if (isCorrect) {
-    // Verde para correcto
-    layer.setStyle({ fillColor: "#a8e6cf", fillOpacity: 1, color: "#388e3c" });
+    layer.setStyle({ fillColor: "#a8e6cf", fillOpacity: 1, color: "#2e7d32" });
     game.correct++;
   } else {
-    // Rojo para incorrecto
-    layer.setStyle({ fillColor: "#ff8a80", fillOpacity: 1, color: "#d32f2f" });
+    layer.setStyle({ fillColor: "#ff8a80", fillOpacity: 1, color: "#c62828" });
   }
   
   game.current++;
   updateHUD();
 
-  // Esperar un poco para ver el color
   setTimeout(() => {
-    // Si fue incorrecto, limpiamos el color para no ensuciar el mapa
-    // Si fue correcto, lo dejamos verde para mostrar progreso
+    // Si falló, restaurar color. Si acertó, dejar verde.
     if (!isCorrect) {
       game.geoLayer.resetStyle(layer);
     }
     
-    // Verificar fin del juego
     if (game.current >= game.questions.length) {
       endGame();
     } else {
       updateQuestionText();
     }
-    
-    // Liberar bloqueo de clic
     game.processing = false;
   }, 800);
 }
 
 /* =====================================================
-   Timer / fin del juego
+   Timer y Fin
 ===================================================== */
 function startTimer() {
   clearInterval(game.timerInterval);
@@ -408,39 +430,28 @@ function startTimer() {
 
 function endGame() {
   clearInterval(game.timerInterval);
-  updateHUD(); // Asegurar que HUD muestre 100% o el final
+  updateHUD();
   
   const total = game.questions.length;
   const scorePct = Math.round((game.correct / Math.max(1, total)) * 100);
   const timeStr = formatTime(Date.now() - game.startTime);
 
-  // Llenar datos del modal si existen
+  // Llenar datos del modal
   const scoreEl = document.getElementById("final-score");
   const timeEl = document.getElementById("final-time");
   if (scoreEl) scoreEl.innerText = `${game.correct} / ${total} (${scorePct}%)`;
   if (timeEl) timeEl.innerText = timeStr;
 
-  // Mostrar modal de Game Over
-  const modal = document.getElementById("modal-gameover");
-  if (modal) {
-    modal.classList.remove("hidden");
-  } else {
-    // Fallback si no hay modal creado aún
-    alert(`Fin del juego\nAciertos: ${game.correct}/${total}\nTiempo: ${timeStr}`);
-  }
+  // Mostrar modal
+  document.getElementById("modal-gameover")?.classList.remove("hidden");
 }
 
-/* =====================================================
-   Reset
-===================================================== */
 function resetGame() {
   clearInterval(game.timerInterval);
   game.current = 0;
   game.correct = 0;
   game.questions = [];
   game.paused = false;
-  game.pauseTime = null;
-  game.startTime = null;
   game.processing = false;
   
   if (game.map) {
@@ -451,7 +462,6 @@ function resetGame() {
   
   const qText = document.getElementById("question-text");
   const tDisp = document.getElementById("timer-display");
-  
   if (qText) qText.innerText = "";
   if (tDisp) tDisp.innerText = "0:00";
   
