@@ -1,7 +1,3 @@
-/* =====================================================
-   DATOS
-===================================================== */
-
 const regionData = {
   ar: {
     "buenos aires": { cap: "La Plata", flag: "ar-buenosaires.png" },
@@ -74,10 +70,6 @@ const regionData = {
   }
 };
 
-/* =====================================================
-   ESTADO GLOBAL
-===================================================== */
-
 let game = {
   flow: null,        // learn | play
   mode: null,        // names | capitals | flags
@@ -97,10 +89,6 @@ let game = {
 };
 
 document.body.className = `theme-${game.theme}`;
-
-/* =====================================================
-   UTILIDADES
-===================================================== */
 
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s =>
@@ -125,10 +113,6 @@ function formatTime(ms) {
   const s = Math.floor(ms / 1000);
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
-
-/* =====================================================
-   NAVEGACIÓN
-===================================================== */
 
 document.addEventListener("click", e => {
   const btn = e.target.closest("button");
@@ -165,10 +149,6 @@ document.addEventListener("click", e => {
   if (btn.id === "back-to-start") showScreen("screen-start");
   if (btn.id === "back-from-regions") showScreen("screen-start");
 });
-
-/* =====================================================
-   MAPA
-===================================================== */
 
 async function startMap() {
   showScreen("screen-game");
@@ -215,10 +195,6 @@ async function startMap() {
   game.map.fitBounds(game.geoLayer.getBounds());
 }
 
-/* =====================================================
-   APRENDER
-===================================================== */
-
 function learnPopup(feature, e) {
   const raw = feature.properties.nombre || feature.properties.name;
   const key = normalize(raw);
@@ -235,10 +211,6 @@ function learnPopup(feature, e) {
     `)
     .openOn(game.map);
 }
-
-/* =====================================================
-   JUGAR
-===================================================== */
 
 function updateQuestionText() {
   const q = game.questions[game.current];
@@ -282,10 +254,6 @@ function playClick(feature, layer) {
   }, 600);
 }
 
-/* =====================================================
-   TIMER / FIN
-===================================================== */
-
 function startTimer() {
   game.timerInterval = setInterval(() => {
     document.getElementById("timer-display").innerText =
@@ -300,93 +268,13 @@ function endGame() {
   );
 }
 
-/* =====================================================
-   RESET
-===================================================== */
 
 function resetGame() {
   clearInterval(game.timerInterval);
   game.current = 0;
   game.correct = 0;
   game.paused = false;
-}    "espirito santo": { cap: "Vitória", flag: "br-espiritosanto.png" },
-    "goias": { cap: "Goiânia", flag: "br-goias.png" },
-    "maranhao": { cap: "São Luís", flag: "br-maranhao.png" },
-    "mato grosso": { cap: "Cuiabá", flag: "br-matogrosso.png" },
-    "mato grosso do sul": { cap: "Campo Grande", flag: "br-matogrossodosul.png" },
-    "minas gerais": { cap: "Belo Horizonte", flag: "br-minasgerais.png" },
-    "para": { cap: "Belém", flag: "br-para.png" },
-    "paraiba": { cap: "João Pessoa", flag: "br-paraiba.png" },
-    "parana": { cap: "Curitiba", flag: "br-parana.png" },
-    "pernambuco": { cap: "Recife", flag: "br-pernambuco.png" },
-    "piaui": { cap: "Teresina", flag: "br-piaui.png" },
-    "rio de janeiro": { cap: "Rio de Janeiro", flag: "br-rio.png" },
-    "rio grande do norte": { cap: "Natal", flag: "br-riograndedonorte.png" },
-    "rio grande do sul": { cap: "Porto Alegre", flag: "br-riograndedosul.png" },
-    "rondonia": { cap: "Porto Velho", flag: "br-rondonia.png" },
-    "roraima": { cap: "Boa Vista", flag: "br-roraima.png" },
-    "santa catarina": { cap: "Florianópolis", flag: "br-santacatarina.png" },
-    "sao paulo": { cap: "São Paulo", flag: "br-saopaulo.png" },
-    "sergipe": { cap: "Aracaju", flag: "br-sergipe.png" },
-    "tocantins": { cap: "Palmas", flag: "br-tocantins.png" }
-  },
-
-  ca: {
-    "alberta": { cap: "Edmonton", flag: "ca-alberta.png" },
-    "british columbia": { cap: "Victoria", flag: "ca-bc.png" },
-    "manitoba": { cap: "Winnipeg", flag: "ca-manitoba.png" },
-    "new brunswick": { cap: "Fredericton", flag: "ca-newbrunswick.png" },
-    "newfoundland and labrador": { cap: "St. John's", flag: "ca-newfoundland.png" },
-    "nova scotia": { cap: "Halifax", flag: "ca-novascotia.png" },
-    "ontario": { cap: "Toronto", flag: "ca-ontario.png" },
-    "prince edward island": { cap: "Charlottetown", flag: "ca-pei.png" },
-    "quebec": { cap: "Quebec City", flag: "ca-quebec.png" },
-    "saskatchewan": { cap: "Regina", flag: "ca-saskatchewan.png" }
-  }
-};
-
-/* =====================================================
-   ESTADO GLOBAL
-===================================================== */
-
-let game = {
-  flow: null,      // "learn" | "play"
-  mode: null,      // "names" | "flags" | "capitals"
-  region: null,    // "ar" | "br" | "ca"
-  map: null,
-  theme: localStorage.getItem("theme") || "light"
-};
-
-document.body.className = `theme-${game.theme}`;
-
-/* =====================================================
-   UTILIDADES
-===================================================== */
-
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(s =>
-    s.classList.add("hidden")
-  );
-  document.getElementById(id).classList.remove("hidden");
 }
-
-function normalize(text) {
-  return (text || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
-}
-
-/* =====================================================
-   NAVEGACIÓN GENERAL
-===================================================== */
-
-document.addEventListener("click", e => {
-  const btn = e.target.closest("button");
-  if (!btn) return;
-
-  /* -------- INICIO -------- */
 
   if (btn.id === "go-learn") {
     game.flow = "learn";
@@ -400,21 +288,15 @@ document.addEventListener("click", e => {
     showScreen("screen-modes");
   }
 
-  /* -------- SELECCIÓN DE MODO (SOLO JUGAR) -------- */
-
   if (btn.classList.contains("mode-sel")) {
     game.mode = btn.dataset.mode;
     showScreen("screen-regions");
   }
 
-  /* -------- SELECCIÓN DE REGIÓN -------- */
-
   if (btn.classList.contains("reg-sel")) {
     game.region = btn.dataset.region;
     startMap();
   }
-
-  /* -------- BOTONES VOLVER -------- */
 
   if (btn.id === "back-to-start") {
     showScreen("screen-start");
@@ -428,15 +310,11 @@ document.addEventListener("click", e => {
     }
   }
 
-  /* -------- TEMA DÍA / NOCHE -------- */
-
   if (btn.id === "btn-theme") {
     game.theme = game.theme === "light" ? "dark" : "light";
     document.body.className = `theme-${game.theme}`;
     localStorage.setItem("theme", game.theme);
   }
-
-  /* -------- LOGROS (placeholder visual) -------- */
 
   if (btn.id === "show-achievements") {
     document.getElementById("modal-achievements")
@@ -448,10 +326,6 @@ document.addEventListener("click", e => {
       .classList.add("hidden");
   }
 });
-
-/* =====================================================
-   MAPA
-===================================================== */
 
 async function startMap() {
   showScreen("screen-game");
@@ -493,7 +367,6 @@ async function startMap() {
             feature.properties.NAM ||
             "Desconocido";
 
-          /* -------- MODO APRENDER -------- */
           if (game.flow === "learn") {
             L.popup()
               .setLatLng(e.latlng)
@@ -503,8 +376,7 @@ async function startMap() {
               `)
               .openOn(game.map);
           }
-
-          /* -------- MODO JUGAR (placeholder) -------- */
+           
           if (game.flow === "play") {
             L.popup()
               .setLatLng(e.latlng)
