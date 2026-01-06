@@ -218,17 +218,16 @@ document.addEventListener("click", (e) => {
   // --- PAUSA / MODALES ---
 
   if (id === "btn-pause") {
-    if (game.flow !== "play") {
-      // En modo aprender, el botón de pausa actúa como salir
-      resetGame();
-      showScreen("screen-start");
-      return;
-    }
-    game.paused = true;
-    game.pauseTime = Date.now();
-    clearInterval(game.timerInterval);
-    document.getElementById("modal-pause")?.classList.remove("hidden");
+  if (game.flow === "learn") {
+    resetGame();
+    showScreen("screen-start");
     return;
+  }
+
+  game.paused = true;
+  game.pauseTime = Date.now();
+  clearInterval(game.timerInterval);
+  document.getElementById("modal-pause").classList.remove("hidden");
   }
 
   if (id === "resume-game") {
@@ -261,7 +260,19 @@ document.addEventListener("click", (e) => {
     
     startMap();
     return;
-  }
+
+     const hudStats = document.querySelector(".hud-stats");
+const pauseBtn = document.getElementById("btn-pause");
+
+if (game.flow === "learn") {
+  hudStats.style.display = "none";
+  pauseBtn.innerHTML = '<i class="fas fa-home"></i>';
+  document.getElementById("question-text").innerText =
+    "Toca una provincia para ver su información";
+} else {
+  hudStats.style.display = "block";
+  pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+}
 
   // Logros
   if (id === "show-achievements") {
