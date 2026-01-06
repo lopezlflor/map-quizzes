@@ -74,413 +74,304 @@ const regionData = {
   }
 };
 
-/* =====================================================
-   Estado global
-===================================================== */
-let game = {
-  flow: null,        // "learn" | "play"
-  mode: null,        // "names" | "capitals" | "flags"
-  region: null,
+// =====================
+// CONFIGURACIÓN GLOBAL
+// =====================
+
+const pastelColors = [
+  "#ffd1dc", "#e0bbe4", "#d0f4de",
+  "#cddafd", "#fff1c1", "#f6c1cc",
+  "#c1e1dc", "#e4c1f9"
+];
+
+function randomPastel() {
+  return pastelColors[Math.floor(Math.random() * pastelColors.length)];
+}
+
+const game = {
+  flow: "",
+  mode: "",
+  region: "",
   map: null,
   geoLayer: null,
-
   questions: [],
   current: 0,
   correct: 0,
-  processing: false, // Evitar doble click
-
-  startTime: null,
-  timerInterval: null,
+  timer: null,
+  seconds: 0,
   paused: false,
-  pauseTime: null,
-
   theme: localStorage.getItem("theme") || "light"
 };
 
-// Aplicar tema inicial
+// =====================
+// UTILIDADES
+// =====================
+
+function normalize(str) {
+  return str
+    ?.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim() || "";
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s =>
+    s.classList.add("hidden")
+  );
+  document.getElementById(id)?.classList.remove("hidden");
+}
+
+function resetTimer() {
+  clearInterval(game.timer);
+  game.seconds = 0;
+  updateTimer();
+}
+
+function startTimer() {
+  resetTimer();
+  game.timer = setInterval(() => {
+    if (!game.paused) {
+      game.seconds++;
+      updateTimer();
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const m = Math.floor(game.seconds / 60);
+  const s = game.seconds % 60;
+  document.getElementById("timer-display").innerText =
+    `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+// =====================
+// EVENTOS GENERALES
+// =====================
+
 document.body.className = `theme-${game.theme}`;
 
-/* =====================================================
-   Utilidades
-===================================================== */
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
-  const target = document.getElementById(id);
-  if (target) target.classList.remove("hidden");
-}
-
-function normalize(text) {
-  return (text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-}
-
-function shuffle(arr) {
-  return arr.sort(() => Math.random() - 0.5);
-}
-
-function formatTime(ms) {
-  const s = Math.floor(ms / 1000);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-}
-
-function updateHUD() {
-  const total = game.questions.length || 0;
-  const displayCurrent = Math.min(game.current, total);
-  
-  const elProg = document.getElementById("hud-progress");
-  const elCorr = document.getElementById("hud-correct");
-  const elPerc = document.getElementById("hud-percent");
-
-  if (elProg) elProg.innerText = `${displayCurrent}/${total}`;
-  if (elCorr) elCorr.innerText = `${game.correct}`;
-  
-  const attempted = Math.max(1, game.current);
-  const pct = total === 0 ? 0 : Math.round((game.correct / attempted) * 100);
-  if (elPerc) elPerc.innerText = `${pct}%`;
-}
-
-/* =====================================================
-   Manejo global de clicks
-===================================================== */
-document.addEventListener("click", (e) => {
+document.addEventListener("click", e => {
   const btn = e.target.closest("button");
   if (!btn) return;
-  const id = btn.id;
 
-  // --- NAVEGACIÓN PRINCIPAL ---
-
-  // Botón: Aprender -> Ir directo a elegir mapa
-  if (id === "go-learn") {
-    resetGame();
+  if (btn.id === "go-learn") {
     game.flow = "learn";
-    game.mode = null; // En aprender no hay modos de juego
     showScreen("screen-regions");
-    return;
   }
 
-  // Botón: Jugar -> Ir a elegir modo
-  if (id === "go-play") {
-    resetGame();
+  if (btn.id === "go-play") {
     game.flow = "play";
-    game.mode = null;
     showScreen("screen-modes");
-    return;
   }
 
-  // --- SELECCIONES ---
-
-  // Selección de Modo (Nombres, Capitales, Banderas)
   if (btn.classList.contains("mode-sel")) {
     game.mode = btn.dataset.mode;
-    showScreen("screen-regions"); // Siguiente paso: elegir mapa
-    return;
+    showScreen("screen-regions");
   }
 
-  // Selección de Región (País) -> Iniciar Mapa
   if (btn.classList.contains("reg-sel")) {
-    game.region = btn.dataset.region;
-    startMap();
-    return;
+    startMap(btn.dataset.region);
   }
 
-  // --- UTILIDADES ---
+  if (btn.id === "back-to-start" || btn.id === "back-from-regions") {
+    showScreen("screen-start");
+  }
 
-  // Cambiar Tema
-  if (id === "btn-theme") {
+  if (btn.id === "back-to-menu") {
+    location.reload();
+  }
+
+  if (btn.id === "btn-theme") {
     game.theme = game.theme === "light" ? "dark" : "light";
-    document.body.className = `theme-${game.theme}`;
     localStorage.setItem("theme", game.theme);
-    return;
+    document.body.className = `theme-${game.theme}`;
   }
 
-  // Volver atrás
-  if (id === "back-to-start") {
-    resetGame();
-    showScreen("screen-start");
-    return;
-  }
-  if (id === "back-from-regions") {
-    // Si veníamos de jugar, volver a modos. Si veníamos de aprender, volver a inicio.
-    if (game.flow === "play") {
-      showScreen("screen-modes");
+  if (btn.id === "btn-pause") {
+    if (game.flow === "learn") {
+      location.reload();
     } else {
-      showScreen("screen-start");
+      game.paused = true;
+      document.getElementById("modal-pause").classList.remove("hidden");
     }
-    return;
-  }
-  if (id === "back-to-menu" || id === "exit-game") {
-    resetGame();
-    showScreen("screen-start");
-    document.getElementById("modal-gameover")?.classList.add("hidden");
-    document.getElementById("modal-pause")?.classList.add("hidden");
-    return;
   }
 
-  // --- PAUSA / MODALES ---
-
-  if (id === "btn-pause") {
-  if (game.flow === "learn") {
-    resetGame();
-    showScreen("screen-start");
-    return;
+  if (btn.id === "resume-game") {
+    game.paused = false;
+    document.getElementById("modal-pause").classList.add("hidden");
   }
 
-  game.paused = true;
-  game.pauseTime = Date.now();
-  clearInterval(game.timerInterval);
-  document.getElementById("modal-pause").classList.remove("hidden");
+  if (btn.id === "restart-game") {
+    startMap(game.region);
+    document.getElementById("modal-pause").classList.add("hidden");
   }
 
-  if (id === "resume-game") {
-    if (game.paused) {
-      game.paused = false;
-      const pausedFor = Date.now() - (game.pauseTime || Date.now());
-      game.startTime += pausedFor;
-      startTimer();
-    }
-    document.getElementById("modal-pause")?.classList.add("hidden");
-    return;
+  if (btn.id === "exit-game") {
+    location.reload();
   }
 
-  if (id === "restart-game") {
-    // Cerrar modales
-    document.getElementById("modal-pause")?.classList.add("hidden");
-    document.getElementById("modal-gameover")?.classList.add("hidden");
-    
-    // Reiniciar manteniendo configuración actual
-    const currentRegion = game.region;
-    const currentMode = game.mode;
-    const currentFlow = game.flow;
-    
-    resetGame();
-    
-    // Restaurar estado
-    game.region = currentRegion;
-    game.mode = currentMode;
-    game.flow = currentFlow;
-    
-    startMap();
-    return;
-
-   }
-
-  // Logros
-  if (id === "show-achievements") {
-    document.getElementById("modal-achievements")?.classList.remove("hidden");
-    return;
+  if (btn.id === "show-achievements") {
+    document.getElementById("modal-achievements").classList.remove("hidden");
   }
-  if (id === "close-ach" || id === "close-achievements" || btn.classList.contains("close-modal")) {
-    document.getElementById("modal-achievements")?.classList.add("hidden");
-    return;
+
+  if (btn.id === "close-ach") {
+    document.getElementById("modal-achievements").classList.add("hidden");
   }
 });
 
-/* =====================================================
-   Lógica del mapa
-===================================================== */
-async function startMap() {
-  showScreen("screen-game");
+// =====================
+// MAPA Y JUEGO
+// =====================
 
-   const hudStats = document.querySelector(".hud-stats");
-const pauseBtn = document.getElementById("btn-pause");
-
-if (game.flow === "learn") {
-  hudStats.style.display = "none";
-  pauseBtn.innerHTML = '<i class="fas fa-home"></i>';
-  document.getElementById("question-text").innerText =
-    "Toca una provincia para ver su información";
-} else {
-  hudStats.style.display = "block";
-  pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-
-}
-
-  // Limpiar mapa previo
-  if (game.map) {
-    try { game.map.remove(); } catch (e) {}
-    game.map = null;
-    game.geoLayer = null;
-  }
-
-  // Crear mapa
-  game.map = L.map("map", { zoomControl: false, attributionControl: false }).setView([0,0], 2);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(game.map);
-  
-  setTimeout(() => game.map.invalidateSize(), 120);
-
-  // Cargar GeoJSON
-  try {
-    const res = await fetch(`data/${game.region}.json`);
-    const geo = await res.json();
-
-    // Preparar juego
-    game.questions = shuffle([...geo.features]);
-    game.current = 0;
-    game.correct = 0;
-    game.processing = false;
-    updateHUD();
-
-    // Configurar interfaz según flujo
-    if (game.flow === "play") {
-      game.startTime = Date.now();
-      startTimer();
-      updateQuestionText();
-      document.getElementById("btn-pause").style.display = "block";
-    } else {
-      // Modo aprender
-      document.getElementById("question-text").innerText = "Toca una provincia para ver información";
-      document.getElementById("timer-display").innerText = "--:--";
-      // Ocultar botón de pausa o cambiar ícono si quisieras
-    }
-
-    // Agregar capa GeoJSON
-    game.geoLayer = L.geoJSON(geo, {
-      style: () => ({ color: "#444", weight: 1.2, fillOpacity: 0.75, fillColor: "#ddd" }),
-      onEachFeature: (feature, layer) => {
-        layer.on("click", (e) => {
-          if (game.flow === "learn") {
-            learnPopup(feature, e);
-          } else if (game.flow === "play") {
-            playClick(feature, layer, e);
-          }
-        });
-      }
-    }).addTo(game.map);
-
-    // Zoom al país
-    try {
-      game.map.fitBounds(game.geoLayer.getBounds(), { padding: [20, 20] });
-    } catch (err) {}
-
-  } catch (err) {
-    console.error(err);
-    document.getElementById("question-text").innerText = "Error cargando mapa";
-  }
-}
-
-/* =====================================================
-   Aprender: Popups
-===================================================== */
-function learnPopup(feature, e) {
-  const raw = feature.properties.nombre || feature.properties.name || "Desconocido";
-  const key = normalize(raw);
-  const info = regionData[game.region]?.[key] || {};
-  
-  const flagHtml = info.flag 
-    ? `<div style="margin-top:8px; text-align:center;"><img src="flags/${info.flag}" height="50" style="border:1px solid #ccc; border-radius:4px;"></div>` 
-    : "";
-  
-  L.popup()
-    .setLatLng(e.latlng)
-    .setContent(`<div style="text-align:center"><strong>${raw}</strong><br><span style="color:#666">Capital: ${info.cap || "—"}</span>${flagHtml}</div>`)
-    .openOn(game.map);
-}
-
-/* =====================================================
-   Jugar: Lógica de aciertos
-===================================================== */
-function updateQuestionText() {
-  const total = game.questions.length;
-  if (!total || game.current >= total) {
-    document.getElementById("question-text").innerText = "¡Completado!";
-    return;
-  }
-  
-  const q = game.questions[game.current];
-  const raw = q.properties.nombre || q.properties.name || "Desconocido";
-  const info = regionData[game.region]?.[normalize(raw)] || {};
-  
-  let text = "";
-  if (game.mode === "names") text = `¿Dónde está <strong>${raw}</strong>?`;
-  else if (game.mode === "capitals") text = `¿Dónde está la capital <strong>${info.cap || "??"}</strong>?`;
-  else if (game.mode === "flags") text = `¿De dónde es esta bandera? <div style="margin-top:10px"><img src="flags/${info.flag || ''}" height="60" style="border:1px solid #ccc; border-radius:4px;"></div>`;
-  
-  const el = document.getElementById("question-text");
-  if (el) el.innerHTML = text;
-  updateHUD();
-}
-
-function playClick(feature, layer, e) {
-  if (game.paused || game.processing) return;
-  game.processing = true;
-
-  const clicked = normalize(feature.properties.nombre || feature.properties.name || "");
-  const target = game.questions[game.current];
-  const expected = normalize(target.properties.nombre || target.properties.name || "");
-  
-  const isCorrect = (clicked === expected);
-
-  if (isCorrect) {
-    layer.setStyle({ fillColor: "#a8e6cf", fillOpacity: 1, color: "#2e7d32" });
-    game.correct++;
-  } else {
-    layer.setStyle({ fillColor: "#ff8a80", fillOpacity: 1, color: "#c62828" });
-  }
-  
-  game.current++;
-  updateHUD();
-
-  setTimeout(() => {
-    // Si falló, restaurar color. Si acertó, dejar verde.
-    if (!isCorrect) {
-      game.geoLayer.resetStyle(layer);
-    }
-    
-    if (game.current >= game.questions.length) {
-      endGame();
-    } else {
-      updateQuestionText();
-    }
-    game.processing = false;
-  }, 800);
-}
-
-/* =====================================================
-   Timer y Fin
-===================================================== */
-function startTimer() {
-  clearInterval(game.timerInterval);
-  game.timerInterval = setInterval(() => {
-    const elapsed = Date.now() - game.startTime;
-    document.getElementById("timer-display").innerText = formatTime(elapsed);
-  }, 500);
-}
-
-function endGame() {
-  clearInterval(game.timerInterval);
-  updateHUD();
-  
-  const total = game.questions.length;
-  const scorePct = Math.round((game.correct / Math.max(1, total)) * 100);
-  const timeStr = formatTime(Date.now() - game.startTime);
-
-  // Llenar datos del modal
-  const scoreEl = document.getElementById("final-score");
-  const timeEl = document.getElementById("final-time");
-  if (scoreEl) scoreEl.innerText = `${game.correct} / ${total} (${scorePct}%)`;
-  if (timeEl) timeEl.innerText = timeStr;
-
-  // Mostrar modal
-  document.getElementById("modal-gameover")?.classList.remove("hidden");
-}
-
-function resetGame() {
-  clearInterval(game.timerInterval);
+async function startMap(region) {
+  game.region = region;
   game.current = 0;
   game.correct = 0;
-  game.questions = [];
   game.paused = false;
-  game.processing = false;
-  
-  if (game.map) {
-    try { game.map.remove(); } catch (e) {}
-    game.map = null;
-    game.geoLayer = null;
+
+  showScreen("screen-game");
+
+  if (game.map) game.map.remove();
+
+  game.map = L.map("map", {
+    zoomControl: true,
+    attributionControl: false
+  }).setView([0, 0], 2);
+
+  L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+  ).addTo(game.map);
+
+  const res = await fetch(`data/${region}.json`);
+  const data = await res.json();
+
+  game.questions = [...data.features].sort(() => Math.random() - 0.5);
+
+  game.geoLayer = L.geoJSON(data, {
+    style: () => ({
+      color: "#555",
+      weight: 1.3,
+      fillOpacity: 0.85,
+      fillColor: randomPastel()
+    }),
+    onEachFeature: (feature, layer) => {
+      layer.on("click", e => {
+        if (game.paused) return;
+
+        const rawName =
+          feature.properties.nombre ||
+          feature.properties.name ||
+          feature.properties.NAM;
+
+        if (game.flow === "learn") {
+          const info =
+            regionData[game.region][normalize(rawName)] || {};
+
+          L.popup()
+            .setLatLng(e.latlng)
+            .setContent(`
+              <b>${rawName}</b><br>
+              Capital: ${info.cap || "—"}<br>
+              <img src="flags/${info.flag || ""}" height="40">
+            `)
+            .openOn(game.map);
+        } else {
+          checkAnswer(layer, rawName);
+        }
+      });
+    }
+  }).addTo(game.map);
+
+  game.map.fitBounds(game.geoLayer.getBounds());
+
+  setupHUD();
+
+  if (game.flow === "play") {
+    startTimer();
+    nextQuestion();
   }
-  
-  const qText = document.getElementById("question-text");
-  const tDisp = document.getElementById("timer-display");
-  if (qText) qText.innerText = "";
-  if (tDisp) tDisp.innerText = "0:00";
-  
-  updateHUD();
 }
+
+// =====================
+// HUD
+// =====================
+
+function setupHUD() {
+  const stats = document.querySelector(".hud-stats");
+  const pause = document.getElementById("btn-pause");
+  const text = document.getElementById("question-text");
+
+  if (game.flow === "learn") {
+    stats.style.display = "none";
+    pause.innerHTML = '<i class="fas fa-home"></i>';
+    text.innerText = "Toca una provincia para ver su información";
+  } else {
+    stats.style.display = "block";
+    pause.innerHTML = '<i class="fas fa-pause"></i>';
+  }
+}
+
+// =====================
+// JUEGO
+// =====================
+
+function nextQuestion() {
+  if (game.current >= game.questions.length) {
+    alert("Juego terminado");
+    return;
+  }
+
+  const q = game.questions[game.current];
+  const raw =
+    q.properties.nombre ||
+    q.properties.name ||
+    q.properties.NAM;
+
+  const info =
+    regionData[game.region][normalize(raw)] || {};
+
+  let text = "";
+
+  if (game.mode === "names") {
+    text = `¿Dónde está ${raw}?`;
+  }
+  if (game.mode === "capitals") {
+    text = `¿Dónde está la capital ${info.cap}?`;
+  }
+  if (game.mode === "flags") {
+    text = "¿De dónde es esta bandera?";
+    document.getElementById("question-text").innerHTML =
+      text + `<br><img src="flags/${info.flag}" height="40">`;
+    return;
+  }
+
+  document.getElementById("question-text").innerText = text;
+}
+
+function checkAnswer(layer, rawName) {
+  const q = game.questions[game.current];
+  const target =
+    normalize(
+      q.properties.nombre ||
+      q.properties.name ||
+      q.properties.NAM
+    );
+
+  if (normalize(rawName) === target) {
+    game.correct++;
+    layer.setStyle({ fillColor: "#9ae6b4" });
+  } else {
+    layer.setStyle({ fillColor: "#feb2b2" });
+  }
+
+  game.current++;
+
+  document.getElementById("hud-progress").innerText =
+    `${game.current}/${game.questions.length}`;
+  document.getElementById("hud-correct").innerText = game.correct;
+  document.getElementById("hud-percent").innerText =
+    Math.round((game.correct / game.current) * 100) + "%";
+
+  setTimeout(nextQuestion, 600);
+         }
