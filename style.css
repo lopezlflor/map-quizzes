@@ -147,13 +147,6 @@ main {
   cursor: pointer;
 }
 
-.btn-back.floating {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 800;
-}
-
 /* MODALES */
 .modal {
   position: fixed;
