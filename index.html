@@ -21,7 +21,6 @@
 
 <main>
 
-  <!-- INICIO -->
   <section id="screen-start" class="screen">
     <h2>¿Qué quieres hacer?</h2>
     <div class="menu-grid big-menu">
@@ -30,7 +29,6 @@
     </div>
   </section>
 
-  <!-- MODOS -->
   <section id="screen-modes" class="screen hidden">
     <h2>Selecciona modo</h2>
     <div class="menu-grid big-menu">
@@ -41,7 +39,6 @@
     <button id="back-to-start" class="btn-back">Volver</button>
   </section>
 
-  <!-- PAÍSES -->
   <section id="screen-regions" class="screen hidden">
     <h2>Selecciona país</h2>
     <div class="menu-grid big-menu">
@@ -58,15 +55,12 @@
     <button id="back-from-regions" class="btn-back">Volver</button>
   </section>
 
-  <!-- MAPA -->
   <section id="screen-game" class="screen hidden">
     <div id="map"></div>
-    <button id="back-to-menu" class="btn-back floating">Menú</button>
-  </section>
+    </section>
 
 </main>
 
-<!-- HUD FIJO -->
 <div id="fixed-hud">
   <div>
     <div id="question-text"></div>
@@ -80,7 +74,6 @@
   <button id="btn-pause" class="icon-btn"></button>
 </div>
 
-<!-- PAUSA -->
 <div id="modal-pause" class="modal hidden">
   <div class="modal-content">
     <h2>Pausa</h2>
@@ -90,7 +83,15 @@
   </div>
 </div>
 
-<!-- LOGROS -->
+<div id="modal-gameover" class="modal hidden">
+  <div class="modal-content">
+    <h2>¡Partida Terminada!</h2>
+    <p>Aciertos: <strong id="end-score"></strong></p>
+    <p>Tiempo total: <strong id="end-time"></strong></p>
+    <button id="btn-end-home" class="menu-btn primary">Volver al Menú</button>
+  </div>
+</div>
+
 <div id="modal-achievements" class="modal hidden">
   <div class="modal-content">
     <h2>Logros</h2>
