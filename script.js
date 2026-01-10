@@ -296,9 +296,6 @@ document.addEventListener("click", e => {
     game.region = region;
     game.regionType = type;
 
-    // Usamos la utilidad global getRegionKey(game.region) donde sea necesario,
-    // pero aquí guardamos la selección tal cual.
-
     if (game.flow === "learn") {
       startMap(region);
     } else {
@@ -418,19 +415,25 @@ async function startMap(region) {
         layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
         layer.on("click", () => {
-          const id = getFeatureId(feature);
-          const regionKey = getRegionKey(game.region);
-          const info = regionData[regionKey]?.[id];
+          // Lógica corregida para separar JUEGO de APRENDIZAJE
+          if (game.flow === "play") {
+            checkAnswer(layer);
+          } else {
+            // Modo Aprender: Mostrar Popup
+            const id = getFeatureId(feature);
+            const regionKey = getRegionKey(game.region);
+            const info = regionData[regionKey]?.[id];
 
-          if (!info) {
-            layer.bindPopup("Sin datos").openPopup();
-            return;
+            if (!info) {
+              layer.bindPopup("Sin datos").openPopup();
+              return;
+            }
+
+            layer.bindPopup(`
+              <strong>${info.name}</strong><br>
+              Capital / Cabecera: ${info.cap}
+            `).openPopup();
           }
-
-          layer.bindPopup(`
-            <strong>${info.name}</strong><br>
-            Capital / Cabecera: ${info.cap}
-          `).openPopup();
         });
       }
     }).addTo(game.map);
@@ -497,7 +500,7 @@ function nextQuestion() {
   }
 }
 
-function checkAnswer(layer, rawName) {
+function checkAnswer(layer) {
   const q = game.questions[game.current];
   const targetId = getFeatureId(q);
   const clickedId = getFeatureId(layer.feature);
@@ -606,3 +609,4 @@ function renderAchievements() {
     });
   });
 }
+
