@@ -204,3 +204,13 @@ button:active { transform: scale(0.95); }
 .ach-flag { height: 20px; }
 .ach-country { font-weight: bold; font-size: 0.9rem; }
 .ach-mode { font-size: 0.8rem; opacity: 0.8; }
+
+/* Eliminar el cuadro de foco (outline) al hacer clic en las regiones */
+path.leaflet-interactive:focus {
+    outline: none;
+}
+
+/* Opcional: Eliminar el parpadeo de selección en móviles */
+.leaflet-interactive {
+    -webkit-tap-highlight-color: transparent;
+}
