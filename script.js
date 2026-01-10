@@ -203,8 +203,6 @@ function getFeatureId(feature) {
 
   // --- CASO 1: TUCUMÁN ---
   if (reg === "ar-tucuman") {
-    // El JSON tiene la propiedad 'id' con valores como 472, 473, etc.
-    // Lo asignamos directamente.
     id = p.id;
   } 
   // --- CASO 2: SANTA CATARINA ---
@@ -217,7 +215,6 @@ function getFeatureId(feature) {
     return normalize(name);
   }
 
-  // Convertimos a string para asegurar comparación correcta con las claves de regionData
   return id ? id.toString() : null;
 }
 
@@ -407,7 +404,6 @@ async function startMap(region) {
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
   ).addTo(game.map);
 
-  // Mapeo de archivos
   let filename = `${region}.json`;
   if (region === "ar-tucuman") filename = "departamentos-tucuman.json";
   if (region === "br-santacatarina") filename = "br-sc.geojson";
@@ -418,7 +414,6 @@ async function startMap(region) {
     if (!res.ok) throw new Error("Error cargando archivo: " + filename);
     const data = await res.json();
 
-    // Filtros y barajar
     game.questions = (data.features || [])
       .filter(f => f.geometry) 
       .sort(() => Math.random() - 0.5);
@@ -436,11 +431,10 @@ async function startMap(region) {
         layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
         layer.on("click", () => {
-          // Lógica corregida para separar JUEGO de APRENDIZAJE
           if (game.flow === "play") {
             checkAnswer(layer);
           } else {
-            // Modo Aprender: Mostrar Popup
+            // Modo Aprender: Mostrar Popup CON bandera si existe
             const id = getFeatureId(feature);
             const regionKey = getRegionKey(game.region);
             const info = regionData[regionKey]?.[id];
@@ -450,7 +444,14 @@ async function startMap(region) {
               return;
             }
 
+            // HTML para la bandera en el popup
+            const flagHtml = info.flag ? 
+              `<div style="text-align:center; margin-bottom:5px;">
+                 <img src="flags/${info.flag}" style="width:40px; border:1px solid #ccc;">
+               </div>` : "";
+
             layer.bindPopup(`
+              ${flagHtml}
               <strong>${info.name}</strong><br>
               Capital / Cabecera: ${info.cap}
             `).openPopup();
@@ -514,9 +515,19 @@ function nextQuestion() {
     return;
   }
 
+  // --- LÓGICA CORREGIDA AQUÍ PARA MOSTRAR BANDERA ---
   if (game.mode === "capitals") {
-    box.innerText = `¿Dónde está la capital/cabecera ${info.cap}?`;
+    box.innerText = `¿Dónde está la capital: ${info.cap}?`;
+  } else if (game.mode === "flags") {
+    // Si hay bandera, mostramos la imagen
+    if (info.flag) {
+      box.innerHTML = `<span style="vertical-align:middle; margin-right:8px;">Ubica:</span> <img src="flags/${info.flag}" class="hud-flag" alt="Bandera">`;
+    } else {
+      // Fallback si no hay imagen
+      box.innerText = `¿Dónde está ${info.name}? (Sin bandera)`;
+    }
   } else {
+    // Modo normal (Names)
     box.innerText = `¿Dónde está ${info.name}?`;
   }
 }
