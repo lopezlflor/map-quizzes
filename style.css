@@ -149,6 +149,16 @@ button:active { transform: scale(0.95); }
 .hud-question { font-weight: 700; color: var(--primary); font-size: 1.1rem; }
 .theme-dark .hud-question { color: #64b5f6; }
 
+/* NUEVO: Clase para la bandera dentro del HUD */
+.hud-flag {
+    height: 40px;
+    width: auto;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
 .hud-stats { display: flex; gap: 15px; font-size: 0.9rem; color: #777; }
 .stat-box i { color: var(--primary); margin-right: 4px; }
 
