@@ -76,23 +76,23 @@ const regionData = {
 
   // --- SUBDIVISIONES ---
   "ar-tucuman": {
-    "capital": { cap: "S. M. de Tucumán" },
-    "trancas": { cap: "Trancas" },
-    "burruyacu": { cap: "Burruyacú" },
-    "tafi viejo": { cap: "Tafí Viejo" },
-    "cruz alta": { cap: "Banda del Río Salí" },
-    "lules": { cap: "Lules" },
-    "famailla": { cap: "Famaillá" },
-    "monteros": { cap: "Monteros" },
-    "chicligasta": { cap: "Concepción" },
-    "rio chico": { cap: "Aguilares" },
-    "juan bautista alberdi": { cap: "Juan Bautista Alberdi" },
-    "la cocha": { cap: "La Cocha" },
-    "graneros": { cap: "Graneros" },
-    "simoca": { cap: "Simoca" },
-    "leales": { cap: "Bella Vista" },
-    "tafi del valle": { cap: "Tafí del Valle" },
-    "yerba buena": { cap: "Yerba Buena" }
+    "CAPITAL": { cap: "S. M. de Tucumán" },
+    "TRANCAS": { cap: "Trancas" },
+    "BURRUYACU": { cap: "Burruyacú" },
+    "TAFI VIEJO": { cap: "Tafí Viejo" },
+    "CRUZ ALTA": { cap: "Banda del Río Salí" },
+    "LULES": { cap: "Lules" },
+    "FAMAILLA": { cap: "Famaillá" },
+    "MONTEROS": { cap: "Monteros" },
+    "CHICLIGASTA": { cap: "Concepción" },
+    "RIO CHICO": { cap: "Aguilares" },
+    "JUAN BAUTISTA ALBERDI": { cap: "Juan Bautista Alberdi" },
+    "LA COCHA": { cap: "La Cocha" },
+    "GRANEROS": { cap: "Graneros" },
+    "SIMOCA": { cap: "Simoca" },
+    "LEALES": { cap: "Bella Vista" },
+    "TAFI DEL VALLE": { cap: "Tafí del Valle" },
+    "YERBA BUENA": { cap: "Yerba Buena" }
   },
 
   "ca-bc": {
