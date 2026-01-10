@@ -191,30 +191,27 @@ function normalize(str) {
   return str
     ?.toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "") // quita acentos
+    .replace(/['’]/g, "")           // quita apóstrofes
+    .replace(/\s*-\s*/g, " - ")     // normaliza guiones
+    .replace(/\s+/g, " ")           // colapsa espacios
     .trim() || "";
 }
 
 function getFeatureName(feature) {
   const p = feature.properties;
-  
-  // 1. Intentar obtener un nombre crudo de las propiedades más comunes
-  let name = p.nombre || p.name || p.NAM || p.nam ||      
-             p.NM_MUN || p.NM_MUNICIP || p.NM_MESO ||     
-             p.CDNAME || p.CFNAME || p.ERNAME ||          
-             p.admin_name || p.toponymName || 
-             p.FNA || // Agregado para Tucumán (Argentina suele usar FNA)
-             "Desconocido";
 
-  // 2. Limpieza específica para Tucumán (o Argentina en general)
-  // Si el nombre es "Departamento Trancas", lo dejamos solo en "Trancas"
-  if (name && typeof name === 'string' && name.startsWith("Departamento ")) {
-      name = name.replace("Departamento ", "");
-  }
-
-  return name;
+  return (
+    p.NM_RGI ||
+    p.nombre ||
+    p.name ||
+    p.NAM ||
+    p.nam ||
+    p.NM_MUN ||
+    p.FNA ||
+    "Desconocido"
+  );
 }
-
 
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s =>
