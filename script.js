@@ -152,7 +152,7 @@ const regionData = {
     "420023": { name: "Tubarão", cap: "Tubarão" },
     "420024": { name: "Araranguá", cap: "Araranguá" }
   }
-},
+};
 
 /* =====================
    CONFIGURACIÓN GLOBAL
