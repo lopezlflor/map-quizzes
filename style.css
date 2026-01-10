@@ -53,25 +53,60 @@ main {
 
 .hidden { display: none !important; }
 
+/* Scroll para pantallas con muchas opciones */
+.scrollable-screen {
+  overflow-y: auto;
+  justify-content: flex-start;
+  padding: 40px 0;
+}
+
 /* MENÚ */
 .menu-grid {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 15px;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
 }
 
 .big-menu {
   margin-top: 30px;
 }
 
+/* Categorías de región */
+.region-category {
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.region-category h3 {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  opacity: 0.8;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 5px;
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+}
+
+.theme-dark .region-category h3 {
+  border-color: var(--border-dark);
+}
+
 .menu-btn {
-  padding: 22px 26px;
-  font-size: 1.2rem;
+  padding: 18px 24px;
+  font-size: 1.1rem;
   border-radius: 18px;
   border: 2px solid var(--border-light);
   background: var(--card-light);
   font-weight: bold;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .menu-btn.primary {
@@ -92,10 +127,10 @@ main {
 }
 
 .flag-btn {
-  width: 34px;
-  margin-right: 12px;
-  vertical-align: middle;
+  width: 32px;
+  margin-right: 15px;
   border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* MAPA */
@@ -169,7 +204,7 @@ main {
 }
 
 .modal-content.wide-modal {
-  max-width: 500px;
+  max-width: 600px;
   width: 95%;
 }
 
@@ -181,10 +216,10 @@ main {
   filter: invert(100%) hue-rotate(180deg);
 }
 
-/* LOGROS - NUEVO ESTILO */
+/* LOGROS */
 #achievements-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 12px;
   margin: 20px 0;
   text-align: left;
@@ -246,7 +281,7 @@ main {
 }
 
 .unlocked .ach-icon {
-  color: #ffc107; /* Dorado */
+  color: #ffc107;
 }
 
 .ach-times {
