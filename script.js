@@ -375,7 +375,7 @@ async function startMap(region) {
   // Mapeo de archivos
   let filename = `${region}.json`;
   if (region === "ar-tucuman") filename = "departamentos-tucuman.json";
-  if (region === "br-santacatarina") filename = "br-sc.geojson.txt";
+  if (region === "br-santacatarina") filename = "br-sc.geojson";
   if (region === "ca-bc") filename = "ca-bc.json";
 
   try {
