@@ -109,7 +109,10 @@ const regionData = {
     "east kootenay": { name: "East Kootenay", cap: "Cranbrook" },
     "fraser valley": { name: "Fraser Valley", cap: "Chilliwack" },
     "fraser-fort george": { name: "Fraser-Fort George", cap: "Prince George" },
+    
+    // NOTA: El mapa a veces usa "Greater Vancouver", mapeamos ambos
     "metro vancouver": { name: "Metro Vancouver", cap: "Burnaby" },
+    
     "kitimat-stikine": { name: "Kitimat-Stikine", cap: "Terrace" },
     "kootenay boundary": { name: "Kootenay Boundary", cap: "Trail" },
     "mount waddington": { name: "Mount Waddington", cap: "Port McNeill" },
@@ -118,12 +121,18 @@ const regionData = {
     "northern rockies": { name: "Northern Rockies", cap: "Fort Nelson" },
     "okanagan-similkameen": { name: "Okanagan-Similkameen", cap: "Penticton" },
     "peace river": { name: "Peace River", cap: "Dawson Creek" },
+    
+    // NOTA: El mapa usa "Powell River", mapeamos a "qathet"
     "qathet": { name: "qathet", cap: "Powell River" },
+    
     "squamish-lillooet": { name: "Squamish-Lillooet", cap: "Pemberton" },
     "strathcona": { name: "Strathcona", cap: "Campbell River" },
     "sunshine coast": { name: "Sunshine Coast", cap: "Sechelt" },
     "thompson-nicola": { name: "Thompson-Nicola", cap: "Kamloops" },
-    "stikine": { name: "Stikine", cap: "-" }
+    "stikine": { name: "Stikine", cap: "-" },
+    
+    // AGREGADO: Skeena-Queen Charlotte (a veces llamado North Coast)
+    "skeena-queen charlotte": { name: "Skeena-Queen Charlotte", cap: "Prince Rupert" }
   },
   
   "br-santacatarina": {
@@ -210,7 +219,27 @@ function getFeatureId(feature) {
   else if (reg === "br-santacatarina" || reg === "br-sc") {
     id = p.CD_MUN || p.cod_ibge || p.id || p.rgi;
   } 
-  // --- CASO 3: PAÍSES Y OTROS (Uso por Nombre) ---
+  // --- CASO 3: BRITISH COLUMBIA (Canadá) ---
+  else if (reg === "ca-bc") {
+    // Busca primero CDNAME, si no existe usa name
+    let raw = p.CDNAME || p.RD_NAME || p.ADMIN_AREA_NAME || p.name || "Desconocido";
+    
+    // Normalizamos primero (ej: "Greater Vancouver" -> "greater vancouver")
+    id = normalize(raw);
+
+    // Mapeo de Nombres Antiguos (Mapa) -> Nombres Modernos (Tus Datos)
+    const aliases = {
+      "greater vancouver": "metro vancouver", // El mapa dice "Greater", tus datos "Metro"
+      "powell river": "qathet"                // El mapa dice "Powell River", tus datos "qathet"
+    };
+
+    if (aliases[id]) {
+      return aliases[id];
+    }
+    
+    return id;
+  }
+  // --- CASO 4: PAÍSES Y OTROS (Genérico) ---
   else {
     let name = p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || "Desconocido";
     return normalize(name);
@@ -221,6 +250,10 @@ function getFeatureId(feature) {
 
 function getFeatureName(feature) {
   const p = feature.properties || {};
+  // Si estamos en BC, intenta usar CDNAME para mostrar el nombre "bonito" del mapa
+  if (game.region === "ca-bc") {
+      return p.CDNAME || p.RD_NAME || p.name || "Desconocido";
+  }
   return (
     p.nome_rgi ||
     p.departamento ||
@@ -415,8 +448,14 @@ async function startMap(region) {
     if (!res.ok) throw new Error("Error cargando archivo: " + filename);
     const data = await res.json();
 
+    // FILTRO DE SEGURIDAD: Solo cargamos zonas que existen en tus datos
     game.questions = (data.features || [])
-      .filter(f => f.geometry) 
+      .filter(f => {
+         const id = getFeatureId(f);
+         const regionKey = getRegionKey(game.region);
+         // Verifica si tenemos datos para esta zona (evita islas huerfanas)
+         return f.geometry && regionData[regionKey] && regionData[regionKey][id];
+      }) 
       .sort(() => Math.random() - 0.5);
 
     game.geoLayer = L.geoJSON(data, {
@@ -441,7 +480,7 @@ async function startMap(region) {
             const info = regionData[regionKey]?.[id];
 
             if (!info) {
-              layer.bindPopup("Sin datos").openPopup();
+              layer.bindPopup(`<strong>${rawName}</strong><br>Sin datos`).openPopup();
               return;
             }
 
@@ -511,9 +550,7 @@ function nextQuestion() {
 
   const box = document.getElementById("question-text");
 
-  // SOLUCIÓN: Definimos 'displayName'.
-  // Intenta usar info.name (tu lista manual). 
-  // Si no existe, usa getFeatureName(q) (el nombre que viene dentro del mapa).
+  // Definimos 'displayName' seguro
   const displayName = info?.name || getFeatureName(q);
 
   // Si info no existe (caso raro de desajuste de IDs), usamos datos genéricos
@@ -529,7 +566,7 @@ function nextQuestion() {
       box.innerText = `¿Dónde está ${displayName}? (Sin bandera)`;
     }
   } else {
-    // Modo normal (Names) usa la variable inteligente displayName
+    // Modo normal (Names)
     box.innerText = `¿Dónde está ${displayName}?`;
   }
 }
