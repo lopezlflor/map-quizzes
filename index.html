@@ -161,3 +161,130 @@
     <script src="script.js"></script>
 </body>
 </html>
+        <div class="hero-content">
+            <h1>🌎 GeoQuiz</h1>
+            <p>Explora, aprende y pon a prueba tu geografía.</p>
+            
+            <div class="main-actions">
+                <button id="go-learn" class="btn-lg btn-secondary">
+                    <i class="fas fa-book-open"></i> Aprender
+                </button>
+                <button id="go-play" class="btn-lg btn-primary">
+                    <i class="fas fa-gamepad"></i> Jugar
+                </button>
+            </div>
+
+            <div class="sub-actions">
+                <button id="show-achievements" class="btn-sm text-btn">
+                    <i class="fas fa-trophy"></i> Ver Logros
+                </button>
+                <button id="btn-theme" class="btn-sm text-btn">
+                    <i class="fas fa-adjust"></i> Tema
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-regions" class="screen hidden">
+        <header class="screen-header">
+            <button id="back-to-start" class="btn-icon"><i class="fas fa-arrow-left"></i></button>
+            <h2>Selecciona un Mapa</h2>
+            <div style="width: 40px;"></div> </header>
+        
+        <div class="regions-grid">
+            <h3>Países</h3>
+            <div class="grid-row">
+                <button class="reg-sel card" data-region="ar" data-type="country">
+                    <img src="flags/ar.png" alt="Argentina">
+                    <span>Argentina</span>
+                </button>
+                <button class="reg-sel card" data-region="br" data-type="country">
+                    <img src="flags/br.png" alt="Brasil">
+                    <span>Brasil</span>
+                </button>
+                <button class="reg-sel card" data-region="ca" data-type="country">
+                    <img src="flags/ca.png" alt="Canadá">
+                    <span>Canadá</span>
+                </button>
+            </div>
+
+            <h3>Provincias y Estados</h3>
+            <div class="grid-row">
+                <button class="reg-sel card" data-region="ar-tucuman" data-type="subdivision">
+                    <img src="flags/ar-tucuman.png" onerror="this.src='flags/placeholder.png'" alt="Tucumán">
+                    <span>Tucumán (AR)</span>
+                </button>
+                <button class="reg-sel card" data-region="br-santacatarina" data-type="subdivision">
+                    <img src="flags/br-santacatarina.png" onerror="this.src='flags/placeholder.png'" alt="Santa Catarina">
+                    <span>Sta. Catarina (BR)</span>
+                </button>
+                <button class="reg-sel card" data-region="ca-bc" data-type="subdivision">
+                    <img src="flags/ca-bc.png" onerror="this.src='flags/placeholder.png'" alt="British Columbia">
+                    <span>B. Columbia (CA)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-modes" class="screen hidden">
+        <div class="modal-center">
+            <h2>¿Cómo quieres jugar?</h2>
+            <div class="modes-list">
+                <button class="mode-sel btn-mode" data-mode="names">
+                    <i class="fas fa-map-signs"></i> Ubicar por Nombre
+                </button>
+                <button class="mode-sel btn-mode" data-mode="capitals">
+                    <i class="fas fa-city"></i> Ubicar Capital/Cabecera
+                </button>
+                <button id="btn-mode-flags" class="mode-sel btn-mode" data-mode="flags">
+                    <i class="fas fa-flag"></i> Identificar Bandera
+                </button>
+            </div>
+            <button id="back-to-regions" class="btn-text mt-4">Volver</button>
+        </div>
+    </div>
+
+    <div id="screen-game" class="screen hidden">
+        <div id="map"></div>
+    </div>
+
+    <div id="modal-pause" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h2>Juego Pausado</h2>
+            <div class="modal-actions">
+                <button id="resume-game" class="btn-primary">Continuar</button>
+                <button id="restart-game" class="btn-secondary">Reiniciar</button>
+                <button id="exit-game" class="btn-danger">Salir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-gameover" class="modal-overlay hidden">
+        <div class="modal-box result-box">
+            <h2 id="end-title">¡Fin del Juego!</h2>
+            <div class="score-display">
+                <div class="big-score" id="end-score">0/0</div>
+                <div class="time-score"><i class="far fa-clock"></i> <span id="end-time">0:00</span></div>
+            </div>
+            <div id="new-record-msg" class="record-badge hidden">¡Nuevo Récord! 🏆</div>
+            <button id="btn-end-home" class="btn-primary">Volver al Inicio</button>
+        </div>
+    </div>
+
+    <div id="modal-achievements" class="modal-overlay hidden">
+        <div class="modal-box wide-box">
+            <header class="modal-header">
+                <h2>Tus Logros</h2>
+                <button id="close-ach" class="btn-icon"><i class="fas fa-times"></i></button>
+            </header>
+            <div class="achievements-scroll">
+                <div id="achievements-grid" class="ach-grid">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
