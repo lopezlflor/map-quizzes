@@ -197,13 +197,24 @@ function normalize(str) {
 
 function getFeatureName(feature) {
   const p = feature.properties;
-  return (
-    p.nombre || p.name || p.NAM || p.nam ||      
-    p.NM_MUN || p.NM_MUNICIP || p.NM_MESO ||     
-    p.CDNAME || p.CFNAME || p.ERNAME ||          
-    p.admin_name || p.toponymName || "Desconocido"
-  );
+  
+  // 1. Intentar obtener un nombre crudo de las propiedades más comunes
+  let name = p.nombre || p.name || p.NAM || p.nam ||      
+             p.NM_MUN || p.NM_MUNICIP || p.NM_MESO ||     
+             p.CDNAME || p.CFNAME || p.ERNAME ||          
+             p.admin_name || p.toponymName || 
+             p.FNA || // Agregado para Tucumán (Argentina suele usar FNA)
+             "Desconocido";
+
+  // 2. Limpieza específica para Tucumán (o Argentina en general)
+  // Si el nombre es "Departamento Trancas", lo dejamos solo en "Trancas"
+  if (name && typeof name === 'string' && name.startsWith("Departamento ")) {
+      name = name.replace("Departamento ", "");
+  }
+
+  return name;
 }
+
 
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s =>
