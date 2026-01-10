@@ -1,7 +1,8 @@
 /* =====================================================
-   regionData
+   DATOS DE REGIONES (Capitales y Banderas)
    ===================================================== */
 const regionData = {
+  // --- PAÍSES ---
   ar: {
     "buenos aires": { cap: "La Plata", flag: "ar-buenosaires.png" },
     "caba": { cap: "Capital Federal", flag: "ar-caba.png" },
@@ -73,9 +74,10 @@ const regionData = {
     "northwest territories": { cap: "Yellowknife", flag: "ca-nwt.png" }
   },
 
-  // SUBDIVISIONES PROVINCIALES
+  // --- SUBDIVISIONES ---
+
   "ar-tucuman": {
-    "capital": { cap: "San Miguel de Tucumán" },
+    "capital": { cap: "S. M. de Tucumán" },
     "trancas": { cap: "Trancas" },
     "burruyacu": { cap: "Burruyacú" },
     "tafi viejo": { cap: "Tafí Viejo" },
@@ -93,19 +95,8 @@ const regionData = {
     "tafi del valle": { cap: "Tafí del Valle" },
     "yerba buena": { cap: "Yerba Buena" }
   },
-  
-  "br-santacatarina": {
-    // Mesorregiones de Santa Catarina (usualmente usadas en mapas simplificados)
-    "oeste catarinense": { cap: "Chapecó" },
-    "norte catarinense": { cap: "Joinville" },
-    "serrana": { cap: "Lages" },
-    "vale do itajai": { cap: "Blumenau" },
-    "grande florianopolis": { cap: "Florianópolis" },
-    "sul catarinense": { cap: "Criciúma" }
-  },
 
   "ca-bc": {
-    // Distritos Regionales de British Columbia
     "alberni-clayoquot": { cap: "Port Alberni" },
     "bulkley-nechako": { cap: "Burns Lake" },
     "capital": { cap: "Victoria" },
@@ -132,14 +123,25 @@ const regionData = {
     "squamish-lillooet": { cap: "Pemberton" },
     "strathcona": { cap: "Campbell River" },
     "sunshine coast": { cap: "Sechelt" },
-    "thompson-nicola": { cap: "Kamloops" }
+    "thompson-nicola": { cap: "Kamloops" },
+    "stikine": { cap: "-" } // Stikine suele ser una región sin administración directa
+  },
+  
+  // Santa Catarina tiene casi 300 municipios. 
+  // Si no definimos datos aquí, el juego funcionará igual en modo "Nombres" 
+  // usando el nombre que viene en el archivo GeoJSON.
+  "br-santacatarina": {
+    "florianopolis": { cap: "Florianópolis" },
+    "joinville": { cap: "Joinville" },
+    "blumenau": { cap: "Blumenau" },
+    "chapeco": { cap: "Chapecó" },
+    "criciuma": { cap: "Criciúma" }
   }
 };
 
-// =====================
-// CONFIGURACIÓN GLOBAL
-// =====================
-
+/* =====================
+   CONFIGURACIÓN GLOBAL
+   ===================================================== */
 const pastelColors = [
   "#ffd1dc", "#e0bbe4", "#d0f4de",
   "#cddafd", "#fff1c1", "#f6c1cc",
@@ -165,9 +167,9 @@ const game = {
   theme: localStorage.getItem("theme") || "light"
 };
 
-// =====================
-// UTILIDADES
-// =====================
+/* =====================
+   UTILIDADES
+   ===================================================== */
 
 function normalize(str) {
   return str
@@ -177,19 +179,26 @@ function normalize(str) {
     .trim() || "";
 }
 
+/**
+ * Busca inteligentemente el nombre de la región dentro de las propiedades del JSON.
+ * Soporta estándares de Argentina, Brasil, Canadá y globales.
+ */
+function getFeatureName(feature) {
+  const p = feature.properties;
+  return (
+    p.nombre || p.name || p.NAM || p.nam ||      // Genéricos / Argentina
+    p.NM_MUN || p.NM_MUNICIP || p.NM_MESO ||     // Brasil (IBGE)
+    p.CDNAME || p.CFNAME || p.ERNAME ||          // Canadá (StatCan)
+    p.admin_name || p.toponymName || "Desconocido"
+  );
+}
+
 function showScreen(id) {
-  // Manejo especial para el menú de regiones (categorías)
-  if (id === 'screen-regions') {
-    // Si entramos a 'screen-regions', ocultamos el botón de volver si venimos directo de aprender
-    // Pero en este caso, la lógica es igual.
-  }
-  
   document.querySelectorAll(".screen").forEach(s =>
     s.classList.add("hidden")
   );
   document.getElementById(id)?.classList.remove("hidden");
 
-  // 👉 HUD solo en el mapa
   if (id === "screen-game") {
     showHUD();
   } else {
@@ -235,16 +244,11 @@ function formatTime(totalSeconds) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-// =====================
-// INICIALIZACIÓN
-// =====================
-
+/* =====================
+   INICIALIZACIÓN Y EVENTOS
+   ===================================================== */
 document.body.className = `theme-${game.theme}`;
 hideHUD();
-
-// =====================
-// EVENTOS GENERALES
-// =====================
 
 document.addEventListener("click", e => {
   const btn = e.target.closest("button");
@@ -269,21 +273,13 @@ document.addEventListener("click", e => {
     startMap(btn.dataset.region);
   }
 
-  if (btn.id === "back-to-start") {
-    showScreen("screen-start");
-  }
+  if (btn.id === "back-to-start") showScreen("screen-start");
   
   if (btn.id === "back-from-regions") {
-    if (game.flow === "play") {
-      showScreen("screen-modes");
-    } else {
-      showScreen("screen-start");
-    }
+    game.flow === "play" ? showScreen("screen-modes") : showScreen("screen-start");
   }
 
-  if (btn.id === "btn-end-home") {
-    location.reload();
-  }
+  if (btn.id === "btn-end-home") location.reload();
 
   if (btn.id === "btn-theme") {
     game.theme = game.theme === "light" ? "dark" : "light";
@@ -310,9 +306,7 @@ document.addEventListener("click", e => {
     startMap(game.region);
   }
 
-  if (btn.id === "exit-game") {
-    location.reload();
-  }
+  if (btn.id === "exit-game") location.reload();
 
   if (btn.id === "show-achievements") {
     renderAchievements();
@@ -324,14 +318,12 @@ document.addEventListener("click", e => {
   }
 });
 
-// =====================
-// MAPA Y JUEGO
-// =====================
+/* =====================
+   MAPA Y LÓGICA
+   ===================================================== */
 
 async function startMap(region) {
   game.region = region;
-  
-  // Reseteo
   game.current = 0;
   game.correct = 0;
   game.paused = false;
@@ -352,72 +344,76 @@ async function startMap(region) {
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
   ).addTo(game.map);
 
-  // Mapeo de archivos según la región seleccionada
+  // 1. Determinar nombre de archivo correcto
   let filename = `${region}.json`;
   if (region === "ar-tucuman") filename = "departamentos-tucuman.json";
-  if (region === "br-santacatarina") filename = "br-sc.geojson.txt";
+  if (region === "br-santacatarina") filename = "br-sc.geojson.txt"; // Nota la extensión .txt
   if (region === "ca-bc") filename = "ca-bc.json";
 
-  const res = await fetch(`data/${filename}`);
-  const data = await res.json();
+  try {
+    const res = await fetch(`data/${filename}`);
+    if (!res.ok) throw new Error("Error cargando archivo: " + filename);
+    const data = await res.json();
 
-  // Barajar
-  game.questions = [...data.features].sort(() => Math.random() - 0.5);
+    // 2. Filtrar geometrías inválidas y barajar
+    game.questions = (data.features || [])
+      .filter(f => f.geometry) // Evitar features vacíos
+      .sort(() => Math.random() - 0.5);
 
-  game.geoLayer = L.geoJSON(data, {
-    style: () => ({
-      color: "#555",
-      weight: 1.3,
-      fillOpacity: 0.85,
-      fillColor: randomPastel()
-    }),
-    onEachFeature: (feature, layer) => {
-      layer.on("click", e => {
-        if (game.paused) return;
-
-        const rawName =
-          feature.properties.nombre ||
-          feature.properties.name ||
-          feature.properties.NAM ||
-          feature.properties.NM_MESO; // Para Brasil a veces usa NM_MESO
-
+    game.geoLayer = L.geoJSON(data, {
+      style: () => ({
+        color: "#555",
+        weight: 1.0,
+        fillOpacity: 0.8,
+        fillColor: randomPastel()
+      }),
+      onEachFeature: (feature, layer) => {
+        // Usamos la función inteligente para sacar el nombre
+        const rawName = getFeatureName(feature);
         const safeName = normalize(rawName);
 
-        if (game.flow === "learn") {
-          const info = regionData[game.region] ? regionData[game.region][safeName] : null;
-          let content = `<b>${rawName}</b>`;
-          
-          if (info) {
-             content += `<br>Capital/Cabecera: ${info.cap || "—"}`;
-             if(info.flag) {
-               content += `<br><img src="flags/${info.flag}" height="40" onerror="this.style.display='none'">`;
-             }
+        // Tooltip simple al pasar el mouse
+        layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
+
+        layer.on("click", e => {
+          if (game.paused) return;
+
+          if (game.flow === "learn") {
+            const info = regionData[game.region]?.[safeName] || {};
+            let content = `<b>${rawName}</b>`;
+            
+            if (info.cap) content += `<br>Capital/Cabecera: ${info.cap}`;
+            if (info.flag) content += `<br><img src="flags/${info.flag}" height="40" style="margin-top:5px">`;
+
+            L.popup()
+              .setLatLng(e.latlng)
+              .setContent(content)
+              .openOn(game.map);
+          } else {
+            checkAnswer(layer, rawName);
           }
+        });
+      }
+    }).addTo(game.map);
 
-          L.popup()
-            .setLatLng(e.latlng)
-            .setContent(content)
-            .openOn(game.map);
-        } else {
-          checkAnswer(layer, rawName);
-        }
-      });
+    // Centrar mapa
+    if (game.geoLayer.getLayers().length > 0) {
+      game.map.fitBounds(game.geoLayer.getBounds());
     }
-  }).addTo(game.map);
 
-  game.map.fitBounds(game.geoLayer.getBounds());
+    setupHUD();
 
-  setupHUD();
+    if (game.flow === "play") {
+      startTimer();
+      nextQuestion();
+    }
 
-  if (game.flow === "play") {
-    startTimer();
-    nextQuestion();
+  } catch (err) {
+    console.error(err);
+    alert("Hubo un error cargando el mapa. Revisa que el archivo exista en la carpeta /data.");
+    showScreen("screen-regions");
   }
 }
-
-// =====================
-// HUD
-// =====================
 
 function setupHUD() {
   const stats = document.querySelector(".hud-stats");
@@ -431,16 +427,12 @@ function setupHUD() {
   if (game.flow === "learn") {
     stats.style.display = "none";
     pause.innerHTML = '<i class="fas fa-home"></i>';
-    text.innerText = "Toca una zona para ver su información";
+    text.innerText = "Explora: toca una zona para ver info";
   } else {
     stats.style.display = "block";
     pause.innerHTML = '<i class="fas fa-pause"></i>';
   }
 }
-
-// =====================
-// JUEGO
-// =====================
 
 function nextQuestion() {
   if (game.current >= game.questions.length) {
@@ -449,71 +441,64 @@ function nextQuestion() {
   }
 
   const q = game.questions[game.current];
-  const raw =
-    q.properties.nombre ||
-    q.properties.name ||
-    q.properties.NAM ||
-    q.properties.NM_MESO;
+  const raw = getFeatureName(q);
+  const info = regionData[game.region]?.[normalize(raw)] || {};
 
-  const info =
-    regionData[game.region][normalize(raw)] || {};
-
+  // Si estamos en modo Banderas y NO hay bandera definida, saltamos a modo nombres
   if (game.mode === "flags") {
-    // Si no hay bandera definida (ej: provincias nuevas), mostramos nombre como fallback
     if (info.flag) {
-        document.getElementById("question-text").innerHTML =
-        `¿De dónde es esta bandera?<br>
-        <img src="flags/${info.flag}" height="40">`;
+      document.getElementById("question-text").innerHTML =
+        `¿De dónde es esta bandera?<br><img src="flags/${info.flag}" height="40">`;
     } else {
-        document.getElementById("question-text").innerText =
-        `¿Dónde está ${raw}? (Modo Bandera no disponible)`;
+      // Fallback si no hay imagen
+      document.getElementById("question-text").innerText = `¿Dónde está ${raw}?`;
     }
     return;
   }
 
   if (game.mode === "capitals") {
-    document.getElementById("question-text").innerText =
-      `¿Dónde está la capital/cabecera ${info.cap}?`;
+    // Si no hay capital definida, preguntamos por el nombre de la región
+    if (info.cap) {
+      document.getElementById("question-text").innerText = `¿Dónde está la capital ${info.cap}?`;
+    } else {
+      document.getElementById("question-text").innerText = `¿Dónde está ${raw}?`;
+    }
   } else {
-    document.getElementById("question-text").innerText =
-      `¿Dónde está ${raw}?`;
+    document.getElementById("question-text").innerText = `¿Dónde está ${raw}?`;
   }
 }
 
 function checkAnswer(layer, rawName) {
   const q = game.questions[game.current];
-  const target = normalize(
-      q.properties.nombre ||
-      q.properties.name ||
-      q.properties.NAM ||
-      q.properties.NM_MESO
-  );
+  const target = normalize(getFeatureName(q));
 
   if (normalize(rawName) === target) {
     game.correct++;
-    layer.setStyle({ fillColor: "#9ae6b4" });
+    layer.setStyle({ fillColor: "#48bb78", fillOpacity: 0.9 }); // Verde
   } else {
-    layer.setStyle({ fillColor: "#feb2b2" });
+    layer.setStyle({ fillColor: "#f56565", fillOpacity: 0.9 }); // Rojo
+    
+    // Opcional: Resaltar la correcta brevemente
+    game.geoLayer.eachLayer(l => {
+      if (normalize(getFeatureName(l.feature)) === target) {
+        l.setStyle({ color: "#2f855a", weight: 2 });
+        setTimeout(() => l.setStyle({ color: "#555", weight: 1 }), 1000);
+      }
+    });
   }
 
   game.current++;
 
-  document.getElementById("hud-progress").innerText =
-    `${game.current}/${game.questions.length}`;
+  document.getElementById("hud-progress").innerText = `${game.current}/${game.questions.length}`;
   document.getElementById("hud-correct").innerText = game.correct;
   document.getElementById("hud-percent").innerText =
-    Math.round((game.correct / game.current) * 100) + "%";
+    game.current > 0 ? Math.round((game.correct / game.current) * 100) + "%" : "0%";
 
-  setTimeout(nextQuestion, 600);
+  setTimeout(nextQuestion, 800);
 }
-
-// =====================
-// FIN DEL JUEGO Y LOGROS
-// =====================
 
 function showGameOver() {
   clearInterval(game.timer);
-  
   const total = game.questions.length;
   const score = game.correct;
   const timeStr = updateTimer();
@@ -522,16 +507,10 @@ function showGameOver() {
   document.getElementById("end-time").innerText = timeStr;
 
   const newRecordMsg = document.getElementById("new-record-msg");
-  
   if (score === total) {
     const isNew = saveScore(game.region, game.mode, game.seconds);
-    document.getElementById("end-title").innerText = "¡Completado!";
-    
-    if(isNew) {
-       newRecordMsg.classList.remove("hidden");
-    } else {
-       newRecordMsg.classList.add("hidden");
-    }
+    document.getElementById("end-title").innerText = "¡Completado Perfecto!";
+    newRecordMsg.classList.toggle("hidden", !isNew);
   } else {
     document.getElementById("end-title").innerText = "Fin del Juego";
     newRecordMsg.classList.add("hidden");
@@ -547,7 +526,7 @@ function saveScore(region, mode, seconds) {
   times.sort((a, b) => a - b);
   times = times.slice(0, 3);
   localStorage.setItem(key, JSON.stringify(times));
-  return (times[0] === seconds);
+  return times[0] === seconds;
 }
 
 function renderAchievements() {
@@ -565,16 +544,12 @@ function renderAchievements() {
   
   const modes = [
     { id: "names", name: "Nombres" },
-    { id: "capitals", name: "Capitales" },
+    { id: "capitals", name: "Caps/Cabeceras" },
     { id: "flags", name: "Banderas" }
   ];
 
   regions.forEach(reg => {
     modes.forEach(mod => {
-      // Las provincias nuevas no suelen tener modo banderas, lo saltamos si quieres limpiar la vista
-      // O lo dejamos para que aparezca "bloqueado" siempre.
-      // Opcional: if (mod.id === 'flags' && reg.id.includes('-')) return;
-
       const key = `mq_record_${reg.id}_${mod.id}`;
       const records = JSON.parse(localStorage.getItem(key)) || [];
       const isUnlocked = records.length > 0;
@@ -582,34 +557,24 @@ function renderAchievements() {
       const card = document.createElement("div");
       card.className = `ach-card ${isUnlocked ? "unlocked" : "locked"}`;
       
-      let timesHtml = "";
-      if (isUnlocked) {
-        timesHtml = `<div class="ach-times">
-          ${records.map((t, i) => 
-            `<div><span>#${i+1}</span> ${formatTime(t)}</div>`
-          ).join('')}
-        </div>`;
-      } else {
-        timesHtml = `<div class="ach-times">Sin completar</div>`;
-      }
+      let timesHtml = isUnlocked 
+        ? `<div class="ach-times">${records.map((t, i) => `<div><span>#${i+1}</span> ${formatTime(t)}</div>`).join('')}</div>`
+        : `<div class="ach-times">Sin completar</div>`;
 
-      // Intentamos usar la bandera si existe, o un icono generico
-      const flagSrc = `flags/${reg.id}.png`;
-      
+      // Intentar cargar bandera o icono genérico
+      const flagImg = `<img src="flags/${reg.id}.png" class="ach-flag" onerror="this.style.display='none'">`;
+
       card.innerHTML = `
         <div class="ach-header">
-          <img src="${flagSrc}" class="ach-flag" onerror="this.style.opacity=0">
+          ${flagImg}
           <div>
             <div class="ach-country">${reg.name}</div>
             <div class="ach-mode">${mod.name}</div>
           </div>
-          <div class="ach-icon">
-            <i class="fas ${isUnlocked ? 'fa-check-circle' : 'fa-lock'}"></i>
-          </div>
+          <div class="ach-icon"><i class="fas ${isUnlocked ? 'fa-check-circle' : 'fa-lock'}"></i></div>
         </div>
         ${timesHtml}
       `;
-      
       grid.appendChild(card);
     });
   });
