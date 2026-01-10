@@ -1,65 +1,205 @@
 :root {
-  --bg-light: #fff0f5;
-  --card-light: #ffffff;
-  --text-light: #5d5d5d;
-  --accent-light: #ffc0cb;
-  --border-light: #f3b6c2;
-
-  --bg-dark: #0b1020;
-  --card-dark: #161b2e;
-  --text-dark: #e0e0e0;
-  --accent-dark: #283593;
-  --border-dark: #3949ab;
+    --primary: #4a90e2;
+    --secondary: #2c3e50;
+    --accent: #f1c40f;
+    --success: #2ecc71;
+    --error: #e74c3c;
+    --bg: #f4f7f6;
 }
-
-* { box-sizing: border-box; }
 
 body {
-  margin: 0;
-  font-family: 'Quicksand', sans-serif;
-  height: 100vh;
-  overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.theme-light { background: var(--bg-light); color: var(--text-light); }
-.theme-dark { background: var(--bg-dark); color: var(--text-dark); }
+/* --- Menú Principal --- */
+.pantalla-completa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+}
 
+.grid-mapas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.card-mapa {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-mapa:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+}
+
+.medallas-container {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.medalla {
+    width: 25px;
+    height: 25px;
+    opacity: 0.2; /* Desactivada por defecto */
+    filter: grayscale(100%);
+}
+
+.medalla.ganada {
+    opacity: 1;
+    filter: none;
+    transform: scale(1.1);
+}
+
+/* --- Modal de Modos --- */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-contenido {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    min-width: 300px;
+}
+
+.botones-modo {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.btn-modo {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-modo:hover {
+    background: #357abd;
+}
+
+/* --- Juego --- */
 header {
-  height: 56px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  background: var(--card-light);
-  z-index: 1000;
+    background: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    z-index: 1001;
 }
 
-.theme-dark header { background: var(--card-dark); }
-
-main {
-  position: relative;
-  height: calc(100vh - 56px);
+.info-juego {
+    text-align: center;
+    flex-grow: 1;
 }
 
-.screen {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+#pregunta-actual {
+    margin: 0;
+    color: var(--secondary);
+    font-size: 1.2rem;
 }
 
+.pregunta-box span {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#map {
+    flex-grow: 1;
+    width: 100%;
+    background: #aadaff; /* Color agua */
+    z-index: 1;
+}
+
+/* Barra de Progreso */
+.progreso-container {
+    height: 10px;
+    background: #ddd;
+    width: 100%;
+}
+
+.barra {
+    height: 100%;
+    background: var(--success);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Feedback Visual */
+#feedback {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+    z-index: 2000;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.correcto { background-color: var(--success); }
+.incorrecto { background-color: var(--error); }
+
+/* Utilidades */
 .hidden { display: none !important; }
-
-/* Scrollable para menú regiones */
-.scrollable-screen {
-  overflow-y: auto;
-  justify-content: flex-start;
-  padding: 40px 0;
+.btn-volver {
+    background: none;
+    border: 2px solid var(--secondary);
+    padding: 5px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
 }
 
+/* Animaciones */
+@keyframes popIn {
+    from { transform: translateX(-50%) scale(0.5); opacity: 0; }
+    to { transform: translateX(-50%) scale(1); opacity: 1; }
+}
 /* MENÚ */
 .menu-grid {
   display: flex;
