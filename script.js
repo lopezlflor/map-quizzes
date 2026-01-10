@@ -127,7 +127,7 @@ const regionData = {
   },
   
   "br-santacatarina": {
-    "florianópolis: { cap: "Florianópolis" },
+      "florianópolis": { cap: "Florianópolis" },
       "criciúma": { cap: "Criciúma" },
       "tubarão": { cap: "Tubarão" },
       "araranguá": { cap: "Ararangúa" },
