@@ -209,8 +209,3 @@ button:active { transform: scale(0.95); }
 path.leaflet-interactive:focus {
     outline: none;
 }
-
-/* Opcional: Eliminar el parpadeo de selección en móviles */
-.leaflet-interactive {
-    -webkit-tap-highlight-color: transparent;
-}
