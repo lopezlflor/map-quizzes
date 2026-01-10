@@ -75,25 +75,25 @@ const regionData = {
   },
 
   // --- SUBDIVISIONES ---
-  "ar-tucuman": {
-    "capital": { cap: "S. M. de Tucumán" },
-    "trancas": { cap: "Trancas" },
-    "burruyacu": { cap: "Burruyacú" },
-    "tafi viejo": { cap: "Tafí Viejo" },
-    "cruz alta": { cap: "Banda del Río Salí" },
-    "lules": { cap: "Lules" },
-    "famailla": { cap: "Famaillá" },
-    "monteros": { cap: "Monteros" },
-    "chicligasta": { cap: "Concepción" },
-    "rio chico": { cap: "Aguilares" },
-    "juan bautista alberdi": { cap: "Juan Bautista Alberdi" },
-    "la cocha": { cap: "La Cocha" },
-    "graneros": { cap: "Graneros" },
-    "simoca": { cap: "Simoca" },
-    "leales": { cap: "Bella Vista" },
-    "tafi del valle": { cap: "Tafí del Valle" },
-    "yerba buena": { cap: "Yerba Buena" }
-  },
+"ar-tucuman": {
+  "01": { name: "Capital", cap: "San Miguel de Tucumán" },
+  "02": { name: "Trancas", cap: "Trancas" },
+  "03": { name: "Burruyacú", cap: "Burruyacú" },
+  "04": { name: "Tafí Viejo", cap: "Tafí Viejo" },
+  "05": { name: "Cruz Alta", cap: "Banda del Río Salí" },
+  "06": { name: "Lules", cap: "Lules" },
+  "07": { name: "Famaillá", cap: "Famaillá" },
+  "08": { name: "Monteros", cap: "Monteros" },
+  "09": { name: "Chicligasta", cap: "Concepción" },
+  "10": { name: "Río Chico", cap: "Aguilares" },
+  "11": { name: "Juan Bautista Alberdi", cap: "Juan Bautista Alberdi" },
+  "12": { name: "La Cocha", cap: "La Cocha" },
+  "13": { name: "Graneros", cap: "Graneros" },
+  "14": { name: "Simoca", cap: "Simoca" },
+  "15": { name: "Leales", cap: "Bella Vista" },
+  "16": { name: "Tafí del Valle", cap: "Tafí del Valle" },
+  "17": { name: "Yerba Buena", cap: "Yerba Buena" }
+};
 
   "ca-bc": {
     "alberni-clayoquot": { cap: "Port Alberni" },
@@ -126,33 +126,32 @@ const regionData = {
     "stikine": { cap: "-" }
   },
   
-  // CORRECCIÓN: Claves sin acentos (normalizadas) y comillas cerradas correctamente
-  "br-santacatarina": {
-    "florianopolis": { cap: "Florianópolis" }, 
-    "criciuma": { cap: "Criciúma" },
-    "tubarao": { cap: "Tubarão" },
-    "ararangua": { cap: "Araranguá" },
-    "blumenau": { cap: "Blumenau" },
-    "brusque": { cap: "Brusque" },
-    "itajai": { cap: "Itajaí" },
-    "rio do sul": { cap: "Rio do Sul" },
-    "ibirama - presidente getulio": { cap: "Presidente Getúlio" },
-    "ituporanga": { cap: "Ituporanga" },
-    "joinville": { cap: "Joinville" },
-    "sao bento do sul - rio negrinho": { cap: "São Bento do Sul" },
-    "mafra": { cap: "Mafra" },
-    "cacador": { cap: "Caçador" },
-    "chapeco": { cap: "Chapecó" },
-    "joacaba - herval d'oeste": { cap: "Campos Novos" },
-    "videira": { cap: "Videira" },
-    "concordia": { cap: "Concórdia" },
-    "xanxere": { cap: "Xanxerê" },
-    "sao miguel do oeste": { cap: "São Miguel do Oeste" },
-    "maravilha": { cap: "Maravilha" },
-    "sao lourenco do oeste": { cap: "São Lourenço do Oeste" },
-    "lages": { cap: "Lages" },
-    "curitibanos": { cap: "Curitibanos" }
-  }
+"br-santacatarina": {
+  "420001": { name: "Florianópolis", cap: "Florianópolis" },
+  "420002": { name: "Blumenau", cap: "Blumenau" },
+  "420003": { name: "Criciúma", cap: "Criciúma" },
+  "420004": { name: "Joinville", cap: "Joinville" },
+  "420005": { name: "Chapecó", cap: "Chapecó" },
+  "420006": { name: "Concórdia", cap: "Concórdia" },
+  "420007": { name: "Xanxerê", cap: "Xanxerê" },
+  "420008": { name: "São Miguel do Oeste", cap: "São Miguel do Oeste" },
+  "420009": { name: "Maravilha", cap: "Maravilha" },
+  "420010": { name: "São Lourenço do Oeste", cap: "São Lourenço do Oeste" },
+  "420011": { name: "Videira", cap: "Videira" },
+  "420012": { name: "Joaçaba - Herval d'Oeste", cap: "Joaçaba" },
+  "420013": { name: "Caçador", cap: "Caçador" },
+  "420014": { name: "Curitibanos", cap: "Curitibanos" },
+  "420015": { name: "Lages", cap: "Lages" },
+  "420016": { name: "Mafra", cap: "Mafra" },
+  "420017": { name: "São Bento do Sul - Rio Negrinho", cap: "São Bento do Sul" },
+  "420018": { name: "Itajaí", cap: "Itajaí" },
+  "420019": { name: "Brusque", cap: "Brusque" },
+  "420020": { name: "Ibirama - Presidente Getúlio", cap: "Presidente Getúlio" },
+  "420021": { name: "Rio do Sul", cap: "Rio do Sul" },
+  "420022": { name: "Ituporanga", cap: "Ituporanga" },
+  "420023": { name: "Tubarão", cap: "Tubarão" },
+  "420024": { name: "Araranguá", cap: "Araranguá" }
+   }
 };
 
 /* =====================
@@ -196,9 +195,15 @@ function normalize(str) {
     .trim() || "";
 }
 
-// CORRECCIÓN: Agregada propiedad 'FNA' para Argentina y lógica de reemplazo
+function getFeatureId(feature) {
+  const p = feature.properties || {};
+  return p.rgi || p.cod_depto || null;
+}
+
 function getFeatureName(feature) {
-  const p = feature.properties;
+  const p = feature.properties || {};
+  return p.nome_rgi || p.departamento || "Desconocido";
+}
   
   let name = p.nombre || p.name || p.NAM || p.nam ||      
              p.NM_MUN || p.NM_MUNICIP || p.NM_MESO ||     
@@ -290,6 +295,14 @@ document.addEventListener("click", e => {
 
     game.region = region;
     game.regionType = type;
+
+  function getRegionKey(region) {
+  const aliases = {
+    "br-sc": "br-santacatarina",
+    "br-santa-catarina": "br-santacatarina"
+  };
+  return aliases[region] || region;
+  }
 
     if (game.flow === "learn") {
       startMap(region);
@@ -410,25 +423,21 @@ async function startMap(region) {
 
         layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
-        layer.on("click", e => {
-          if (game.paused) return;
+        layer.on("click", () => {
+  const id = getFeatureId(feature);
+  const regionKey = getRegionKey(game.region);
+  const info = regionData[regionKey]?.[id];
 
-          if (game.flow === "learn") {
-            const info = regionData[game.region]?.[safeName] || {};
-            let content = `<b>${rawName}</b>`;
-            
-            if (info.cap) content += `<br>Capital/Cabecera: ${info.cap}`;
-            // Solo mostrar bandera si existe y no es "undefined"
-            if (info.flag) content += `<br><img src="flags/${info.flag}" height="40" style="margin-top:5px">`;
+  if (!info) {
+    layer.bindPopup("Sin datos").openPopup();
+    return;
+  }
 
-            L.popup()
-              .setLatLng(e.latlng)
-              .setContent(content)
-              .openOn(game.map);
-          } else {
-            checkAnswer(layer, rawName);
-          }
-        });
+  layer.bindPopup(`
+    <strong>${info.name}</strong><br>
+    Capital / Cabecera: ${info.cap}
+  `).openPopup();
+});
       }
     }).addTo(game.map);
 
