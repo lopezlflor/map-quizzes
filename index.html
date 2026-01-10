@@ -64,6 +64,73 @@
           <img src="flags/ar-tucuman.png" class="flag-btn" onerror="this.style.display='none'"> Tucumán
         </button>
         <button class="menu-btn reg-sel" data-region="br-santacatarina">
+          <img src="flags/br-santacatarina.png" class="flag-btn" onerror="this.style.display='none'"> Sta. Catarina
+        </button>
+        <button class="menu-btn reg-sel" data-region="ca-bc">
+          <img src="flags/ca-bc.png" class="flag-btn" onerror="this.style.display='none'"> British Col.
+        </button>
+      </div>
+    </div>
+
+    <button id="back-from-regions" class="btn-back">Volver</button>
+  </section>
+
+  <section id="screen-game" class="screen hidden">
+    <div id="map"></div>
+  </section>
+
+</main>
+
+<div id="fixed-hud">
+  <div>
+    <div id="question-text"></div>
+    <div class="hud-stats">
+      <span id="hud-progress">0/0</span> |
+      <span id="hud-correct">0</span> |
+      <span id="hud-percent">0%</span> |
+      <span id="timer-display">0:00</span>
+    </div>
+  </div>
+  <button id="btn-pause" class="icon-btn"></button>
+</div>
+
+<div id="modal-pause" class="modal hidden">
+  <div class="modal-content">
+    <h2>Pausa</h2>
+    <button id="resume-game" class="menu-btn">Continuar</button>
+    <button id="restart-game" class="menu-btn">Reiniciar</button>
+    <button id="exit-game" class="menu-btn danger">Salir</button>
+  </div>
+</div>
+
+<div id="modal-gameover" class="modal hidden">
+  <div class="modal-content">
+    <h2 id="end-title">¡Partida Terminada!</h2>
+    <p>Aciertos: <strong id="end-score"></strong></p>
+    <p>Tiempo total: <strong id="end-time"></strong></p>
+    <div id="new-record-msg" class="hidden" style="color: #d69e2e; font-weight: bold; margin-bottom: 10px;">
+      <i class="fas fa-star"></i> ¡Nuevo Récord!
+    </div>
+    <button id="btn-end-home" class="menu-btn primary">Volver al Menú</button>
+  </div>
+</div>
+
+<div id="modal-achievements" class="modal hidden">
+  <div class="modal-content wide-modal">
+    <h2>Logros</h2>
+    <div id="achievements-grid"></div>
+    <button id="close-ach" class="btn-back">Cerrar</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
+        <button class="menu-btn reg-sel" data-region="ar-tucuman">
+          <img src="flags/ar-tucuman.png" class="flag-btn" onerror="this.style.display='none'"> Tucumán
+        </button>
+        <button class="menu-btn reg-sel" data-region="br-santacatarina">
           <img src="flags/br-santacatarina.png" class="flag-btn" onerror="this.style.display='none'"> Santa Catarina
         </button>
         <button class="menu-btn reg-sel" data-region="ca-bc">
