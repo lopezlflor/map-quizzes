@@ -512,10 +512,28 @@ function nextQuestion() {
 
   const box = document.getElementById("question-text");
 
-  if (!info) {
-    box.innerText = "Pregunta no disponible";
-    return;
+  // SOLUCIÓN: Definimos 'displayName'.
+  // Intenta usar info.name (tu lista manual). 
+  // Si no existe, usa getFeatureName(q) (el nombre que viene dentro del mapa).
+  const displayName = info?.name || getFeatureName(q);
+
+  // Si info no existe (caso raro de desajuste de IDs), usamos datos genéricos
+  const cap = info?.cap || "Desconocido";
+  const flag = info?.flag || null;
+
+  if (game.mode === "capitals") {
+    box.innerText = `¿Dónde está la capital: ${cap}?`;
+  } else if (game.mode === "flags") {
+    if (flag) {
+      box.innerHTML = `<span style="vertical-align:middle; margin-right:8px;">Ubica:</span> <img src="flags/${flag}" class="hud-flag" alt="Bandera">`;
+    } else {
+      box.innerText = `¿Dónde está ${displayName}? (Sin bandera)`;
+    }
+  } else {
+    // Modo normal (Names) usa la variable inteligente displayName
+    box.innerText = `¿Dónde está ${displayName}?`;
   }
+}
 
   // --- LÓGICA CORREGIDA AQUÍ PARA MOSTRAR BANDERA ---
   if (game.mode === "capitals") {
