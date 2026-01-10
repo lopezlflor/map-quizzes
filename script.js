@@ -203,8 +203,6 @@ function getFeatureId(feature) {
 
   // --- CASO 1: TUCUMÁN ---
   if (reg === "ar-tucuman") {
-    // El JSON tiene la propiedad 'id' con valores como 472, 473, etc.
-    // Lo asignamos directamente.
     id = p.id;
   } 
   // --- CASO 2: SANTA CATARINA ---
@@ -217,7 +215,7 @@ function getFeatureId(feature) {
     return normalize(name);
   }
 
-  // Convertimos a string para asegurar comparación correcta con las claves de regionData
+  // Convertimos a string para asegurar comparación correcta
   return id ? id.toString() : null;
 }
 
@@ -506,19 +504,44 @@ function nextQuestion() {
   const id = getFeatureId(q);
   const regionKey = getRegionKey(game.region);
   const info = regionData[regionKey]?.[id];
+  const rawName = getFeatureName(q); // Nombre original del mapa para respaldo
 
   const box = document.getElementById("question-text");
 
   if (!info) {
+    // Si no hay datos, usamos el nombre crudo del mapa
+    if (game.mode === "names") {
+         box.innerText = `¿Dónde está ${rawName}?`;
+         return;
+    }
     box.innerText = "Pregunta no disponible";
     return;
   }
 
-  if (game.mode === "capitals") {
-    box.innerText = `¿Dónde está la capital/cabecera ${info.cap}?`;
-  } else {
-    box.innerText = `¿Dónde está ${info.name}?`;
+  // --- MODO BANDERAS ---
+  if (game.mode === "flags") {
+      if (info.flag) {
+          box.innerHTML = `¿De quién es esta bandera? <img src="flags/${info.flag}" height="30" style="vertical-align:middle; border:1px solid #ccc; margin-left:8px;">`;
+      } else {
+          // Si no hay bandera, preguntamos por el nombre
+          // Usamos info.name si existe, sino rawName
+          box.innerText = `¿Dónde está ${info.name || rawName}?`;
+      }
+      return;
   }
+
+  // --- MODO CAPITALES ---
+  if (game.mode === "capitals") {
+    if (info.cap) {
+        box.innerText = `¿Dónde está la capital/cabecera ${info.cap}?`;
+    } else {
+        box.innerText = `¿Dónde está ${info.name || rawName}?`;
+    }
+    return;
+  }
+
+  // --- MODO NOMBRES (Default) ---
+  box.innerText = `¿Dónde está ${info.name || rawName}?`;
 }
 
 function checkAnswer(layer) {
