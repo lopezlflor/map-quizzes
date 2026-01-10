@@ -57,7 +57,7 @@
 
   <section id="screen-game" class="screen hidden">
     <div id="map"></div>
-    </section>
+  </section>
 
 </main>
 
@@ -85,17 +85,20 @@
 
 <div id="modal-gameover" class="modal hidden">
   <div class="modal-content">
-    <h2>¡Partida Terminada!</h2>
+    <h2 id="end-title">¡Partida Terminada!</h2>
     <p>Aciertos: <strong id="end-score"></strong></p>
     <p>Tiempo total: <strong id="end-time"></strong></p>
+    <div id="new-record-msg" class="hidden" style="color: #d69e2e; font-weight: bold; margin-bottom: 10px;">
+      <i class="fas fa-star"></i> ¡Nuevo Récord!
+    </div>
     <button id="btn-end-home" class="menu-btn primary">Volver al Menú</button>
   </div>
 </div>
 
 <div id="modal-achievements" class="modal hidden">
-  <div class="modal-content">
+  <div class="modal-content wide-modal">
     <h2>Logros</h2>
-    <div id="achievements-list">(Próximamente)</div>
+    <div id="achievements-grid"></div>
     <button id="close-ach" class="btn-back">Cerrar</button>
   </div>
 </div>
