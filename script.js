@@ -158,7 +158,13 @@ function updateTimer() {
   const s = game.seconds % 60;
   const timeStr = `${m}:${s.toString().padStart(2, "0")}`;
   document.getElementById("timer-display").innerText = timeStr;
-  return timeStr; // Retorna string para usar en Game Over
+  return timeStr;
+}
+
+function formatTime(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
 // =====================
@@ -166,7 +172,7 @@ function updateTimer() {
 // =====================
 
 document.body.className = `theme-${game.theme}`;
-hideHUD(); // 🔹 oculto por defecto
+hideHUD();
 
 // =====================
 // EVENTOS GENERALES
@@ -199,8 +205,6 @@ document.addEventListener("click", e => {
     showScreen("screen-start");
   }
 
-  // "Menú" flotante eliminado.
-  // El botón "Volver al Menú" del Game Over usa este ID
   if (btn.id === "btn-end-home") {
     location.reload();
   }
@@ -213,7 +217,7 @@ document.addEventListener("click", e => {
 
   if (btn.id === "btn-pause") {
     if (game.flow === "learn") {
-      location.reload(); // En modo aprender, funciona como "Salir"
+      location.reload();
     } else {
       game.paused = true;
       document.getElementById("modal-pause").classList.remove("hidden");
@@ -226,7 +230,6 @@ document.addEventListener("click", e => {
   }
 
   if (btn.id === "restart-game") {
-    // NUEVA PARTIDA: Se cierra el modal y se reinicia el mapa
     document.getElementById("modal-pause").classList.add("hidden");
     startMap(game.region);
   }
@@ -236,6 +239,7 @@ document.addEventListener("click", e => {
   }
 
   if (btn.id === "show-achievements") {
+    renderAchievements();
     document.getElementById("modal-achievements").classList.remove("hidden");
   }
 
@@ -251,12 +255,12 @@ document.addEventListener("click", e => {
 async function startMap(region) {
   game.region = region;
   
-  // Reseteo total de variables
+  // Reseteo
   game.current = 0;
   game.correct = 0;
   game.paused = false;
   game.seconds = 0; 
-  clearInterval(game.timer); // Asegurarse de limpiar timer anterior
+  clearInterval(game.timer);
   updateTimer();
 
   showScreen("screen-game");
@@ -275,7 +279,7 @@ async function startMap(region) {
   const res = await fetch(`data/${region}.json`);
   const data = await res.json();
 
-  // Barajar preguntas para asegurar nueva partida
+  // Barajar
   game.questions = [...data.features].sort(() => Math.random() - 0.5);
 
   game.geoLayer = L.geoJSON(data, {
@@ -332,18 +336,17 @@ function setupHUD() {
   const pause = document.getElementById("btn-pause");
   const text = document.getElementById("question-text");
 
-  // Limpiar stats visuales al inicio
   document.getElementById("hud-progress").innerText = "0/0";
   document.getElementById("hud-correct").innerText = "0";
   document.getElementById("hud-percent").innerText = "0%";
 
   if (game.flow === "learn") {
     stats.style.display = "none";
-    pause.innerHTML = '<i class="fas fa-home"></i>'; // Icono Home
+    pause.innerHTML = '<i class="fas fa-home"></i>';
     text.innerText = "Toca una provincia para ver su información";
   } else {
     stats.style.display = "block";
-    pause.innerHTML = '<i class="fas fa-pause"></i>'; // Icono Pause
+    pause.innerHTML = '<i class="fas fa-pause"></i>';
   }
 }
 
@@ -352,7 +355,6 @@ function setupHUD() {
 // =====================
 
 function nextQuestion() {
-  // CONDICIÓN DE FIN DE JUEGO
   if (game.current >= game.questions.length) {
     showGameOver();
     return;
@@ -410,8 +412,12 @@ function checkAnswer(layer, rawName) {
   setTimeout(nextQuestion, 600);
 }
 
+// =====================
+// FIN DEL JUEGO Y LOGROS
+// =====================
+
 function showGameOver() {
-  clearInterval(game.timer); // Detener el reloj
+  clearInterval(game.timer);
   
   const total = game.questions.length;
   const score = game.correct;
@@ -419,6 +425,98 @@ function showGameOver() {
 
   document.getElementById("end-score").innerText = `${score} / ${total}`;
   document.getElementById("end-time").innerText = timeStr;
+
+  // Si acierta todas, guardamos el récord
+  const newRecordMsg = document.getElementById("new-record-msg");
+  
+  if (score === total) {
+    const isNew = saveScore(game.region, game.mode, game.seconds);
+    document.getElementById("end-title").innerText = "¡Completado!";
+    
+    if(isNew) {
+       newRecordMsg.classList.remove("hidden");
+    } else {
+       newRecordMsg.classList.add("hidden");
+    }
+  } else {
+    document.getElementById("end-title").innerText = "Fin del Juego";
+    newRecordMsg.classList.add("hidden");
+  }
   
   document.getElementById("modal-gameover").classList.remove("hidden");
+}
+
+function saveScore(region, mode, seconds) {
+  const key = `mq_record_${region}_${mode}`;
+  // Obtener array actual o iniciar vacío
+  let times = JSON.parse(localStorage.getItem(key)) || [];
+  
+  // Añadir nuevo tiempo
+  times.push(seconds);
+  
+  // Ordenar de menor a mayor
+  times.sort((a, b) => a - b);
+  
+  // Mantener solo los 3 mejores
+  times = times.slice(0, 3);
+  
+  localStorage.setItem(key, JSON.stringify(times));
+
+  // Devolver true si el tiempo actual es el mejor de la lista
+  return (times[0] === seconds);
+}
+
+function renderAchievements() {
+  const grid = document.getElementById("achievements-grid");
+  grid.innerHTML = "";
+
+  const regions = [
+    { id: "ar", name: "Argentina" },
+    { id: "br", name: "Brasil" },
+    { id: "ca", name: "Canadá" }
+  ];
+  
+  const modes = [
+    { id: "names", name: "Nombres" },
+    { id: "capitals", name: "Capitales" },
+    { id: "flags", name: "Banderas" }
+  ];
+
+  regions.forEach(reg => {
+    modes.forEach(mod => {
+      const key = `mq_record_${reg.id}_${mod.id}`;
+      const records = JSON.parse(localStorage.getItem(key)) || [];
+      const isUnlocked = records.length > 0;
+      
+      const card = document.createElement("div");
+      card.className = `ach-card ${isUnlocked ? "unlocked" : "locked"}`;
+      
+      let timesHtml = "";
+      if (isUnlocked) {
+        timesHtml = `<div class="ach-times">
+          ${records.map((t, i) => 
+            `<div><span>#${i+1}</span> ${formatTime(t)}</div>`
+          ).join('')}
+        </div>`;
+      } else {
+        timesHtml = `<div class="ach-times">Sin completar</div>`;
+      }
+
+      card.innerHTML = `
+        <div class="ach-header">
+          <img src="flags/${reg.id}.png" class="ach-flag">
+          <div>
+            <div class="ach-country">${reg.name}</div>
+            <div class="ach-mode">${mod.name}</div>
+          </div>
+          <div class="ach-icon">
+            <i class="fas ${isUnlocked ? 'fa-check-circle' : 'fa-lock'}"></i>
+          </div>
+        </div>
+        ${timesHtml}
+      `;
+      
+      grid.appendChild(card);
+    });
+  });
 }
