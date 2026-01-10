@@ -427,7 +427,7 @@ async function startMap(region) {
 
   layer.bindPopup(html).openPopup();
 });
-      
+      }
     }).addTo(game.map);
 
     if (game.geoLayer.getLayers().length > 0) {
