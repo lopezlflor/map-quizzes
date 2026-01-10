@@ -5,6 +5,7 @@
     --success: #2ecc71;
     --error: #e74c3c;
     --bg: #f4f7f6;
+    --card-bg: #ffffff;
 }
 
 body {
@@ -15,6 +16,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Evita scroll en el juego */
 }
 
 /* --- Menú Principal --- */
@@ -25,54 +27,57 @@ body {
     justify-content: center;
     height: 100%;
     text-align: center;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 3rem;
+    color: var(--secondary);
+    margin-bottom: 10px;
 }
 
 .grid-mapas {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 20px;
-    padding: 20px;
-    max-width: 800px;
+    max-width: 900px;
     width: 100%;
+    padding: 20px;
 }
 
 .card-mapa {
-    background: white;
+    background: var(--card-bg);
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
 }
 
 .card-mapa:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
 }
 
-.medallas-container {
-    display: flex;
-    gap: 5px;
-    margin-top: 10px;
+.card-mapa img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+    object-fit: contain;
 }
 
-.medalla {
-    width: 25px;
-    height: 25px;
-    opacity: 0.2; /* Desactivada por defecto */
-    filter: grayscale(100%);
+.card-mapa h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--secondary);
 }
 
-.medalla.ganada {
-    opacity: 1;
-    filter: none;
-    transform: scale(1.1);
-}
-
-/* --- Modal de Modos --- */
+/* --- Modal --- */
 .modal {
     position: fixed;
     top: 0;
@@ -91,33 +96,54 @@ body {
     padding: 30px;
     border-radius: 20px;
     text-align: center;
+    max-width: 400px;
+    width: 90%;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    min-width: 300px;
 }
 
 .botones-modo {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     margin: 20px 0;
 }
 
 .btn-modo {
-    background: var(--primary);
-    color: white;
-    border: none;
     padding: 15px;
+    border: 2px solid var(--primary);
+    background: white;
+    color: var(--primary);
     border-radius: 10px;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: background 0.3s;
+    font-weight: 600;
+    transition: all 0.2s;
 }
 
 .btn-modo:hover {
-    background: #357abd;
+    background: var(--primary);
+    color: white;
+}
+
+.btn-volver-modal {
+    background: none;
+    border: none;
+    color: #7f8c8d;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.hidden {
+    display: none !important;
 }
 
 /* --- Juego --- */
+#juego-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 header {
     background: white;
     padding: 10px 20px;
@@ -128,6 +154,16 @@ header {
     z-index: 1001;
 }
 
+.btn-volver {
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
 .info-juego {
     text-align: center;
     flex-grow: 1;
@@ -136,7 +172,7 @@ header {
 #pregunta-actual {
     margin: 0;
     color: var(--secondary);
-    font-size: 1.2rem;
+    font-size: 1.3rem;
 }
 
 .pregunta-box span {
@@ -144,6 +180,11 @@ header {
     color: #7f8c8d;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.puntaje-box {
+    font-weight: bold;
+    color: var(--primary);
 }
 
 #map {
@@ -155,8 +196,8 @@ header {
 
 /* Barra de Progreso */
 .progreso-container {
-    height: 10px;
-    background: #ddd;
+    height: 8px;
+    background: #e0e0e0;
     width: 100%;
 }
 
@@ -170,33 +211,33 @@ header {
 /* Feedback Visual */
 #feedback {
     position: fixed;
-    bottom: 30px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 10px 20px;
-    border-radius: 20px;
+    padding: 12px 30px;
+    border-radius: 30px;
     color: white;
     font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     z-index: 2000;
+    pointer-events: none;
     animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .correcto { background-color: var(--success); }
 .incorrecto { background-color: var(--error); }
 
-/* Utilidades */
-.hidden { display: none !important; }
-.btn-volver {
-    background: none;
-    border: 2px solid var(--secondary);
-    padding: 5px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-/* Animaciones */
 @keyframes popIn {
     from { transform: translateX(-50%) scale(0.5); opacity: 0; }
     to { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* Estilos de Leaflet personalizados */
+.leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+.leaflet-container {
+    background: #aadaff;
 }
