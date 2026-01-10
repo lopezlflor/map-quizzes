@@ -76,25 +76,23 @@ const regionData = {
 
   // --- SUBDIVISIONES ---
   "ar-tucuman": {
-    "CAPITAL": { cap: "S. M. de Tucumán" },
-    "ar-tucuman": {
-  "capital": { cap: "San Miguel de Tucumán" },
-  "trancas": { cap: "Trancas" },
-  "burruyacu": { cap: "Burruyacú" },
-  "tafi viejo": { cap: "Tafí Viejo" },
-  "cruz alta": { cap: "Banda del Río Salí" },
-  "lules": { cap: "Lules" },
-  "famailla": { cap: "Famaillá" },
-  "monteros": { cap: "Monteros" },
-  "chicligasta": { cap: "Concepción" },
-  "rio chico": { cap: "Aguilares" },
-  "juan bautista alberdi": { cap: "Juan Bautista Alberdi" },
-  "la cocha": { cap: "La Cocha" },
-  "graneros": { cap: "Graneros" },
-  "simoca": { cap: "Simoca" },
-  "leales": { cap: "Bella Vista" },
-  "tafi del valle": { cap: "Tafí del Valle" },
-  "yerba buena": { cap: "Yerba Buena" }
+    "capital": { cap: "S. M. de Tucumán" },
+    "trancas": { cap: "Trancas" },
+    "burruyacu": { cap: "Burruyacú" },
+    "tafi viejo": { cap: "Tafí Viejo" },
+    "cruz alta": { cap: "Banda del Río Salí" },
+    "lules": { cap: "Lules" },
+    "famailla": { cap: "Famaillá" },
+    "monteros": { cap: "Monteros" },
+    "chicligasta": { cap: "Concepción" },
+    "rio chico": { cap: "Aguilares" },
+    "juan bautista alberdi": { cap: "Juan Bautista Alberdi" },
+    "la cocha": { cap: "La Cocha" },
+    "graneros": { cap: "Graneros" },
+    "simoca": { cap: "Simoca" },
+    "leales": { cap: "Bella Vista" },
+    "tafi del valle": { cap: "Tafí del Valle" },
+    "yerba buena": { cap: "Yerba Buena" }
   },
 
   "ca-bc": {
@@ -128,8 +126,9 @@ const regionData = {
     "stikine": { cap: "-" }
   },
   
+  // CORRECCIÓN: Claves sin acentos (normalizadas) y comillas cerradas correctamente
   "br-santacatarina": {
-    "florianopolis": { cap: "Florianópolis" },
+    "florianopolis": { cap: "Florianópolis" }, 
     "criciuma": { cap: "Criciúma" },
     "tubarao": { cap: "Tubarão" },
     "ararangua": { cap: "Araranguá" },
@@ -144,7 +143,7 @@ const regionData = {
     "mafra": { cap: "Mafra" },
     "cacador": { cap: "Caçador" },
     "chapeco": { cap: "Chapecó" },
-    "joacaba - herval d'oeste": { cap: "Herval d'oeste" },
+    "joacaba - herval d'oeste": { cap: "Campos Novos" },
     "videira": { cap: "Videira" },
     "concordia": { cap: "Concórdia" },
     "xanxere": { cap: "Xanxerê" },
@@ -194,26 +193,26 @@ function normalize(str) {
     ?.toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/['’]/g, "")
-    .replace(/\s*-\s*/g, " - ")
-    .replace(/\s+/g, " ")
     .trim() || "";
 }
 
+// CORRECCIÓN: Agregada propiedad 'FNA' para Argentina y lógica de reemplazo
 function getFeatureName(feature) {
-  const p = feature.properties || {};
+  const p = feature.properties;
+  
+  let name = p.nombre || p.name || p.NAM || p.nam ||      
+             p.NM_MUN || p.NM_MUNICIP || p.NM_MESO ||     
+             p.CDNAME || p.CFNAME || p.ERNAME ||          
+             p.admin_name || p.toponymName || 
+             p.FNA || // Para GeoJSON de Argentina (INDEC)
+             "Desconocido";
 
-  return (
-    p.NM_RGI ||          // Santa Catarina (IBGE)
-    p.DEPARTAMEN ||      // Tucumán (IGN)
-    p.nombre ||
-    p.NAME ||
-    p.name ||
-    p.NAM ||
-    p.admin_name ||
-    p.FNA ||
-    "Desconocido"
-  );
+  // Limpieza: "Departamento Trancas" -> "Trancas"
+  if (name && typeof name === 'string' && name.startsWith("Departamento ")) {
+      name = name.replace("Departamento ", "");
+  }
+
+  return name;
 }
 
 function showScreen(id) {
@@ -295,14 +294,13 @@ document.addEventListener("click", e => {
     if (game.flow === "learn") {
       startMap(region);
     } else {
-      // MODIFICACIÓN 1: Tanto países como provincias van a selección de modo
-      // Pero si es subdivisión, ocultamos el botón de banderas
+      // Si es subdivisión, ocultamos el botón de banderas
       const btnFlags = document.getElementById("btn-mode-flags");
       
       if (type === "subdivision") {
-        btnFlags.classList.add("hidden"); // Ocultar banderas para provincias
+        btnFlags.classList.add("hidden"); 
       } else {
-        btnFlags.classList.remove("hidden"); // Mostrar para países
+        btnFlags.classList.remove("hidden"); 
       }
       
       showScreen("screen-modes");
@@ -412,21 +410,25 @@ async function startMap(region) {
 
         layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
-        layer.on("click", () => {
-  const rawName = getFeatureName(feature);
-  const safeName = normalize(rawName);
+        layer.on("click", e => {
+          if (game.paused) return;
 
-  const regionKey = getRegionKey(game.region);
-  const info = regionData[regionKey]?.[safeName];
+          if (game.flow === "learn") {
+            const info = regionData[game.region]?.[safeName] || {};
+            let content = `<b>${rawName}</b>`;
+            
+            if (info.cap) content += `<br>Capital/Cabecera: ${info.cap}`;
+            // Solo mostrar bandera si existe y no es "undefined"
+            if (info.flag) content += `<br><img src="flags/${info.flag}" height="40" style="margin-top:5px">`;
 
-  let html = `<strong>${rawName}</strong>`;
-
-  if (info?.cap) {
-    html += `<br>Capital / Cabecera: ${info.cap}`;
-  }
-
-  layer.bindPopup(html).openPopup();
-});
+            L.popup()
+              .setLatLng(e.latlng)
+              .setContent(content)
+              .openOn(game.map);
+          } else {
+            checkAnswer(layer, rawName);
+          }
+        });
       }
     }).addTo(game.map);
 
@@ -477,14 +479,12 @@ function nextQuestion() {
   const raw = getFeatureName(q);
   const info = regionData[game.region]?.[normalize(raw)] || {};
 
-  // MODIFICACIÓN 2: Lógica de preguntas adaptada
   const box = document.getElementById("question-text");
 
   if (game.mode === "flags") {
     if (info.flag) {
       box.innerHTML = `¿De quién es esta bandera? <img src="flags/${info.flag}" height="25" style="vertical-align:middle; margin-left:5px;">`;
     } else {
-      // Fallback si falta la bandera
       box.innerText = `¿Dónde está ${raw}?`;
     }
     return;
@@ -492,13 +492,11 @@ function nextQuestion() {
 
   if (game.mode === "capitals") {
     if (info.cap) {
-      // Funciona para provincias (Cabeceras) y Países (Capitales)
       box.innerText = `¿Dónde está la capital/cabecera ${info.cap}?`;
     } else {
       box.innerText = `¿Dónde está ${raw}?`;
     }
   } else {
-    // Modo Nombres
     box.innerText = `¿Dónde está ${raw}?`;
   }
 }
@@ -568,13 +566,12 @@ function renderAchievements() {
   const grid = document.getElementById("achievements-grid");
   grid.innerHTML = "";
 
-  // Listado de regiones y si son subdivisiones
   const regions = [
     { id: "ar", name: "Argentina", type: "country" },
     { id: "br", name: "Brasil", type: "country" },
     { id: "ca", name: "Canadá", type: "country" },
     { id: "ar-tucuman", name: "Tucumán", type: "subdivision" },
-    { id: "br-sc", name: "Sta. Catarina", type: "subdivision" },
+    { id: "br-santacatarina", name: "Sta. Catarina", type: "subdivision" },
     { id: "ca-bc", name: "British C.", type: "subdivision" }
   ];
   
@@ -585,10 +582,8 @@ function renderAchievements() {
   ];
 
   regions.forEach(reg => {
-    // MODIFICACIÓN 3: Filtrar modos para logros
     let activeModes = allModes;
     if (reg.type === "subdivision") {
-        // Quitamos "flags"
         activeModes = allModes.filter(m => m.id !== "flags");
     }
 
@@ -604,7 +599,6 @@ function renderAchievements() {
         ? `<div class="ach-times">${records.map((t, i) => `<div><span>#${i+1}</span> ${formatTime(t)}</div>`).join('')}</div>`
         : `<div class="ach-times">Sin completar</div>`;
 
-      // Intentamos cargar la bandera de la región para ilustrar el logro
       const flagImg = `<img src="flags/${reg.id}.png" class="ach-flag" onerror="this.style.display='none'">`;
 
       card.innerHTML = `
@@ -622,3 +616,4 @@ function renderAchievements() {
     });
   });
 }
+
