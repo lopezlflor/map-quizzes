@@ -74,8 +74,7 @@ const regionData = {
     "northwest territories": { name: "Northwest Territories", cap: "Yellowknife", flag: "ca-nwt.png" }
   },
 
-  // ... (El resto del objeto regionData con 'ar-tucuman', 'ca-bc', etc. queda igual porque ellos SÍ tenían 'name')
-  // Asegúrate de copiar el resto del código que ya tenías para las subdivisiones abajo de esto.
+  // --- SUBDIVISIONES ---
   "ar-tucuman": {
     "472": { name: "La Cocha", cap: "La Cocha" },
     "473": { name: "Graneros", cap: "Graneros" },
@@ -532,23 +531,6 @@ function nextQuestion() {
   } else {
     // Modo normal (Names) usa la variable inteligente displayName
     box.innerText = `¿Dónde está ${displayName}?`;
-  }
-}
-
-  // --- LÓGICA CORREGIDA AQUÍ PARA MOSTRAR BANDERA ---
-  if (game.mode === "capitals") {
-    box.innerText = `¿Dónde está la capital: ${info.cap}?`;
-  } else if (game.mode === "flags") {
-    // Si hay bandera, mostramos la imagen
-    if (info.flag) {
-      box.innerHTML = `<span style="vertical-align:middle; margin-right:8px;">Ubica:</span> <img src="flags/${info.flag}" class="hud-flag" alt="Bandera">`;
-    } else {
-      // Fallback si no hay imagen
-      box.innerText = `¿Dónde está ${info.name}? (Sin bandera)`;
-    }
-  } else {
-    // Modo normal (Names)
-    box.innerText = `¿Dónde está ${info.name}?`;
   }
 }
 
