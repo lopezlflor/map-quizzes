@@ -142,7 +142,7 @@ const regionData = {
     "mafra": { cap: "Mafra" },
     "cacador": { cap: "Caçador" },
     "chapeco": { cap: "Chapecó" },
-    "joacaba - herval d'oeste": { cap: "Campos Novos" }, // Verifica si la capital es correcta aquí
+    "joacaba - herval d'oeste": { cap: "Herval d'oeste" },
     "videira": { cap: "Videira" },
     "concordia": { cap: "Concórdia" },
     "xanxere": { cap: "Xanxerê" },
