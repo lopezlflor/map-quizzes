@@ -567,7 +567,7 @@ function renderAchievements() {
     { id: "br", name: "Brasil", type: "country" },
     { id: "ca", name: "Canadá", type: "country" },
     { id: "ar-tucuman", name: "Tucumán", type: "subdivision" },
-    { id: "br-santacatarina", name: "Sta. Catarina", type: "subdivision" },
+    { id: "br-sc", name: "Sta. Catarina", type: "subdivision" },
     { id: "ca-bc", name: "British C.", type: "subdivision" }
   ];
   
