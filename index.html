@@ -1,129 +1,62 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Map Quizzes</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Mapas Geográficos</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
+<body>
 
-<body class="theme-light">
-
-<header>
-  <button id="btn-theme" class="icon-btn"><i class="fas fa-sun"></i></button>
-  <h1>Map Quizzes</h1>
-  <button id="show-achievements" class="icon-btn"><i class="fas fa-trophy"></i></button>
-</header>
-
-<main>
-
-  <section id="screen-start" class="screen">
-    <h2>¿Qué quieres hacer?</h2>
-    <div class="menu-grid big-menu">
-      <button id="go-learn" class="menu-btn primary">Aprender</button>
-      <button id="go-play" class="menu-btn primary">Jugar</button>
-    </div>
-  </section>
-
-  <section id="screen-regions" class="screen hidden scrollable-screen">
-    <h2>Selecciona mapa</h2>
-    
-    <div class="region-category">
-      <h3>Países (Elige modo después)</h3>
-      <div class="menu-grid">
-        <button class="menu-btn reg-sel" data-type="country" data-region="ar">
-          <img src="flags/ar.png" class="flag-btn"> Argentina
-        </button>
-        <button class="menu-btn reg-sel" data-type="country" data-region="br">
-          <img src="flags/br.png" class="flag-btn"> Brasil
-        </button>
-        <button class="menu-btn reg-sel" data-type="country" data-region="ca">
-          <img src="flags/ca.png" class="flag-btn"> Canadá
-        </button>
-      </div>
+    <div id="menu-principal" class="pantalla-completa">
+        <h1>🌎 GeoQuiz</h1>
+        <p>Selecciona un mapa para comenzar:</p>
+        <div class="grid-mapas">
+            </div>
     </div>
 
-    <div class="region-category">
-      <h3>Provincias (Juego directo)</h3>
-      <div class="menu-grid">
-        <button class="menu-btn reg-sel" data-type="province" data-region="ar-tucuman">
-          <img src="flags/ar-tucuman.png" class="flag-btn" onerror="this.style.display='none'"> Tucumán
-        </button>
-        <button class="menu-btn reg-sel" data-type="province" data-region="br-santacatarina">
-          <img src="flags/br-santacatarina.png" class="flag-btn" onerror="this.style.display='none'"> Sta. Catarina
-        </button>
-        <button class="menu-btn reg-sel" data-type="province" data-region="ca-bc">
-          <img src="flags/ca-bc.png" class="flag-btn" onerror="this.style.display='none'"> British Col.
-        </button>
-      </div>
+    <div id="modal-modo" class="modal hidden">
+        <div class="modal-contenido">
+            <h2 id="titulo-modal-modo">¿Cómo quieres jugar?</h2>
+            <div class="botones-modo">
+                <button class="btn-modo" onclick="seleccionarModo('nombres')">
+                    🗺️ Por Nombres
+                </button>
+                <button class="btn-modo" onclick="seleccionarModo('cabeceras')">
+                    gl📍 Por Cabeceras
+                </button>
+            </div>
+            <button class="btn-volver" onclick="volverAlMenu()">Cancelar</button>
+        </div>
     </div>
 
-    <button id="back-to-start" class="btn-back">Volver</button>
-  </section>
+    <div id="juego-container" class="hidden">
+        <header>
+            <button class="btn-volver" onclick="volverAlMenu()">⬅ Menú</button>
+            <div class="info-juego">
+                <div class="pregunta-box">
+                    <span id="texto-instruccion">Encuentra:</span>
+                    <h2 id="pregunta-actual">Cargando...</h2>
+                </div>
+                <div class="puntaje-box">
+                    <span id="aciertos">0</span> / <span id="total-regiones">0</span>
+                </div>
+            </div>
+        </header>
 
-  <section id="screen-modes" class="screen hidden">
-    <h2>Selecciona modo</h2>
-    <div class="menu-grid big-menu">
-      <button class="menu-btn mode-sel" data-mode="names">Nombres</button>
-      <button class="menu-btn mode-sel" data-mode="capitals">Capitales</button>
-      <button class="menu-btn mode-sel" data-mode="flags">Banderas</button>
+        <div id="map"></div>
+
+        <div class="progreso-container">
+            <div id="barra-progreso" class="barra"></div>
+        </div>
+
+        <div id="feedback" class="hidden"></div>
     </div>
-    <button id="back-to-regions" class="btn-back">Volver</button>
-  </section>
 
-  <section id="screen-game" class="screen hidden">
-    <div id="map"></div>
-  </section>
-
-</main>
-
-<div id="fixed-hud" style="display: none;">
-  <div>
-    <div id="question-text"></div>
-    <div class="hud-stats">
-      <span id="hud-progress">0/0</span> |
-      <span id="hud-correct">0</span> |
-      <span id="hud-percent">0%</span> |
-      <span id="timer-display">0:00</span>
-    </div>
-  </div>
-  <button id="btn-pause" class="icon-btn"></button>
-</div>
-
-<div id="modal-pause" class="modal hidden">
-  <div class="modal-content">
-    <h2>Pausa</h2>
-    <button id="resume-game" class="menu-btn">Continuar</button>
-    <button id="restart-game" class="menu-btn">Reiniciar</button>
-    <button id="exit-game" class="menu-btn danger">Salir</button>
-  </div>
-</div>
-
-<div id="modal-gameover" class="modal hidden">
-  <div class="modal-content">
-    <h2 id="end-title">¡Partida Terminada!</h2>
-    <p>Aciertos: <strong id="end-score"></strong></p>
-    <p>Tiempo total: <strong id="end-time"></strong></p>
-    <div id="new-record-msg" class="hidden" style="color: #d69e2e; font-weight: bold; margin-bottom: 10px;">
-      <i class="fas fa-star"></i> ¡Nuevo Récord!
-    </div>
-    <button id="btn-end-home" class="menu-btn primary">Volver al Menú</button>
-  </div>
-</div>
-
-<div id="modal-achievements" class="modal hidden">
-  <div class="modal-content wide-modal">
-    <h2>Logros</h2>
-    <div id="achievements-grid"></div>
-    <button id="close-ach" class="btn-back">Cerrar</button>
-  </div>
-</div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
