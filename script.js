@@ -1,5 +1,5 @@
 /* =====================================================
-   DATOS DE REGIONES (Capitales y Banderas)
+   DATOS DE REGIONES
    ===================================================== */
 const regionData = {
   // --- PAÍSES ---
@@ -75,7 +75,6 @@ const regionData = {
   },
 
   // --- SUBDIVISIONES ---
-
   "ar-tucuman": {
     "capital": { cap: "S. M. de Tucumán" },
     "trancas": { cap: "Trancas" },
@@ -124,12 +123,9 @@ const regionData = {
     "strathcona": { cap: "Campbell River" },
     "sunshine coast": { cap: "Sechelt" },
     "thompson-nicola": { cap: "Kamloops" },
-    "stikine": { cap: "-" } // Stikine suele ser una región sin administración directa
+    "stikine": { cap: "-" }
   },
   
-  // Santa Catarina tiene casi 300 municipios. 
-  // Si no definimos datos aquí, el juego funcionará igual en modo "Nombres" 
-  // usando el nombre que viene en el archivo GeoJSON.
   "br-santacatarina": {
     "florianopolis": { cap: "Florianópolis" },
     "joinville": { cap: "Joinville" },
@@ -179,16 +175,12 @@ function normalize(str) {
     .trim() || "";
 }
 
-/**
- * Busca inteligentemente el nombre de la región dentro de las propiedades del JSON.
- * Soporta estándares de Argentina, Brasil, Canadá y globales.
- */
 function getFeatureName(feature) {
   const p = feature.properties;
   return (
-    p.nombre || p.name || p.NAM || p.nam ||      // Genéricos / Argentina
-    p.NM_MUN || p.NM_MUNICIP || p.NM_MESO ||     // Brasil (IBGE)
-    p.CDNAME || p.CFNAME || p.ERNAME ||          // Canadá (StatCan)
+    p.nombre || p.name || p.NAM || p.nam ||      
+    p.NM_MUN || p.NM_MUNICIP || p.NM_MESO ||     
+    p.CDNAME || p.CFNAME || p.ERNAME ||          
     p.admin_name || p.toponymName || "Desconocido"
   );
 }
@@ -199,6 +191,7 @@ function showScreen(id) {
   );
   document.getElementById(id)?.classList.remove("hidden");
 
+  // CORRECCIÓN 2: Controlar visibilidad HUD
   if (id === "screen-game") {
     showHUD();
   } else {
@@ -254,30 +247,44 @@ document.addEventListener("click", e => {
   const btn = e.target.closest("button");
   if (!btn) return;
 
-  if (btn.id === "go-learn") {
-    game.flow = "learn";
+  // NUEVO FLUJO: Botón "Aprender" o "Jugar" van a selección de región
+  if (btn.id === "go-learn" || btn.id === "go-play") {
+    game.flow = btn.id === "go-learn" ? "learn" : "play";
     showScreen("screen-regions");
   }
 
-  if (btn.id === "go-play") {
-    game.flow = "play";
-    showScreen("screen-modes");
+  // SELECCIÓN DE REGIÓN
+  if (btn.classList.contains("reg-sel")) {
+    const region = btn.dataset.region;
+    const type = btn.dataset.type;
+
+    game.region = region;
+
+    if (game.flow === "learn") {
+      // En modo aprender, vamos directo al mapa siempre
+      startMap(region);
+    } else {
+      // En modo Jugar:
+      if (type === "country") {
+        // Si es país -> Elegir modo
+        showScreen("screen-modes");
+      } else {
+        // Si es provincia -> Modo nombres directo
+        game.mode = "names";
+        startMap(region);
+      }
+    }
   }
 
+  // SELECCIÓN DE MODO (Solo países)
   if (btn.classList.contains("mode-sel")) {
     game.mode = btn.dataset.mode;
-    showScreen("screen-regions");
+    startMap(game.region);
   }
 
-  if (btn.classList.contains("reg-sel")) {
-    startMap(btn.dataset.region);
-  }
-
+  // BOTONES DE RETORNO
   if (btn.id === "back-to-start") showScreen("screen-start");
-  
-  if (btn.id === "back-from-regions") {
-    game.flow === "play" ? showScreen("screen-modes") : showScreen("screen-start");
-  }
+  if (btn.id === "back-to-regions") showScreen("screen-regions");
 
   if (btn.id === "btn-end-home") location.reload();
 
@@ -323,7 +330,6 @@ document.addEventListener("click", e => {
    ===================================================== */
 
 async function startMap(region) {
-  game.region = region;
   game.current = 0;
   game.correct = 0;
   game.paused = false;
@@ -344,10 +350,10 @@ async function startMap(region) {
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
   ).addTo(game.map);
 
-  // 1. Determinar nombre de archivo correcto
+  // CORRECCIÓN 3: Nombres de archivo exactos
   let filename = `${region}.json`;
   if (region === "ar-tucuman") filename = "departamentos-tucuman.json";
-  if (region === "br-santacatarina") filename = "br-sc.geojson.txt"; // Nota la extensión .txt
+  if (region === "br-santacatarina") filename = "br-sc.geojson.txt";
   if (region === "ca-bc") filename = "ca-bc.json";
 
   try {
@@ -355,9 +361,9 @@ async function startMap(region) {
     if (!res.ok) throw new Error("Error cargando archivo: " + filename);
     const data = await res.json();
 
-    // 2. Filtrar geometrías inválidas y barajar
+    // Filtros y barajar
     game.questions = (data.features || [])
-      .filter(f => f.geometry) // Evitar features vacíos
+      .filter(f => f.geometry) 
       .sort(() => Math.random() - 0.5);
 
     game.geoLayer = L.geoJSON(data, {
@@ -368,11 +374,9 @@ async function startMap(region) {
         fillColor: randomPastel()
       }),
       onEachFeature: (feature, layer) => {
-        // Usamos la función inteligente para sacar el nombre
         const rawName = getFeatureName(feature);
         const safeName = normalize(rawName);
 
-        // Tooltip simple al pasar el mouse
         layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
         layer.on("click", e => {
@@ -396,7 +400,6 @@ async function startMap(region) {
       }
     }).addTo(game.map);
 
-    // Centrar mapa
     if (game.geoLayer.getLayers().length > 0) {
       game.map.fitBounds(game.geoLayer.getBounds());
     }
@@ -410,7 +413,7 @@ async function startMap(region) {
 
   } catch (err) {
     console.error(err);
-    alert("Hubo un error cargando el mapa. Revisa que el archivo exista en la carpeta /data.");
+    alert(`No se pudo cargar el mapa de ${region}. Verifica que el archivo '${filename}' esté en la carpeta /data.`);
     showScreen("screen-regions");
   }
 }
@@ -444,20 +447,17 @@ function nextQuestion() {
   const raw = getFeatureName(q);
   const info = regionData[game.region]?.[normalize(raw)] || {};
 
-  // Si estamos en modo Banderas y NO hay bandera definida, saltamos a modo nombres
   if (game.mode === "flags") {
     if (info.flag) {
       document.getElementById("question-text").innerHTML =
         `¿De dónde es esta bandera?<br><img src="flags/${info.flag}" height="40">`;
     } else {
-      // Fallback si no hay imagen
       document.getElementById("question-text").innerText = `¿Dónde está ${raw}?`;
     }
     return;
   }
 
   if (game.mode === "capitals") {
-    // Si no hay capital definida, preguntamos por el nombre de la región
     if (info.cap) {
       document.getElementById("question-text").innerText = `¿Dónde está la capital ${info.cap}?`;
     } else {
@@ -474,11 +474,10 @@ function checkAnswer(layer, rawName) {
 
   if (normalize(rawName) === target) {
     game.correct++;
-    layer.setStyle({ fillColor: "#48bb78", fillOpacity: 0.9 }); // Verde
+    layer.setStyle({ fillColor: "#48bb78", fillOpacity: 0.9 });
   } else {
-    layer.setStyle({ fillColor: "#f56565", fillOpacity: 0.9 }); // Rojo
+    layer.setStyle({ fillColor: "#f56565", fillOpacity: 0.9 });
     
-    // Opcional: Resaltar la correcta brevemente
     game.geoLayer.eachLayer(l => {
       if (normalize(getFeatureName(l.feature)) === target) {
         l.setStyle({ color: "#2f855a", weight: 2 });
@@ -561,7 +560,6 @@ function renderAchievements() {
         ? `<div class="ach-times">${records.map((t, i) => `<div><span>#${i+1}</span> ${formatTime(t)}</div>`).join('')}</div>`
         : `<div class="ach-times">Sin completar</div>`;
 
-      // Intentar cargar bandera o icono genérico
       const flagImg = `<img src="flags/${reg.id}.png" class="ach-flag" onerror="this.style.display='none'">`;
 
       card.innerHTML = `
