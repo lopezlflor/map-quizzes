@@ -164,6 +164,13 @@ main {
   border-radius: 16px;
   width: 85%;
   max-width: 340px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content.wide-modal {
+  max-width: 500px;
+  width: 95%;
 }
 
 .theme-dark .modal-content {
@@ -172,4 +179,87 @@ main {
 
 .theme-dark .leaflet-layer {
   filter: invert(100%) hue-rotate(180deg);
+}
+
+/* LOGROS - NUEVO ESTILO */
+#achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.ach-card {
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 0.85rem;
+  background: rgba(255,255,255,0.5);
+  transition: transform 0.2s;
+}
+
+.theme-dark .ach-card {
+  border-color: var(--border-dark);
+  background: rgba(0,0,0,0.2);
+}
+
+.ach-card.locked {
+  opacity: 0.6;
+  filter: grayscale(1);
+}
+
+.ach-card.unlocked {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, rgba(255,215,0,0.1), transparent);
+}
+
+.ach-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding-bottom: 6px;
+}
+
+.ach-flag {
+  width: 24px;
+  height: auto;
+  border-radius: 3px;
+}
+
+.ach-country {
+  font-weight: bold;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.ach-mode {
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.ach-icon {
+  margin-left: auto;
+  font-size: 1rem;
+}
+
+.unlocked .ach-icon {
+  color: #ffc107; /* Dorado */
+}
+
+.ach-times {
+  font-size: 0.75rem;
+  color: inherit;
+}
+
+.ach-times div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ach-times span {
+  font-weight: bold;
+  opacity: 0.6;
 }
