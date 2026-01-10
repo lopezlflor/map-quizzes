@@ -76,23 +76,23 @@ const regionData = {
 
   // --- SUBDIVISIONES ---
   "ar-tucuman": {
-    "01": { name: "Capital", cap: "San Miguel de Tucumán" },
-    "02": { name: "Trancas", cap: "Trancas" },
-    "03": { name: "Burruyacú", cap: "Burruyacú" },
-    "04": { name: "Tafí Viejo", cap: "Tafí Viejo" },
-    "05": { name: "Cruz Alta", cap: "Banda del Río Salí" },
-    "06": { name: "Lules", cap: "Lules" },
-    "07": { name: "Famaillá", cap: "Famaillá" },
-    "08": { name: "Monteros", cap: "Monteros" },
-    "09": { name: "Chicligasta", cap: "Concepción" },
-    "10": { name: "Río Chico", cap: "Aguilares" },
-    "11": { name: "Juan Bautista Alberdi", cap: "Juan Bautista Alberdi" },
-    "12": { name: "La Cocha", cap: "La Cocha" },
-    "13": { name: "Graneros", cap: "Graneros" },
-    "14": { name: "Simoca", cap: "Simoca" },
-    "15": { name: "Leales", cap: "Bella Vista" },
-    "16": { name: "Tafí del Valle", cap: "Tafí del Valle" },
-    "17": { name: "Yerba Buena", cap: "Yerba Buena" }
+    "472": { name: "La Cocha", cap: "La Cocha" },
+    "473": { name: "Graneros", cap: "Graneros" },
+    "474": { name: "Juan Bautista Alberdi", cap: "Juan Bautista Alberdi" },
+    "475": { name: "Río Chico", cap: "Aguilares" },
+    "476": { name: "Chicligasta", cap: "Concepción" },
+    "477": { name: "Simoca", cap: "Simoca" },
+    "478": { name: "Lules", cap: "Lules" },
+    "479": { name: "Monteros", cap: "Monteros" },
+    "480": { name: "Leales", cap: "Bella Vista" },
+    "481": { name: "Famaillá", cap: "Famaillá" },
+    "482": { name: "Capital", cap: "San Miguel de Tucumán" },
+    "483": { name: "Cruz Alta", cap: "Banda del Río Salí" },
+    "484": { name: "Yerba Buena", cap: "Yerba Buena" },
+    "485": { name: "Burruyacú", cap: "Burruyacú" },
+    "486": { name: "Tafí Viejo", cap: "Tafí Viejo" },
+    "487": { name: "Tafí del Valle", cap: "Tafí del Valle" },
+    "490": { name: "Trancas", cap: "Trancas" }
   },
 
   "ca-bc": {
@@ -197,7 +197,28 @@ function normalize(str) {
 
 function getFeatureId(feature) {
   const p = feature.properties || {};
-  return p.rgi || p.cod_depto || null;
+  const reg = game.region;
+
+  let id;
+
+  // --- CASO 1: TUCUMÁN ---
+  if (reg === "ar-tucuman") {
+    // El JSON tiene la propiedad 'id' con valores como 472, 473, etc.
+    // Lo asignamos directamente.
+    id = p.id;
+  } 
+  // --- CASO 2: SANTA CATARINA ---
+  else if (reg === "br-santacatarina" || reg === "br-sc") {
+    id = p.CD_MUN || p.cod_ibge || p.id || p.rgi;
+  } 
+  // --- CASO 3: PAÍSES Y OTROS (Uso por Nombre) ---
+  else {
+    let name = p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || "Desconocido";
+    return normalize(name);
+  }
+
+  // Convertimos a string para asegurar comparación correcta con las claves de regionData
+  return id ? id.toString() : null;
 }
 
 function getFeatureName(feature) {
@@ -609,4 +630,3 @@ function renderAchievements() {
     });
   });
 }
-
