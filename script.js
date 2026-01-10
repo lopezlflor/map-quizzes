@@ -77,22 +77,24 @@ const regionData = {
   // --- SUBDIVISIONES ---
   "ar-tucuman": {
     "CAPITAL": { cap: "S. M. de Tucumán" },
-    "TRANCAS": { cap: "Trancas" },
-    "BURRUYACU": { cap: "Burruyacú" },
-    "TAFI VIEJO": { cap: "Tafí Viejo" },
-    "CRUZ ALTA": { cap: "Banda del Río Salí" },
-    "LULES": { cap: "Lules" },
-    "FAMAILLA": { cap: "Famaillá" },
-    "MONTEROS": { cap: "Monteros" },
-    "CHICLIGASTA": { cap: "Concepción" },
-    "RIO CHICO": { cap: "Aguilares" },
-    "JUAN BAUTISTA ALBERDI": { cap: "Juan Bautista Alberdi" },
-    "LA COCHA": { cap: "La Cocha" },
-    "GRANEROS": { cap: "Graneros" },
-    "SIMOCA": { cap: "Simoca" },
-    "LEALES": { cap: "Bella Vista" },
-    "TAFI DEL VALLE": { cap: "Tafí del Valle" },
-    "YERBA BUENA": { cap: "Yerba Buena" }
+    "ar-tucuman": {
+  "capital": { cap: "San Miguel de Tucumán" },
+  "trancas": { cap: "Trancas" },
+  "burruyacu": { cap: "Burruyacú" },
+  "tafi viejo": { cap: "Tafí Viejo" },
+  "cruz alta": { cap: "Banda del Río Salí" },
+  "lules": { cap: "Lules" },
+  "famailla": { cap: "Famaillá" },
+  "monteros": { cap: "Monteros" },
+  "chicligasta": { cap: "Concepción" },
+  "rio chico": { cap: "Aguilares" },
+  "juan bautista alberdi": { cap: "Juan Bautista Alberdi" },
+  "la cocha": { cap: "La Cocha" },
+  "graneros": { cap: "Graneros" },
+  "simoca": { cap: "Simoca" },
+  "leales": { cap: "Bella Vista" },
+  "tafi del valle": { cap: "Tafí del Valle" },
+  "yerba buena": { cap: "Yerba Buena" }
   },
 
   "ca-bc": {
@@ -191,23 +193,24 @@ function normalize(str) {
   return str
     ?.toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // quita acentos
-    .replace(/['’]/g, "")           // quita apóstrofes
-    .replace(/\s*-\s*/g, " - ")     // normaliza guiones
-    .replace(/\s+/g, " ")           // colapsa espacios
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/['’]/g, "")
+    .replace(/\s*-\s*/g, " - ")
+    .replace(/\s+/g, " ")
     .trim() || "";
 }
 
 function getFeatureName(feature) {
-  const p = feature.properties;
+  const p = feature.properties || {};
 
   return (
-    p.NM_RGI ||
+    p.NM_RGI ||          // Santa Catarina (IBGE)
+    p.DEPARTAMEN ||      // Tucumán (IGN)
     p.nombre ||
+    p.NAME ||
     p.name ||
     p.NAM ||
-    p.nam ||
-    p.NM_MUN ||
+    p.admin_name ||
     p.FNA ||
     "Desconocido"
   );
@@ -409,26 +412,22 @@ async function startMap(region) {
 
         layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
-        layer.on("click", e => {
-          if (game.paused) return;
+        layer.on("click", () => {
+  const rawName = getFeatureName(feature);
+  const safeName = normalize(rawName);
 
-          if (game.flow === "learn") {
-            const info = regionData[game.region]?.[safeName] || {};
-            let content = `<b>${rawName}</b>`;
-            
-            if (info.cap) content += `<br>Capital/Cabecera: ${info.cap}`;
-            // Solo mostrar bandera si existe y no es "undefined"
-            if (info.flag) content += `<br><img src="flags/${info.flag}" height="40" style="margin-top:5px">`;
+  const regionKey = getRegionKey(game.region);
+  const info = regionData[regionKey]?.[safeName];
 
-            L.popup()
-              .setLatLng(e.latlng)
-              .setContent(content)
-              .openOn(game.map);
-          } else {
-            checkAnswer(layer, rawName);
-          }
-        });
-      }
+  let html = `<strong>${rawName}</strong>`;
+
+  if (info?.cap) {
+    html += `<br>Capital / Cabecera: ${info.cap}`;
+  }
+
+  layer.bindPopup(html).openPopup();
+});
+      
     }).addTo(game.map);
 
     if (game.geoLayer.getLayers().length > 0) {
