@@ -68,9 +68,71 @@ const regionData = {
     "prince edward island": { cap: "Charlottetown", flag: "ca-pei.png" },
     "quebec": { cap: "Quebec City", flag: "ca-quebec.png" },
     "saskatchewan": { cap: "Regina", flag: "ca-saskatchewan.png" },
-    "yukon": { cap: "whitehorse", flag: "ca-yukon.png" },
-    "nunavut": { cap: "iqaluit", flag: "ca-nunavut.png" },
-    "northwest territories": { cap: "yellowknife", flag: "ca-nwt.png" }
+    "yukon": { cap: "Whitehorse", flag: "ca-yukon.png" },
+    "nunavut": { cap: "Iqaluit", flag: "ca-nunavut.png" },
+    "northwest territories": { cap: "Yellowknife", flag: "ca-nwt.png" }
+  },
+
+  // SUBDIVISIONES PROVINCIALES
+  "ar-tucuman": {
+    "capital": { cap: "San Miguel de Tucumán" },
+    "trancas": { cap: "Trancas" },
+    "burruyacu": { cap: "Burruyacú" },
+    "tafi viejo": { cap: "Tafí Viejo" },
+    "cruz alta": { cap: "Banda del Río Salí" },
+    "lules": { cap: "Lules" },
+    "famailla": { cap: "Famaillá" },
+    "monteros": { cap: "Monteros" },
+    "chicligasta": { cap: "Concepción" },
+    "rio chico": { cap: "Aguilares" },
+    "juan bautista alberdi": { cap: "Juan Bautista Alberdi" },
+    "la cocha": { cap: "La Cocha" },
+    "graneros": { cap: "Graneros" },
+    "simoca": { cap: "Simoca" },
+    "leales": { cap: "Bella Vista" },
+    "tafi del valle": { cap: "Tafí del Valle" },
+    "yerba buena": { cap: "Yerba Buena" }
+  },
+  
+  "br-santacatarina": {
+    // Mesorregiones de Santa Catarina (usualmente usadas en mapas simplificados)
+    "oeste catarinense": { cap: "Chapecó" },
+    "norte catarinense": { cap: "Joinville" },
+    "serrana": { cap: "Lages" },
+    "vale do itajai": { cap: "Blumenau" },
+    "grande florianopolis": { cap: "Florianópolis" },
+    "sul catarinense": { cap: "Criciúma" }
+  },
+
+  "ca-bc": {
+    // Distritos Regionales de British Columbia
+    "alberni-clayoquot": { cap: "Port Alberni" },
+    "bulkley-nechako": { cap: "Burns Lake" },
+    "capital": { cap: "Victoria" },
+    "cariboo": { cap: "Williams Lake" },
+    "central coast": { cap: "Bella Coola" },
+    "central kootenay": { cap: "Nelson" },
+    "central okanagan": { cap: "Kelowna" },
+    "columbia-shuswap": { cap: "Salmon Arm" },
+    "comox valley": { cap: "Courtenay" },
+    "cowichan valley": { cap: "Duncan" },
+    "east kootenay": { cap: "Cranbrook" },
+    "fraser valley": { cap: "Chilliwack" },
+    "fraser-fort george": { cap: "Prince George" },
+    "metro vancouver": { cap: "Burnaby" },
+    "kitimat-stikine": { cap: "Terrace" },
+    "kootenay boundary": { cap: "Trail" },
+    "mount waddington": { cap: "Port McNeill" },
+    "nanaimo": { cap: "Nanaimo" },
+    "north okanagan": { cap: "Coldstream" },
+    "northern rockies": { cap: "Fort Nelson" },
+    "okanagan-similkameen": { cap: "Penticton" },
+    "peace river": { cap: "Dawson Creek" },
+    "qathet": { cap: "Powell River" },
+    "squamish-lillooet": { cap: "Pemberton" },
+    "strathcona": { cap: "Campbell River" },
+    "sunshine coast": { cap: "Sechelt" },
+    "thompson-nicola": { cap: "Kamloops" }
   }
 };
 
@@ -116,6 +178,12 @@ function normalize(str) {
 }
 
 function showScreen(id) {
+  // Manejo especial para el menú de regiones (categorías)
+  if (id === 'screen-regions') {
+    // Si entramos a 'screen-regions', ocultamos el botón de volver si venimos directo de aprender
+    // Pero en este caso, la lógica es igual.
+  }
+  
   document.querySelectorAll(".screen").forEach(s =>
     s.classList.add("hidden")
   );
@@ -201,8 +269,16 @@ document.addEventListener("click", e => {
     startMap(btn.dataset.region);
   }
 
-  if (btn.id === "back-to-start" || btn.id === "back-from-regions") {
+  if (btn.id === "back-to-start") {
     showScreen("screen-start");
+  }
+  
+  if (btn.id === "back-from-regions") {
+    if (game.flow === "play") {
+      showScreen("screen-modes");
+    } else {
+      showScreen("screen-start");
+    }
   }
 
   if (btn.id === "btn-end-home") {
@@ -276,7 +352,13 @@ async function startMap(region) {
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
   ).addTo(game.map);
 
-  const res = await fetch(`data/${region}.json`);
+  // Mapeo de archivos según la región seleccionada
+  let filename = `${region}.json`;
+  if (region === "ar-tucuman") filename = "departamentos-tucuman.json";
+  if (region === "br-santacatarina") filename = "br-sc.geojson.txt";
+  if (region === "ca-bc") filename = "ca-bc.json";
+
+  const res = await fetch(`data/${filename}`);
   const data = await res.json();
 
   // Barajar
@@ -296,19 +378,25 @@ async function startMap(region) {
         const rawName =
           feature.properties.nombre ||
           feature.properties.name ||
-          feature.properties.NAM;
+          feature.properties.NAM ||
+          feature.properties.NM_MESO; // Para Brasil a veces usa NM_MESO
+
+        const safeName = normalize(rawName);
 
         if (game.flow === "learn") {
-          const info =
-            regionData[game.region][normalize(rawName)] || {};
+          const info = regionData[game.region] ? regionData[game.region][safeName] : null;
+          let content = `<b>${rawName}</b>`;
+          
+          if (info) {
+             content += `<br>Capital/Cabecera: ${info.cap || "—"}`;
+             if(info.flag) {
+               content += `<br><img src="flags/${info.flag}" height="40" onerror="this.style.display='none'">`;
+             }
+          }
 
           L.popup()
             .setLatLng(e.latlng)
-            .setContent(`
-              <b>${rawName}</b><br>
-              Capital: ${info.cap || "—"}<br>
-              <img src="flags/${info.flag || ""}" height="40">
-            `)
+            .setContent(content)
             .openOn(game.map);
         } else {
           checkAnswer(layer, rawName);
@@ -343,7 +431,7 @@ function setupHUD() {
   if (game.flow === "learn") {
     stats.style.display = "none";
     pause.innerHTML = '<i class="fas fa-home"></i>';
-    text.innerText = "Toca una provincia para ver su información";
+    text.innerText = "Toca una zona para ver su información";
   } else {
     stats.style.display = "block";
     pause.innerHTML = '<i class="fas fa-pause"></i>';
@@ -364,21 +452,28 @@ function nextQuestion() {
   const raw =
     q.properties.nombre ||
     q.properties.name ||
-    q.properties.NAM;
+    q.properties.NAM ||
+    q.properties.NM_MESO;
 
   const info =
     regionData[game.region][normalize(raw)] || {};
 
   if (game.mode === "flags") {
-    document.getElementById("question-text").innerHTML =
-      `¿De dónde es esta bandera?<br>
-       <img src="flags/${info.flag}" height="40">`;
+    // Si no hay bandera definida (ej: provincias nuevas), mostramos nombre como fallback
+    if (info.flag) {
+        document.getElementById("question-text").innerHTML =
+        `¿De dónde es esta bandera?<br>
+        <img src="flags/${info.flag}" height="40">`;
+    } else {
+        document.getElementById("question-text").innerText =
+        `¿Dónde está ${raw}? (Modo Bandera no disponible)`;
+    }
     return;
   }
 
   if (game.mode === "capitals") {
     document.getElementById("question-text").innerText =
-      `¿Dónde está la capital ${info.cap}?`;
+      `¿Dónde está la capital/cabecera ${info.cap}?`;
   } else {
     document.getElementById("question-text").innerText =
       `¿Dónde está ${raw}?`;
@@ -387,12 +482,12 @@ function nextQuestion() {
 
 function checkAnswer(layer, rawName) {
   const q = game.questions[game.current];
-  const target =
-    normalize(
+  const target = normalize(
       q.properties.nombre ||
       q.properties.name ||
-      q.properties.NAM
-    );
+      q.properties.NAM ||
+      q.properties.NM_MESO
+  );
 
   if (normalize(rawName) === target) {
     game.correct++;
@@ -426,7 +521,6 @@ function showGameOver() {
   document.getElementById("end-score").innerText = `${score} / ${total}`;
   document.getElementById("end-time").innerText = timeStr;
 
-  // Si acierta todas, guardamos el récord
   const newRecordMsg = document.getElementById("new-record-msg");
   
   if (score === total) {
@@ -448,21 +542,11 @@ function showGameOver() {
 
 function saveScore(region, mode, seconds) {
   const key = `mq_record_${region}_${mode}`;
-  // Obtener array actual o iniciar vacío
   let times = JSON.parse(localStorage.getItem(key)) || [];
-  
-  // Añadir nuevo tiempo
   times.push(seconds);
-  
-  // Ordenar de menor a mayor
   times.sort((a, b) => a - b);
-  
-  // Mantener solo los 3 mejores
   times = times.slice(0, 3);
-  
   localStorage.setItem(key, JSON.stringify(times));
-
-  // Devolver true si el tiempo actual es el mejor de la lista
   return (times[0] === seconds);
 }
 
@@ -473,7 +557,10 @@ function renderAchievements() {
   const regions = [
     { id: "ar", name: "Argentina" },
     { id: "br", name: "Brasil" },
-    { id: "ca", name: "Canadá" }
+    { id: "ca", name: "Canadá" },
+    { id: "ar-tucuman", name: "Tucumán" },
+    { id: "br-santacatarina", name: "Sta. Catarina" },
+    { id: "ca-bc", name: "British C." }
   ];
   
   const modes = [
@@ -484,6 +571,10 @@ function renderAchievements() {
 
   regions.forEach(reg => {
     modes.forEach(mod => {
+      // Las provincias nuevas no suelen tener modo banderas, lo saltamos si quieres limpiar la vista
+      // O lo dejamos para que aparezca "bloqueado" siempre.
+      // Opcional: if (mod.id === 'flags' && reg.id.includes('-')) return;
+
       const key = `mq_record_${reg.id}_${mod.id}`;
       const records = JSON.parse(localStorage.getItem(key)) || [];
       const isUnlocked = records.length > 0;
@@ -502,9 +593,12 @@ function renderAchievements() {
         timesHtml = `<div class="ach-times">Sin completar</div>`;
       }
 
+      // Intentamos usar la bandera si existe, o un icono generico
+      const flagSrc = `flags/${reg.id}.png`;
+      
       card.innerHTML = `
         <div class="ach-header">
-          <img src="flags/${reg.id}.png" class="ach-flag">
+          <img src="${flagSrc}" class="ach-flag" onerror="this.style.opacity=0">
           <div>
             <div class="ach-country">${reg.name}</div>
             <div class="ach-mode">${mod.name}</div>
