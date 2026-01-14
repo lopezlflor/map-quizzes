@@ -468,7 +468,8 @@ async function startMap(region) {
       onEachFeature: (feature, layer) => {
         const rawName = getFeatureName(feature);
         
-        layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
+        // --- TOOLTIP ELIMINADO PARA LIMPIEZA VISUAL ---
+        // layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
         layer.on("click", () => {
           if (game.flow === "play") {
