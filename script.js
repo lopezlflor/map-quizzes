@@ -130,7 +130,6 @@ const regionData = {
   },
   
   "br-santacatarina": {
-    // AHORA USAMOS NOMBRES NORMALIZADOS EN LUGAR DE CÓDIGOS NUMÉRICOS
     "florianopolis": { name: "Florianópolis", cap: "Florianópolis" },
     "blumenau": { name: "Blumenau", cap: "Blumenau" },
     "criciuma": { name: "Criciúma", cap: "Criciúma" },
@@ -142,7 +141,7 @@ const regionData = {
     "maravilha": { name: "Maravilha", cap: "Maravilha" },
     "sao lourenco do oeste": { name: "São Lourenço do Oeste", cap: "São Lourenço do Oeste" },
     "videira": { name: "Videira", cap: "Videira" },
-    "joacaba": { name: "Joaçaba", cap: "Joaçaba" }, // Simplificado para coincidir
+    "joacaba": { name: "Joaçaba", cap: "Joaçaba" },
     "cacador": { name: "Caçador", cap: "Caçador" },
     "curitibanos": { name: "Curitibanos", cap: "Curitibanos" },
     "lages": { name: "Lages", cap: "Lages" },
@@ -150,7 +149,7 @@ const regionData = {
     "sao bento do sul": { name: "São Bento do Sul", cap: "São Bento do Sul" },
     "itajai": { name: "Itajaí", cap: "Itajaí" },
     "brusque": { name: "Brusque", cap: "Brusque" },
-    "ibirama": { name: "Ibirama", cap: "Presidente Getúlio" }, // Mapeo aproximado
+    "ibirama": { name: "Ibirama", cap: "Presidente Getúlio" },
     "rio do sul": { name: "Rio do Sul", cap: "Rio do Sul" },
     "ituporanga": { name: "Ituporanga", cap: "Ituporanga" },
     "tubarao": { name: "Tubarão", cap: "Tubarão" },
@@ -227,8 +226,8 @@ function getFeatureId(feature) {
   }
   // --- CASO 3: PAÍSES Y SANTA CATARINA (Uso por Nombre) ---
   else {
-    // Agregado NM_MUN para mapas de Brasil (IBGE)
-    let name = p.NM_MUN || p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || "Desconocido";
+    // CORRECCIÓN AQUÍ: Agregamos 'nome_rgi' y 'NM_MUNICIP' para que coincida con lo que el mapa tiene.
+    let name = p.NM_MUN || p.NM_MUNICIP || p.nome_rgi || p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || "Desconocido";
     return normalize(name);
   }
 
@@ -242,7 +241,6 @@ function getFeatureName(feature) {
       return p.CDNAME || p.RD_NAME || p.name || "Desconocido";
   }
   
-  // Agregado NM_MUN para Brasil
   return (
     p.NM_MUN ||
     p.nome_rgi ||
@@ -459,6 +457,7 @@ async function startMap(region) {
         const rawName = getFeatureName(feature);
         
         // --- TOOLTIP ELIMINADO ---
+        // layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
         layer.on("click", () => {
           if (game.flow === "play") {
