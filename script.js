@@ -110,9 +110,8 @@ const regionData = {
     "fraser valley": { name: "Fraser Valley", cap: "Chilliwack" },
     "fraser-fort george": { name: "Fraser-Fort George", cap: "Prince George" },
     
-    // NOTA: El mapa a veces usa "Greater Vancouver", mapeamos ambos
+    // Mapeos para BC
     "metro vancouver": { name: "Metro Vancouver", cap: "Burnaby" },
-    
     "kitimat-stikine": { name: "Kitimat-Stikine", cap: "Terrace" },
     "kootenay boundary": { name: "Kootenay Boundary", cap: "Trail" },
     "mount waddington": { name: "Mount Waddington", cap: "Port McNeill" },
@@ -121,45 +120,41 @@ const regionData = {
     "northern rockies": { name: "Northern Rockies", cap: "Fort Nelson" },
     "okanagan-similkameen": { name: "Okanagan-Similkameen", cap: "Penticton" },
     "peace river": { name: "Peace River", cap: "Dawson Creek" },
-    
-    // NOTA: El mapa usa "Powell River", mapeamos a "qathet"
     "qathet": { name: "qathet", cap: "Powell River" },
-    
     "squamish-lillooet": { name: "Squamish-Lillooet", cap: "Pemberton" },
     "strathcona": { name: "Strathcona", cap: "Campbell River" },
     "sunshine coast": { name: "Sunshine Coast", cap: "Sechelt" },
     "thompson-nicola": { name: "Thompson-Nicola", cap: "Kamloops" },
     "stikine": { name: "Stikine", cap: "-" },
-    
-    // AGREGADO: Skeena-Queen Charlotte (a veces llamado North Coast)
     "skeena-queen charlotte": { name: "Skeena-Queen Charlotte", cap: "Prince Rupert" }
   },
   
   "br-santacatarina": {
-    "420001": { name: "Florianópolis", cap: "Florianópolis" },
-    "420002": { name: "Blumenau", cap: "Blumenau" },
-    "420003": { name: "Criciúma", cap: "Criciúma" },
-    "420004": { name: "Joinville", cap: "Joinville" },
-    "420005": { name: "Chapecó", cap: "Chapecó" },
-    "420006": { name: "Concórdia", cap: "Concórdia" },
-    "420007": { name: "Xanxerê", cap: "Xanxerê" },
-    "420008": { name: "São Miguel do Oeste", cap: "São Miguel do Oeste" },
-    "420009": { name: "Maravilha", cap: "Maravilha" },
-    "420010": { name: "São Lourenço do Oeste", cap: "São Lourenço do Oeste" },
-    "420011": { name: "Videira", cap: "Videira" },
-    "420012": { name: "Joaçaba - Herval d'Oeste", cap: "Joaçaba" },
-    "420013": { name: "Caçador", cap: "Caçador" },
-    "420014": { name: "Curitibanos", cap: "Curitibanos" },
-    "420015": { name: "Lages", cap: "Lages" },
-    "420016": { name: "Mafra", cap: "Mafra" },
-    "420017": { name: "São Bento do Sul - Rio Negrinho", cap: "São Bento do Sul" },
-    "420018": { name: "Itajaí", cap: "Itajaí" },
-    "420019": { name: "Brusque", cap: "Brusque" },
-    "420020": { name: "Ibirama - Presidente Getúlio", cap: "Presidente Getúlio" },
-    "420021": { name: "Rio do Sul", cap: "Rio do Sul" },
-    "420022": { name: "Ituporanga", cap: "Ituporanga" },
-    "420023": { name: "Tubarão", cap: "Tubarão" },
-    "420024": { name: "Araranguá", cap: "Araranguá" }
+    // AHORA USAMOS NOMBRES NORMALIZADOS EN LUGAR DE CÓDIGOS NUMÉRICOS
+    "florianopolis": { name: "Florianópolis", cap: "Florianópolis" },
+    "blumenau": { name: "Blumenau", cap: "Blumenau" },
+    "criciuma": { name: "Criciúma", cap: "Criciúma" },
+    "joinville": { name: "Joinville", cap: "Joinville" },
+    "chapeco": { name: "Chapecó", cap: "Chapecó" },
+    "concordia": { name: "Concórdia", cap: "Concórdia" },
+    "xanxere": { name: "Xanxerê", cap: "Xanxerê" },
+    "sao miguel do oeste": { name: "São Miguel do Oeste", cap: "São Miguel do Oeste" },
+    "maravilha": { name: "Maravilha", cap: "Maravilha" },
+    "sao lourenco do oeste": { name: "São Lourenço do Oeste", cap: "São Lourenço do Oeste" },
+    "videira": { name: "Videira", cap: "Videira" },
+    "joacaba": { name: "Joaçaba", cap: "Joaçaba" }, // Simplificado para coincidir
+    "cacador": { name: "Caçador", cap: "Caçador" },
+    "curitibanos": { name: "Curitibanos", cap: "Curitibanos" },
+    "lages": { name: "Lages", cap: "Lages" },
+    "mafra": { name: "Mafra", cap: "Mafra" },
+    "sao bento do sul": { name: "São Bento do Sul", cap: "São Bento do Sul" },
+    "itajai": { name: "Itajaí", cap: "Itajaí" },
+    "brusque": { name: "Brusque", cap: "Brusque" },
+    "ibirama": { name: "Ibirama", cap: "Presidente Getúlio" }, // Mapeo aproximado
+    "rio do sul": { name: "Rio do Sul", cap: "Rio do Sul" },
+    "ituporanga": { name: "Ituporanga", cap: "Ituporanga" },
+    "tubarao": { name: "Tubarão", cap: "Tubarão" },
+    "ararangua": { name: "Araranguá", cap: "Araranguá" }
   }
 };
 
@@ -215,33 +210,25 @@ function getFeatureId(feature) {
   if (reg === "ar-tucuman") {
     id = p.id;
   } 
-  // --- CASO 2: SANTA CATARINA ---
-  else if (reg === "br-santacatarina" || reg === "br-sc") {
-    id = p.CD_MUN || p.cod_ibge || p.id || p.rgi;
-  } 
-  // --- CASO 3: BRITISH COLUMBIA (Canadá) ---
+  // --- CASO 2: BRITISH COLUMBIA (Canadá) ---
   else if (reg === "ca-bc") {
-    // Busca primero CDNAME, si no existe usa name
     let raw = p.CDNAME || p.RD_NAME || p.ADMIN_AREA_NAME || p.name || "Desconocido";
-    
-    // Normalizamos primero (ej: "Greater Vancouver" -> "greater vancouver")
     id = normalize(raw);
 
-    // Mapeo de Nombres Antiguos (Mapa) -> Nombres Modernos (Tus Datos)
     const aliases = {
-      "greater vancouver": "metro vancouver", // El mapa dice "Greater", tus datos "Metro"
-      "powell river": "qathet"                // El mapa dice "Powell River", tus datos "qathet"
+      "greater vancouver": "metro vancouver",
+      "powell river": "qathet"
     };
 
     if (aliases[id]) {
       return aliases[id];
     }
-    
     return id;
   }
-  // --- CASO 4: PAÍSES Y OTROS (Genérico) ---
+  // --- CASO 3: PAÍSES Y SANTA CATARINA (Uso por Nombre) ---
   else {
-    let name = p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || "Desconocido";
+    // Agregado NM_MUN para mapas de Brasil (IBGE)
+    let name = p.NM_MUN || p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || "Desconocido";
     return normalize(name);
   }
 
@@ -250,11 +237,14 @@ function getFeatureId(feature) {
 
 function getFeatureName(feature) {
   const p = feature.properties || {};
-  // Si estamos en BC, intenta usar CDNAME para mostrar el nombre "bonito" del mapa
+  
   if (game.region === "ca-bc") {
       return p.CDNAME || p.RD_NAME || p.name || "Desconocido";
   }
+  
+  // Agregado NM_MUN para Brasil
   return (
+    p.NM_MUN ||
     p.nome_rgi ||
     p.departamento ||
     p.nombre ||
@@ -468,7 +458,7 @@ async function startMap(region) {
       onEachFeature: (feature, layer) => {
         const rawName = getFeatureName(feature);
         
-        layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
+        // --- TOOLTIP ELIMINADO ---
 
         layer.on("click", () => {
           if (game.flow === "play") {
