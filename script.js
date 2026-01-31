@@ -20,16 +20,16 @@ const regionData = {
     "costa rica": { name: "Costa Rica", cap: "San José", flag: "cr.png" },
     "cuba": { name: "Cuba", cap: "La Habana", flag: "cu.png" },
     "dominica": { name: "Dominica", cap: "Roseau", flag: "dm.png" },
-    "dominican rep.": { name: "República Dominicana", cap: "Santo Domingo", flag: "do.png" },
+    "dominican rep.": { name: "Rep. Dominicana", cap: "Santo Domingo", flag: "do.png" },
     "ecuador": { name: "Ecuador", cap: "Quito", flag: "ec.png" },
     "el salvador": { name: "El Salvador", cap: "San Salvador", flag: "sv.png" },
-    "grenada": { name: "Granada", cap: "Saint George's", flag: "gd.png" },
-    "guatemala": { name: "Guatemala", cap: "Ciudad de Guatemala", flag: "gt.png" },
+    "grenada": { name: "Granada", cap: "Saint George", flag: "gd.png" },
+    "guatemala": { name: "Guatemala", cap: "Cd. de Guatemala", flag: "gt.png" },
     "guyana": { name: "Guyana", cap: "Georgetown", flag: "gy.png" },
     "haiti": { name: "Haití", cap: "Puerto Príncipe", flag: "ht.png" },
     "honduras": { name: "Honduras", cap: "Tegucigalpa", flag: "hn.png" },
     "jamaica": { name: "Jamaica", cap: "Kingston", flag: "jm.png" },
-    "mexico": { name: "México", cap: "Ciudad de México", flag: "mx.png" },
+    "mexico": { name: "México", cap: "Cd. de México", flag: "mx.png" },
     "nicaragua": { name: "Nicaragua", cap: "Managua", flag: "ni.png" },
     "panama": { name: "Panamá", cap: "Panamá", flag: "pa.png" },
     "paraguay": { name: "Paraguay", cap: "Asunción", flag: "py.png" },
@@ -40,6 +40,7 @@ const regionData = {
     "suriname": { name: "Surinam", cap: "Paramaribo", flag: "sr.png" },
     "trinidad and tobago": { name: "Trinidad y Tobago", cap: "Puerto España", flag: "tt.png" },
     "united states of america": { name: "Estados Unidos", cap: "Washington D.C.", flag: "us.png" },
+    "united states": { name: "Estados Unidos", cap: "Washington D.C.", flag: "us.png" },
     "uruguay": { name: "Uruguay", cap: "Montevideo", flag: "uy.png" },
     "venezuela": { name: "Venezuela", cap: "Caracas", flag: "ve.png" }
   },
@@ -49,15 +50,15 @@ const regionData = {
      ======================= */
   europe: {
     "albania": { name: "Albania", cap: "Tirana", flag: "al.png" },
-    "andorra": { name: "Andorra", cap: "Andorra la Vieja", flag: "ad.png" },
+    "andorra": { name: "Andorra", cap: "Andorra la Vella", flag: "ad.png" },
     "austria": { name: "Austria", cap: "Viena", flag: "at.png" },
     "belarus": { name: "Bielorrusia", cap: "Minsk", flag: "by.png" },
     "belgium": { name: "Bélgica", cap: "Bruselas", flag: "be.png" },
-    "bosnia and herzegovina": { name: "Bosnia y Herzegovina", cap: "Sarajevo", flag: "ba.png" },
+    "bosnia and herz.": { name: "Bosnia y Herz.", cap: "Sarajevo", flag: "ba.png" },
     "bulgaria": { name: "Bulgaria", cap: "Sofía", flag: "bg.png" },
     "croatia": { name: "Croacia", cap: "Zagreb", flag: "hr.png" },
     "cyprus": { name: "Chipre", cap: "Nicosia", flag: "cy.png" },
-    "czech republic": { name: "República Checa", cap: "Praga", flag: "cz.png" },
+    "czechia": { name: "Rep. Checa", cap: "Praga", flag: "cz.png" },
     "denmark": { name: "Dinamarca", cap: "Copenhague", flag: "dk.png" },
     "estonia": { name: "Estonia", cap: "Tallin", flag: "ee.png" },
     "finland": { name: "Finlandia", cap: "Helsinki", flag: "fi.png" },
@@ -68,6 +69,7 @@ const regionData = {
     "iceland": { name: "Islandia", cap: "Reikiavik", flag: "is.png" },
     "ireland": { name: "Irlanda", cap: "Dublín", flag: "ie.png" },
     "italy": { name: "Italia", cap: "Roma", flag: "it.png" },
+    "kosovo": { name: "Kosovo", cap: "Pristina", flag: "xk.png" },
     "latvia": { name: "Letonia", cap: "Riga", flag: "lv.png" },
     "liechtenstein": { name: "Liechtenstein", cap: "Vaduz", flag: "li.png" },
     "lithuania": { name: "Lituania", cap: "Vilna", flag: "lt.png" },
@@ -92,7 +94,7 @@ const regionData = {
     "switzerland": { name: "Suiza", cap: "Berna", flag: "ch.png" },
     "ukraine": { name: "Ucrania", cap: "Kiev", flag: "ua.png" },
     "united kingdom": { name: "Reino Unido", cap: "Londres", flag: "gb.png" },
-    "vatican city": { name: "Ciudad del Vaticano", cap: "Ciudad del Vaticano", flag: "va.png" }
+    "vatican": { name: "Vaticano", cap: "Cd. del Vaticano", flag: "va.png" }
   },
 
   /* =======================
@@ -101,16 +103,17 @@ const regionData = {
   africa: {
     "algeria": { name: "Argelia", cap: "Argel", flag: "dz.png" },
     "angola": { name: "Angola", cap: "Luanda", flag: "ao.png" },
-    "benin": { name: "Benín", cap: "Porto Novo", flag: "bj.png" },
+    "benin": { name: "Benín", cap: "Porto-Novo", flag: "bj.png" },
     "botswana": { name: "Botsuana", cap: "Gaborone", flag: "bw.png" },
     "burkina faso": { name: "Burkina Faso", cap: "Uagadugú", flag: "bf.png" },
     "burundi": { name: "Burundi", cap: "Gitega", flag: "bi.png" },
     "cameroon": { name: "Camerún", cap: "Yaundé", flag: "cm.png" },
-    "central african republic": { name: "República Centroafricana", cap: "Bangui", flag: "cf.png" },
+    "cape verde": { name: "Cabo Verde", cap: "Praia", flag: "cv.png" },
+    "central african rep.": { name: "R. Centroafricana", cap: "Bangui", flag: "cf.png" },
     "chad": { name: "Chad", cap: "Yamena", flag: "td.png" },
     "comoros": { name: "Comoras", cap: "Moroni", flag: "km.png" },
-    "congo": { name: "República del Congo", cap: "Brazzaville", flag: "cg.png" },
-    "democratic republic of the congo": { name: "República Democrática del Congo", cap: "Kinshasa", flag: "cd.png" },
+    "congo": { name: "Congo", cap: "Brazzaville", flag: "cg.png" },
+    "dem. rep. congo": { name: "R.D. del Congo", cap: "Kinshasa", flag: "cd.png" },
     "djibouti": { name: "Yibuti", cap: "Yibuti", flag: "dj.png" },
     "egypt": { name: "Egipto", cap: "El Cairo", flag: "eg.png" },
     "equatorial guinea": { name: "Guinea Ecuatorial", cap: "Malabo", flag: "gq.png" },
@@ -138,13 +141,13 @@ const regionData = {
     "niger": { name: "Níger", cap: "Niamey", flag: "ne.png" },
     "nigeria": { name: "Nigeria", cap: "Abuya", flag: "ng.png" },
     "rwanda": { name: "Ruanda", cap: "Kigali", flag: "rw.png" },
-    "sao tome and principe": { name: "Santo Tomé y Príncipe", cap: "Santo Tomé", flag: "st.png" },
+    "sao tome and principe": { name: "Sto. Tomé y Príncipe", cap: "Santo Tomé", flag: "st.png" },
     "senegal": { name: "Senegal", cap: "Dakar", flag: "sn.png" },
     "seychelles": { name: "Seychelles", cap: "Victoria", flag: "sc.png" },
     "sierra leone": { name: "Sierra Leona", cap: "Freetown", flag: "sl.png" },
     "somalia": { name: "Somalia", cap: "Mogadiscio", flag: "so.png" },
     "south africa": { name: "Sudáfrica", cap: "Pretoria", flag: "za.png" },
-    "south sudan": { name: "Sudán del Sur", cap: "Yuba", flag: "ss.png" },
+    "s. sudan": { name: "Sudán del Sur", cap: "Yuba", flag: "ss.png" },
     "sudan": { name: "Sudán", cap: "Jartum", flag: "sd.png" },
     "tanzania": { name: "Tanzania", cap: "Dodoma", flag: "tz.png" },
     "togo": { name: "Togo", cap: "Lomé", flag: "tg.png" },
@@ -167,7 +170,6 @@ const regionData = {
     "brunei": { name: "Brunéi", cap: "Bandar Seri Begawan", flag: "bn.png" },
     "cambodia": { name: "Camboya", cap: "Nom Pen", flag: "kh.png" },
     "china": { name: "China", cap: "Pekín", flag: "cn.png" },
-    "cyprus": { name: "Chipre", cap: "Nicosia", flag: "cy.png" },
     "georgia": { name: "Georgia", cap: "Tiflis", flag: "ge.png" },
     "india": { name: "India", cap: "Nueva Delhi", flag: "in.png" },
     "indonesia": { name: "Indonesia", cap: "Yakarta", flag: "id.png" },
@@ -178,13 +180,13 @@ const regionData = {
     "jordan": { name: "Jordania", cap: "Amán", flag: "jo.png" },
     "kazakhstan": { name: "Kazajistán", cap: "Astaná", flag: "kz.png" },
     "kuwait": { name: "Kuwait", cap: "Kuwait", flag: "kw.png" },
-    "kyrgyzstan": { name: "Kirguistán", cap: "Biskek", flag: "kg.png" },
+    "kyrgyzstan": { name: "Kirguistán", cap: "Bishkek", flag: "kg.png" },
     "laos": { name: "Laos", cap: "Vientián", flag: "la.png" },
     "lebanon": { name: "Líbano", cap: "Beirut", flag: "lb.png" },
     "malaysia": { name: "Malasia", cap: "Kuala Lumpur", flag: "my.png" },
     "maldives": { name: "Maldivas", cap: "Malé", flag: "mv.png" },
     "mongolia": { name: "Mongolia", cap: "Ulán Bator", flag: "mn.png" },
-    "myanmar": { name: "Myanmar", cap: "Naipyidó", flag: "mm.png" },
+    "myanmar": { name: "Birmania", cap: "Naipyidó", flag: "mm.png" },
     "nepal": { name: "Nepal", cap: "Katmandú", flag: "np.png" },
     "north korea": { name: "Corea del Norte", cap: "Pionyang", flag: "kp.png" },
     "oman": { name: "Omán", cap: "Mascate", flag: "om.png" },
@@ -194,14 +196,15 @@ const regionData = {
     "saudi arabia": { name: "Arabia Saudita", cap: "Riad", flag: "sa.png" },
     "singapore": { name: "Singapur", cap: "Singapur", flag: "sg.png" },
     "south korea": { name: "Corea del Sur", cap: "Seúl", flag: "kr.png" },
-    "sri lanka": { name: "Sri Lanka", cap: "Sri Jayawardenepura Kotte", flag: "lk.png" },
+    "sri lanka": { name: "Sri Lanka", cap: "Colombo", flag: "lk.png" },
     "syria": { name: "Siria", cap: "Damasco", flag: "sy.png" },
+    "taiwan": { name: "Taiwán", cap: "Taipéi", flag: "tw.png" },
     "tajikistan": { name: "Tayikistán", cap: "Dusambé", flag: "tj.png" },
     "thailand": { name: "Tailandia", cap: "Bangkok", flag: "th.png" },
     "timor-leste": { name: "Timor Oriental", cap: "Dili", flag: "tl.png" },
     "turkey": { name: "Turquía", cap: "Ankara", flag: "tr.png" },
     "turkmenistan": { name: "Turkmenistán", cap: "Asjabad", flag: "tm.png" },
-    "united arab emirates": { name: "Emiratos Árabes Unidos", cap: "Abu Dabi", flag: "ae.png" },
+    "united arab emirates": { name: "EAU", cap: "Abu Dabi", flag: "ae.png" },
     "uzbekistan": { name: "Uzbekistán", cap: "Taskent", flag: "uz.png" },
     "vietnam": { name: "Vietnam", cap: "Hanói", flag: "vn.png" },
     "yemen": { name: "Yemen", cap: "Saná", flag: "ye.png" }
@@ -219,54 +222,17 @@ const regionData = {
     "nauru": { name: "Nauru", cap: "Yaren", flag: "nr.png" },
     "new zealand": { name: "Nueva Zelanda", cap: "Wellington", flag: "nz.png" },
     "palau": { name: "Palaos", cap: "Ngerulmud", flag: "pw.png" },
-    "papua new guinea": { name: "Papúa Nueva Guinea", cap: "Port Moresby", flag: "pg.png" },
+    "papua new guinea": { name: "Papúa N. Guinea", cap: "Port Moresby", flag: "pg.png" },
     "samoa": { name: "Samoa", cap: "Apia", flag: "ws.png" },
     "solomon islands": { name: "Islas Salomón", cap: "Honiara", flag: "sb.png" },
     "tonga": { name: "Tonga", cap: "Nukualofa", flag: "to.png" },
     "tuvalu": { name: "Tuvalu", cap: "Funafuti", flag: "tv.png" },
     "vanuatu": { name: "Vanuatu", cap: "Port Vila", flag: "vu.png" }
-  }
+  },
 
-};
-
-  // 4. ASIA
-  asia: {
-    "afghanistan": { name: "Afganistán", cap: "Kabul", flag: "af.png" },
-    "bangladesh": { name: "Bangladés", cap: "Daca", flag: "bd.png" },
-    "china": { name: "China", cap: "Pekín", flag: "cn.png" },
-    "india": { name: "India", cap: "Nueva Delhi", flag: "in.png" },
-    "indonesia": { name: "Indonesia", cap: "Yakarta", flag: "id.png" },
-    "iran": { name: "Irán", cap: "Teherán", flag: "ir.png" },
-    "iraq": { name: "Irak", cap: "Bagdad", flag: "iq.png" },
-    "israel": { name: "Israel", cap: "Jerusalén", flag: "il.png" },
-    "japan": { name: "Japón", cap: "Tokio", flag: "jp.png" },
-    "kazakhstan": { name: "Kazajistán", cap: "Astaná", flag: "kz.png" },
-    "malaysia": { name: "Malasia", cap: "Kuala Lumpur", flag: "my.png" },
-    "mongolia": { name: "Mongolia", cap: "Ulán Bator", flag: "mn.png" },
-    "myanmar": { name: "Birmania", cap: "Naipyidó", flag: "mm.png" },
-    "north korea": { name: "Corea del Norte", cap: "Pionyang", flag: "kp.png" },
-    "pakistan": { name: "Pakistán", cap: "Islamabad", flag: "pk.png" },
-    "philippines": { name: "Filipinas", cap: "Manila", flag: "ph.png" },
-    "saudi arabia": { name: "Arabia Saudita", cap: "Riad", flag: "sa.png" },
-    "south korea": { name: "Corea del Sur", cap: "Seúl", flag: "kr.png" },
-    "sri lanka": { name: "Sri Lanka", cap: "Colombo", flag: "lk.png" },
-    "taiwan": { name: "Taiwán", cap: "Taipéi", flag: "tw.png" },
-    "thailand": { name: "Tailandia", cap: "Bangkok", flag: "th.png" },
-    "turkey": { name: "Turquía", cap: "Ankara", flag: "tr.png" },
-    "vietnam": { name: "Vietnam", cap: "Hanói", flag: "vn.png" }
-  },
-
-  // 5. OCEANÍA
-  oceania: {
-    "australia": { name: "Australia", cap: "Canberra", flag: "au.png" },
-    "fiji": { name: "Fiyi", cap: "Suva", flag: "fj.png" },
-    "new zealand": { name: "Nueva Zelanda", cap: "Wellington", flag: "nz.png" },
-    "papua new guinea": { name: "Papúa N. Guinea", cap: "Port Moresby", flag: "pg.png" },
-    "solomon is.": { name: "Islas Salomón", cap: "Honiara", flag: "sb.png" },
-    "vanuatu": { name: "Vanuatu", cap: "Port Vila", flag: "vu.png" }
-  },
-
-  // --- PAÍSES ---
+  /* =======================
+     6. PAÍSES (Mapas individuales de subdivisiones)
+     ======================= */
   ar: {
     "buenos aires": { name: "Buenos Aires", cap: "La Plata", flag: "ar-buenosaires.png" },
     "caba": { name: "CABA", cap: "Capital Federal", flag: "ar-caba.png" },
@@ -338,7 +304,9 @@ const regionData = {
     "northwest territories": { name: "Northwest Territories", cap: "Yellowknife", flag: "ca-nwt.png" }
   },
 
-  // --- SUBDIVISIONES ---
+  /* =======================
+     7. SUBDIVISIONES (Provincias/Estados Específicos)
+     ======================= */
   "ar-tucuman": {
     "472": { name: "La Cocha", cap: "La Cocha" },
     "473": { name: "Graneros", cap: "Graneros" },
@@ -373,8 +341,6 @@ const regionData = {
     "east kootenay": { name: "East Kootenay", cap: "Cranbrook" },
     "fraser valley": { name: "Fraser Valley", cap: "Chilliwack" },
     "fraser-fort george": { name: "Fraser-Fort George", cap: "Prince George" },
-    
-    // Mapeos para BC
     "metro vancouver": { name: "Metro Vancouver", cap: "Burnaby" },
     "kitimat-stikine": { name: "Kitimat-Stikine", cap: "Terrace" },
     "kootenay boundary": { name: "Kootenay Boundary", cap: "Trail" },
