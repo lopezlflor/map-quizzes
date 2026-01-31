@@ -1,7 +1,135 @@
 /* =====================================================
-   DATOS DE REGIONES
-   ===================================================== */
+   DATOS DE REGIONES
+   ===================================================== */
 const regionData = {
+  // --- CONTINENTES ---
+
+  // 1. AMÉRICA (Norte, Centro y Sur)
+  america: {
+    "argentina": { name: "Argentina", cap: "Buenos Aires", flag: "ar.png" },
+    "bolivia": { name: "Bolivia", cap: "Sucre / La Paz", flag: "bo.png" },
+    "brazil": { name: "Brasil", cap: "Brasilia", flag: "br.png" },
+    "canada": { name: "Canadá", cap: "Ottawa", flag: "ca.png" },
+    "chile": { name: "Chile", cap: "Santiago", flag: "cl.png" },
+    "colombia": { name: "Colombia", cap: "Bogotá", flag: "co.png" },
+    "costa rica": { name: "Costa Rica", cap: "San José", flag: "cr.png" },
+    "cuba": { name: "Cuba", cap: "La Habana", flag: "cu.png" },
+    "dominican rep.": { name: "Rep. Dominicana", cap: "Santo Domingo", flag: "do.png" },
+    "ecuador": { name: "Ecuador", cap: "Quito", flag: "ec.png" },
+    "el salvador": { name: "El Salvador", cap: "San Salvador", flag: "sv.png" },
+    "guatemala": { name: "Guatemala", cap: "Cd. de Guatemala", flag: "gt.png" },
+    "haiti": { name: "Haití", cap: "Puerto Príncipe", flag: "ht.png" },
+    "honduras": { name: "Honduras", cap: "Tegucigalpa", flag: "hn.png" },
+    "jamaica": { name: "Jamaica", cap: "Kingston", flag: "jm.png" },
+    "mexico": { name: "México", cap: "Cd. de México", flag: "mx.png" },
+    "nicaragua": { name: "Nicaragua", cap: "Managua", flag: "ni.png" },
+    "panama": { name: "Panamá", cap: "Panamá", flag: "pa.png" },
+    "paraguay": { name: "Paraguay", cap: "Asunción", flag: "py.png" },
+    "peru": { name: "Perú", cap: "Lima", flag: "pe.png" },
+    "united states of america": { name: "Estados Unidos", cap: "Washington D.C.", flag: "us.png" },
+    "united states": { name: "Estados Unidos", cap: "Washington D.C.", flag: "us.png" }, // Variante nombre
+    "uruguay": { name: "Uruguay", cap: "Montevideo", flag: "uy.png" },
+    "venezuela": { name: "Venezuela", cap: "Caracas", flag: "ve.png" }
+  },
+
+  // 2. EUROPA
+  europe: {
+    "albania": { name: "Albania", cap: "Tirana", flag: "al.png" },
+    "austria": { name: "Austria", cap: "Viena", flag: "at.png" },
+    "belarus": { name: "Bielorrusia", cap: "Minsk", flag: "by.png" },
+    "belgium": { name: "Bélgica", cap: "Bruselas", flag: "be.png" },
+    "bosnia and herz.": { name: "Bosnia y Herz.", cap: "Sarajevo", flag: "ba.png" },
+    "bulgaria": { name: "Bulgaria", cap: "Sofía", flag: "bg.png" },
+    "croatia": { name: "Croacia", cap: "Zagreb", flag: "hr.png" },
+    "czechia": { name: "Rep. Checa", cap: "Praga", flag: "cz.png" },
+    "denmark": { name: "Dinamarca", cap: "Copenhague", flag: "dk.png" },
+    "estonia": { name: "Estonia", cap: "Tallin", flag: "ee.png" },
+    "finland": { name: "Finlandia", cap: "Helsinki", flag: "fi.png" },
+    "france": { name: "Francia", cap: "París", flag: "fr.png" },
+    "germany": { name: "Alemania", cap: "Berlín", flag: "de.png" },
+    "greece": { name: "Grecia", cap: "Atenas", flag: "gr.png" },
+    "hungary": { name: "Hungría", cap: "Budapest", flag: "hu.png" },
+    "iceland": { name: "Islandia", cap: "Reikiavik", flag: "is.png" },
+    "ireland": { name: "Irlanda", cap: "Dublín", flag: "ie.png" },
+    "italy": { name: "Italia", cap: "Roma", flag: "it.png" },
+    "latvia": { name: "Letonia", cap: "Riga", flag: "lv.png" },
+    "lithuania": { name: "Lituania", cap: "Vilna", flag: "lt.png" },
+    "netherlands": { name: "Países Bajos", cap: "Ámsterdam", flag: "nl.png" },
+    "norway": { name: "Noruega", cap: "Oslo", flag: "no.png" },
+    "poland": { name: "Polonia", cap: "Varsovia", flag: "pl.png" },
+    "portugal": { name: "Portugal", cap: "Lisboa", flag: "pt.png" },
+    "romania": { name: "Rumania", cap: "Bucarest", flag: "ro.png" },
+    "russia": { name: "Rusia", cap: "Moscú", flag: "ru.png" },
+    "serbia": { name: "Serbia", cap: "Belgrado", flag: "rs.png" },
+    "slovakia": { name: "Eslovaquia", cap: "Bratislava", flag: "sk.png" },
+    "slovenia": { name: "Eslovenia", cap: "Liubliana", flag: "si.png" },
+    "spain": { name: "España", cap: "Madrid", flag: "es.png" },
+    "sweden": { name: "Suecia", cap: "Estocolmo", flag: "se.png" },
+    "switzerland": { name: "Suiza", cap: "Berna", flag: "ch.png" },
+    "ukraine": { name: "Ucrania", cap: "Kiev", flag: "ua.png" },
+    "united kingdom": { name: "Reino Unido", cap: "Londres", flag: "gb.png" }
+  },
+
+  // 3. ÁFRICA
+  africa: {
+    "algeria": { name: "Argelia", cap: "Argel", flag: "dz.png" },
+    "angola": { name: "Angola", cap: "Luanda", flag: "ao.png" },
+    "cameroon": { name: "Camerún", cap: "Yaundé", flag: "cm.png" },
+    "dem. rep. congo": { name: "R.D. del Congo", cap: "Kinshasa", flag: "cd.png" },
+    "egypt": { name: "Egipto", cap: "El Cairo", flag: "eg.png" },
+    "ethiopia": { name: "Etiopía", cap: "Adís Abeba", flag: "et.png" },
+    "ghana": { name: "Ghana", cap: "Acra", flag: "gh.png" },
+    "ivory coast": { name: "Costa de Marfil", cap: "Yamusukro", flag: "ci.png" },
+    "kenya": { name: "Kenia", cap: "Nairobi", flag: "ke.png" },
+    "madagascar": { name: "Madagascar", cap: "Antananarivo", flag: "mg.png" },
+    "morocco": { name: "Marruecos", cap: "Rabat", flag: "ma.png" },
+    "mozambique": { name: "Mozambique", cap: "Maputo", flag: "mz.png" },
+    "nigeria": { name: "Nigeria", cap: "Abuya", flag: "ng.png" },
+    "s. sudan": { name: "Sudán del Sur", cap: "Yuba", flag: "ss.png" },
+    "south africa": { name: "Sudáfrica", cap: "Pretoria", flag: "za.png" },
+    "sudan": { name: "Sudán", cap: "Jartum", flag: "sd.png" },
+    "tanzania": { name: "Tanzania", cap: "Dodoma", flag: "tz.png" },
+    "tunisia": { name: "Túnez", cap: "Túnez", flag: "tn.png" },
+    "uganda": { name: "Uganda", cap: "Kampala", flag: "ug.png" }
+  },
+
+  // 4. ASIA
+  asia: {
+    "afghanistan": { name: "Afganistán", cap: "Kabul", flag: "af.png" },
+    "bangladesh": { name: "Bangladés", cap: "Daca", flag: "bd.png" },
+    "china": { name: "China", cap: "Pekín", flag: "cn.png" },
+    "india": { name: "India", cap: "Nueva Delhi", flag: "in.png" },
+    "indonesia": { name: "Indonesia", cap: "Yakarta", flag: "id.png" },
+    "iran": { name: "Irán", cap: "Teherán", flag: "ir.png" },
+    "iraq": { name: "Irak", cap: "Bagdad", flag: "iq.png" },
+    "israel": { name: "Israel", cap: "Jerusalén", flag: "il.png" },
+    "japan": { name: "Japón", cap: "Tokio", flag: "jp.png" },
+    "kazakhstan": { name: "Kazajistán", cap: "Astaná", flag: "kz.png" },
+    "malaysia": { name: "Malasia", cap: "Kuala Lumpur", flag: "my.png" },
+    "mongolia": { name: "Mongolia", cap: "Ulán Bator", flag: "mn.png" },
+    "myanmar": { name: "Birmania", cap: "Naipyidó", flag: "mm.png" },
+    "north korea": { name: "Corea del Norte", cap: "Pionyang", flag: "kp.png" },
+    "pakistan": { name: "Pakistán", cap: "Islamabad", flag: "pk.png" },
+    "philippines": { name: "Filipinas", cap: "Manila", flag: "ph.png" },
+    "saudi arabia": { name: "Arabia Saudita", cap: "Riad", flag: "sa.png" },
+    "south korea": { name: "Corea del Sur", cap: "Seúl", flag: "kr.png" },
+    "sri lanka": { name: "Sri Lanka", cap: "Colombo", flag: "lk.png" },
+    "taiwan": { name: "Taiwán", cap: "Taipéi", flag: "tw.png" },
+    "thailand": { name: "Tailandia", cap: "Bangkok", flag: "th.png" },
+    "turkey": { name: "Turquía", cap: "Ankara", flag: "tr.png" },
+    "vietnam": { name: "Vietnam", cap: "Hanói", flag: "vn.png" }
+  },
+
+  // 5. OCEANÍA
+  oceania: {
+    "australia": { name: "Australia", cap: "Canberra", flag: "au.png" },
+    "fiji": { name: "Fiyi", cap: "Suva", flag: "fj.png" },
+    "new zealand": { name: "Nueva Zelanda", cap: "Wellington", flag: "nz.png" },
+    "papua new guinea": { name: "Papúa N. Guinea", cap: "Port Moresby", flag: "pg.png" },
+    "solomon is.": { name: "Islas Salomón", cap: "Honiara", flag: "sb.png" },
+    "vanuatu": { name: "Vanuatu", cap: "Port Vila", flag: "vu.png" }
+  },
+
   // --- PAÍSES ---
   ar: {
     "buenos aires": { name: "Buenos Aires", cap: "La Plata", flag: "ar-buenosaires.png" },
@@ -224,10 +352,10 @@ function getFeatureId(feature) {
     }
     return id;
   }
-  // --- CASO 3: PAÍSES Y SANTA CATARINA (Uso por Nombre) ---
+  // --- CASO 3: GENÉRICO (Países, Continentes y Santa Catarina) ---
   else {
-    // CORRECCIÓN AQUÍ: Agregamos 'nome_rgi' y 'NM_MUNICIP' para que coincida con lo que el mapa tiene.
-    let name = p.NM_MUN || p.NM_MUNICIP || p.nome_rgi || p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || "Desconocido";
+    // Busca en propiedades comunes de GeoJSON
+    let name = p.NM_MUN || p.NM_MUNICIP || p.nome_rgi || p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || p.admin || "Desconocido";
     return normalize(name);
   }
 
@@ -248,6 +376,7 @@ function getFeatureName(feature) {
     p.nombre ||
     p.name ||
     p.NAM ||
+    p.admin || // Agregado para continentes (Admin-0 countries)
     "Desconocido"
   );
 }
@@ -331,7 +460,7 @@ document.addEventListener("click", e => {
   // SELECCIÓN DE REGIÓN
   if (btn.classList.contains("reg-sel")) {
     const region = btn.dataset.region;
-    const type = btn.dataset.type; // 'country' o 'subdivision'
+    const type = btn.dataset.type; // 'country', 'subdivision' o 'continent'
 
     game.region = region;
     game.regionType = type;
@@ -426,23 +555,40 @@ async function startMap(region) {
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
   ).addTo(game.map);
 
+  // Mapeo de archivos
   let filename = `${region}.json`;
   if (region === "ar-tucuman") filename = "departamentos-tucuman.json";
   if (region === "br-santacatarina") filename = "br-sc.geojson";
   if (region === "ca-bc") filename = "ca-bc.json";
+  
+  // Archivos de Continentes
+  if (region === "europe") filename = "Europa.json";
+  if (region === "america") filename = "America.json";
+  if (region === "asia") filename = "Asia.json";
+  if (region === "africa") filename = "Africa.json";
+  if (region === "oceania") filename = "Oceania.json";
 
   try {
     const res = await fetch(`data/${filename}`);
     if (!res.ok) throw new Error("Error cargando archivo: " + filename);
     const data = await res.json();
 
-    // FILTRO DE SEGURIDAD: Solo cargamos zonas que existen en tus datos
+    // FILTRO DE SEGURIDAD MODIFICADO
+    // Para continentes, como no tenemos la lista manual llena, permitimos que pase si tiene geometría.
+    // Para subdivisiones (donde sí tenemos datos manuales), exigimos que exista en regionData.
     game.questions = (data.features || [])
       .filter(f => {
          const id = getFeatureId(f);
          const regionKey = getRegionKey(game.region);
-         // Verifica si tenemos datos para esta zona (evita islas huerfanas)
-         return f.geometry && regionData[regionKey] && regionData[regionKey][id];
+         
+         // Si la región tiene datos manuales definidos y NO está vacía (como los continentes ahora), filtramos.
+         const hasManualData = regionData[regionKey] && Object.keys(regionData[regionKey]).length > 0;
+         
+         if (hasManualData) {
+            return f.geometry && regionData[regionKey][id];
+         }
+         // Si no hay datos manuales (Continentes), usamos todo lo que tenga geometría y nombre válido.
+         return f.geometry && id && id !== "desconocido";
       }) 
       .sort(() => Math.random() - 0.5);
 
@@ -456,24 +602,24 @@ async function startMap(region) {
       onEachFeature: (feature, layer) => {
         const rawName = getFeatureName(feature);
         
-        // --- TOOLTIP ELIMINADO ---
+        // Tooltip desactivado (comentado)
         // layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
         layer.on("click", () => {
           if (game.flow === "play") {
             checkAnswer(layer);
           } else {
-            // Modo Aprender: Mostrar Popup CON bandera si existe
+            // Modo Aprender
             const id = getFeatureId(feature);
             const regionKey = getRegionKey(game.region);
             const info = regionData[regionKey]?.[id];
 
+            // Si no hay info manual, mostramos lo que viene del mapa
             if (!info) {
-              layer.bindPopup(`<strong>${rawName}</strong><br>Sin datos`).openPopup();
+              layer.bindPopup(`<strong>${rawName}</strong>`).openPopup();
               return;
             }
 
-            // HTML para la bandera en el popup
             const flagHtml = info.flag ? 
               `<div style="text-align:center; margin-bottom:5px;">
                  <img src="flags/${info.flag}" style="width:40px; border:1px solid #ccc;">
@@ -542,7 +688,7 @@ function nextQuestion() {
   // Definimos 'displayName' seguro
   const displayName = info?.name || getFeatureName(q);
 
-  // Si info no existe (caso raro de desajuste de IDs), usamos datos genéricos
+  // Si info no existe, usamos datos genéricos
   const cap = info?.cap || "Desconocido";
   const flag = info?.flag || null;
 
@@ -619,10 +765,19 @@ function renderAchievements() {
   const grid = document.getElementById("achievements-grid");
   grid.innerHTML = "";
 
+  // LISTA ACTUALIZADA DE REGIONES PARA LOGROS
   const regions = [
+    // Continentes
+    { id: "america", name: "América", type: "continent" },
+    { id: "europe", name: "Europa", type: "continent" },
+    { id: "africa", name: "África", type: "continent" },
+    { id: "asia", name: "Asia", type: "continent" },
+    { id: "oceania", name: "Oceanía", type: "continent" },
+    // Países
     { id: "ar", name: "Argentina", type: "country" },
     { id: "br", name: "Brasil", type: "country" },
     { id: "ca", name: "Canadá", type: "country" },
+    // Subdivisiones
     { id: "ar-tucuman", name: "Tucumán", type: "subdivision" },
     { id: "br-santacatarina", name: "Sta. Catarina", type: "subdivision" },
     { id: "ca-bc", name: "British C.", type: "subdivision" }
@@ -652,6 +807,7 @@ function renderAchievements() {
         ? `<div class="ach-times">${records.map((t, i) => `<div><span>#${i+1}</span> ${formatTime(t)}</div>`).join('')}</div>`
         : `<div class="ach-times">Sin completar</div>`;
 
+      // Intenta cargar la bandera, si falla la oculta
       const flagImg = `<img src="flags/${reg.id}.png" class="ach-flag" onerror="this.style.display='none'">`;
 
       card.innerHTML = `
