@@ -157,169 +157,515 @@ const regionData = {
   }
 };
 
+
+/* =====================
+   CONFIGURACIÓN GLOBAL
+   ===================================================== */
+const pastelColors = [
+  "#ffd1dc", "#e0bbe4", "#d0f4de",
+  "#cddafd", "#fff1c1", "#f6c1cc",
+  "#c1e1dc", "#e4c1f9"
+];
+
+function randomPastel() {
+  return pastelColors[Math.floor(Math.random() * pastelColors.length)];
+}
+
 const game = {
-    flow: "", mode: "", region: "", regionType: "country",
-    map: null, geoLayer: null, questions: [], current: 0,
-    correct: 0, timer: null, seconds: 0, paused: false,
-    theme: localStorage.getItem("theme") || "light",
-    isChecking: false
+  flow: "",
+  mode: "",
+  region: "",
+  regionType: "country", // country o subdivision
+  map: null,
+  geoLayer: null,
+  questions: [],
+  current: 0,
+  correct: 0,
+  timer: null,
+  seconds: 0,
+  paused: false,
+  theme: localStorage.getItem("theme") || "light"
 };
 
-/* --- UTILIDADES --- */
-const normalize = s => s?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() || "";
+/* =====================
+   UTILIDADES
+   ===================================================== */
 
-function getFeatureId(f) {
-    const p = f.properties || {};
-    if (game.region === "ar-tucuman") return p.id?.toString();
-    if (game.region === "ca-bc") {
-        const raw = p.CDNAME || p.RD_NAME || p.name || "Desconocido";
-        return normalize(raw);
+function normalize(str) {
+  return str
+    ?.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim() || "";
+}
+
+function getFeatureId(feature) {
+  const p = feature.properties || {};
+  const reg = game.region;
+
+  let id;
+
+  // --- CASO 1: TUCUMÁN ---
+  if (reg === "ar-tucuman") {
+    id = p.id;
+  } 
+  // --- CASO 2: BRITISH COLUMBIA (Canadá) ---
+  else if (reg === "ca-bc") {
+    let raw = p.CDNAME || p.RD_NAME || p.ADMIN_AREA_NAME || p.name || "Desconocido";
+    id = normalize(raw);
+
+    const aliases = {
+      "greater vancouver": "metro vancouver",
+      "powell river": "qathet"
+    };
+
+    if (aliases[id]) {
+      return aliases[id];
     }
-    const name = p.NM_MUN || p.NM_MUNICIP || p.nome_rgi || p.name || p.nombre || p.NAM || "Desconocido";
+    return id;
+  }
+  // --- CASO 3: PAÍSES Y SANTA CATARINA (Uso por Nombre) ---
+  else {
+    // CORRECCIÓN AQUÍ: Agregamos 'nome_rgi' y 'NM_MUNICIP' para que coincida con lo que el mapa tiene.
+    let name = p.NM_MUN || p.NM_MUNICIP || p.nome_rgi || p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || "Desconocido";
     return normalize(name);
+  }
+
+  return id ? id.toString() : null;
+}
+
+function getFeatureName(feature) {
+  const p = feature.properties || {};
+  
+  if (game.region === "ca-bc") {
+      return p.CDNAME || p.RD_NAME || p.name || "Desconocido";
+  }
+  
+  return (
+    p.NM_MUN ||
+    p.nome_rgi ||
+    p.departamento ||
+    p.nombre ||
+    p.name ||
+    p.NAM ||
+    "Desconocido"
+  );
+}
+
+function getRegionKey(region) {
+  const aliases = {
+    "br-sc": "br-santacatarina",
+    "br-santa-catarina": "br-santacatarina"
+  };
+  return aliases[region] || region;
 }
 
 function showScreen(id) {
-    document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
-    document.getElementById(id)?.classList.remove("hidden");
-    document.getElementById("fixed-hud").style.display = (id === "screen-game") ? "flex" : "none";
+  document.querySelectorAll(".screen").forEach(s =>
+    s.classList.add("hidden")
+  );
+  document.getElementById(id)?.classList.remove("hidden");
+
+  // Control visibilidad HUD
+  if (id === "screen-game") {
+    showHUD();
+  } else {
+    hideHUD();
+  }
 }
 
-/* --- LÓGICA DE JUEGO --- */
-async function startMap(region) {
-    game.current = 0; game.correct = 0; game.paused = false; game.seconds = 0;
-    clearInterval(game.timer);
-    showScreen("screen-game");
-
-    if (game.map) game.map.remove();
-    game.map = L.map("map", { zoomControl: false, attributionControl: false }).setView([0,0], 2);
-    
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png").addTo(game.map);
-
-    let file = `${region}.json`;
-    if (region === "ar-tucuman") file = "departamentos-tucuman.json";
-    if (region === "br-santacatarina") file = "br-sc.geojson";
-    if (region === "ca-bc") file = "ca-bc.json";
-
-    try {
-        const res = await fetch(`data/${file}`);
-        const data = await res.json();
-        
-        game.questions = (data.features || [])
-            .filter(f => regionData[region]?.[getFeatureId(f)])
-            .sort(() => Math.random() - 0.5);
-
-        game.geoLayer = L.geoJSON(data, {
-            style: () => ({ color: "#fff", weight: 1, fillOpacity: 0.7, fillColor: "#cbd5e0" }),
-            onEachFeature: (f, layer) => {
-                layer.on("click", () => {
-                    if (game.flow === "play" && !game.isChecking && !game.paused) checkAnswer(layer);
-                    else if (game.flow === "learn") showInfo(f, layer);
-                });
-            }
-        }).addTo(game.map);
-
-        if (game.geoLayer.getLayers().length) game.map.fitBounds(game.geoLayer.getBounds(), { padding: [50, 50] });
-
-        if (game.flow === "play") {
-            startTimer();
-            nextQuestion();
-        } else {
-            document.getElementById("question-text").innerText = "Modo Exploración: toca una zona";
-        }
-    } catch (e) {
-        alert("Error al cargar mapa.");
-        showScreen("screen-regions");
-    }
+function showHUD() {
+  document.getElementById("fixed-hud").style.display = "flex";
 }
 
-function nextQuestion() {
-    if (game.current >= game.questions.length) return showGameOver();
-    const q = game.questions[game.current];
-    const info = regionData[game.region][getFeatureId(q)];
-    const box = document.getElementById("question-text");
-    
-    game.isChecking = false;
-
-    if (game.mode === "capitals") box.innerText = `Ubica la capital: ${info.cap}`;
-    else if (game.mode === "flags" && info.flag) {
-        box.innerHTML = `Ubica: <img src="flags/${info.flag}" class="hud-flag">`;
-    } else box.innerText = `¿Dónde está ${info.name}?`;
+function hideHUD() {
+  document.getElementById("fixed-hud").style.display = "none";
 }
 
-function checkAnswer(layer) {
-    game.isChecking = true;
-    const targetId = getFeatureId(game.questions[game.current]);
-    const clickedId = getFeatureId(layer.feature);
-
-    if (clickedId === targetId) {
-        game.correct++;
-        layer.setStyle({ fillColor: "#2ecc71", fillOpacity: 0.9 });
-    } else {
-        layer.setStyle({ fillColor: "#e74c3c", fillOpacity: 0.9 });
-        // Feedback: resaltar el correcto
-        game.geoLayer.eachLayer(l => {
-            if (getFeatureId(l.feature) === targetId) {
-                l.setStyle({ color: "#f1c40f", weight: 4 });
-                setTimeout(() => game.geoLayer.resetStyle(l), 1200);
-            }
-        });
-    }
-
-    game.current++;
-    updateStats();
-    setTimeout(nextQuestion, 1200);
-}
-
-function updateStats() {
-    document.getElementById("hud-correct").innerText = game.correct;
-    const p = Math.round((game.correct / game.current) * 100) || 0;
-    document.getElementById("hud-percent").innerText = p + "%";
+function resetTimer() {
+  clearInterval(game.timer);
+  game.seconds = 0;
+  updateTimer();
 }
 
 function startTimer() {
-    game.timer = setInterval(() => {
-        if (!game.paused) {
-            game.seconds++;
-            const m = Math.floor(game.seconds / 60);
-            const s = (game.seconds % 60).toString().padStart(2, "0");
-            document.getElementById("timer-display").innerText = `${m}:${s}`;
-        }
-    }, 1000);
+  resetTimer();
+  game.timer = setInterval(() => {
+    if (!game.paused) {
+      game.seconds++;
+      updateTimer();
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const m = Math.floor(game.seconds / 60);
+  const s = game.seconds % 60;
+  const timeStr = `${m}:${s.toString().padStart(2, "0")}`;
+  document.getElementById("timer-display").innerText = timeStr;
+  return timeStr;
+}
+
+function formatTime(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+/* =====================
+   INICIALIZACIÓN Y EVENTOS
+   ===================================================== */
+document.body.className = `theme-${game.theme}`;
+hideHUD();
+
+document.addEventListener("click", e => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  // Botón "Aprender" o "Jugar"
+  if (btn.id === "go-learn" || btn.id === "go-play") {
+    game.flow = btn.id === "go-learn" ? "learn" : "play";
+    showScreen("screen-regions");
+  }
+
+  // SELECCIÓN DE REGIÓN
+  if (btn.classList.contains("reg-sel")) {
+    const region = btn.dataset.region;
+    const type = btn.dataset.type; // 'country' o 'subdivision'
+
+    game.region = region;
+    game.regionType = type;
+
+    if (game.flow === "learn") {
+      startMap(region);
+    } else {
+      // Si es subdivisión, ocultamos el botón de banderas
+      const btnFlags = document.getElementById("btn-mode-flags");
+      
+      if (type === "subdivision") {
+        btnFlags.classList.add("hidden"); 
+      } else {
+        btnFlags.classList.remove("hidden"); 
+      }
+      
+      showScreen("screen-modes");
+    }
+  }
+
+  // SELECCIÓN DE MODO
+  if (btn.classList.contains("mode-sel")) {
+    game.mode = btn.dataset.mode;
+    startMap(game.region);
+  }
+
+  // BOTONES DE RETORNO Y CONTROL
+  if (btn.id === "back-to-start") showScreen("screen-start");
+  if (btn.id === "back-to-regions") showScreen("screen-regions");
+
+  if (btn.id === "btn-end-home") location.reload();
+
+  if (btn.id === "btn-theme") {
+    game.theme = game.theme === "light" ? "dark" : "light";
+    localStorage.setItem("theme", game.theme);
+    document.body.className = `theme-${game.theme}`;
+  }
+
+  if (btn.id === "btn-pause") {
+    if (game.flow === "learn") {
+      location.reload();
+    } else {
+      game.paused = true;
+      document.getElementById("modal-pause").classList.remove("hidden");
+    }
+  }
+
+  if (btn.id === "resume-game") {
+    game.paused = false;
+    document.getElementById("modal-pause").classList.add("hidden");
+  }
+
+  if (btn.id === "restart-game") {
+    document.getElementById("modal-pause").classList.add("hidden");
+    startMap(game.region);
+  }
+
+  if (btn.id === "exit-game") location.reload();
+
+  if (btn.id === "show-achievements") {
+    renderAchievements();
+    document.getElementById("modal-achievements").classList.remove("hidden");
+  }
+
+  if (btn.id === "close-ach") {
+    document.getElementById("modal-achievements").classList.add("hidden");
+  }
+});
+
+/* =====================
+   MAPA Y LÓGICA
+   ===================================================== */
+
+async function startMap(region) {
+  game.current = 0;
+  game.correct = 0;
+  game.paused = false;
+  game.seconds = 0; 
+  clearInterval(game.timer);
+  updateTimer();
+
+  showScreen("screen-game");
+
+  if (game.map) game.map.remove();
+
+  game.map = L.map("map", {
+    zoomControl: true,
+    attributionControl: false
+  }).setView([0, 0], 2);
+
+  L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+  ).addTo(game.map);
+
+  let filename = `${region}.json`;
+  if (region === "ar-tucuman") filename = "departamentos-tucuman.json";
+  if (region === "br-santacatarina") filename = "br-sc.geojson";
+  if (region === "ca-bc") filename = "ca-bc.json";
+
+  try {
+    const res = await fetch(`data/${filename}`);
+    if (!res.ok) throw new Error("Error cargando archivo: " + filename);
+    const data = await res.json();
+
+    // FILTRO DE SEGURIDAD: Solo cargamos zonas que existen en tus datos
+    game.questions = (data.features || [])
+      .filter(f => {
+         const id = getFeatureId(f);
+         const regionKey = getRegionKey(game.region);
+         // Verifica si tenemos datos para esta zona (evita islas huerfanas)
+         return f.geometry && regionData[regionKey] && regionData[regionKey][id];
+      }) 
+      .sort(() => Math.random() - 0.5);
+
+    game.geoLayer = L.geoJSON(data, {
+      style: () => ({
+        color: "#555",
+        weight: 1.0,
+        fillOpacity: 0.8,
+        fillColor: randomPastel()
+      }),
+      onEachFeature: (feature, layer) => {
+        const rawName = getFeatureName(feature);
+        
+        // --- TOOLTIP ELIMINADO ---
+        // layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
+
+        layer.on("click", () => {
+          if (game.flow === "play") {
+            checkAnswer(layer);
+          } else {
+            // Modo Aprender: Mostrar Popup CON bandera si existe
+            const id = getFeatureId(feature);
+            const regionKey = getRegionKey(game.region);
+            const info = regionData[regionKey]?.[id];
+
+            if (!info) {
+              layer.bindPopup(`<strong>${rawName}</strong><br>Sin datos`).openPopup();
+              return;
+            }
+
+            // HTML para la bandera en el popup
+            const flagHtml = info.flag ? 
+              `<div style="text-align:center; margin-bottom:5px;">
+                 <img src="flags/${info.flag}" style="width:40px; border:1px solid #ccc;">
+               </div>` : "";
+
+            layer.bindPopup(`
+              ${flagHtml}
+              <strong>${info.name}</strong><br>
+              Capital / Cabecera: ${info.cap}
+            `).openPopup();
+          }
+        });
+      }
+    }).addTo(game.map);
+
+    if (game.geoLayer.getLayers().length > 0) {
+      game.map.fitBounds(game.geoLayer.getBounds());
+    }
+
+    setupHUD();
+
+    if (game.flow === "play") {
+      startTimer();
+      nextQuestion();
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert(`No se pudo cargar el mapa de ${region}. Verifica que el archivo '${filename}' esté en la carpeta /data.`);
+    showScreen("screen-regions");
+  }
+}
+
+function setupHUD() {
+  const stats = document.querySelector(".hud-stats");
+  const pause = document.getElementById("btn-pause");
+  const text = document.getElementById("question-text");
+
+  document.getElementById("hud-progress").innerText = "0/0";
+  document.getElementById("hud-correct").innerText = "0";
+  document.getElementById("hud-percent").innerText = "0%";
+
+  if (game.flow === "learn") {
+    stats.style.display = "none";
+    pause.innerHTML = '<i class="fas fa-home"></i>';
+    text.innerText = "Modo Exploración: toca una zona";
+  } else {
+    stats.style.display = "flex";
+    pause.innerHTML = '<i class="fas fa-pause"></i>';
+  }
+}
+
+function nextQuestion() {
+  if (game.current >= game.questions.length) {
+    showGameOver();
+    return;
+  }
+
+  const q = game.questions[game.current];
+  const id = getFeatureId(q);
+  const regionKey = getRegionKey(game.region);
+  const info = regionData[regionKey]?.[id];
+
+  const box = document.getElementById("question-text");
+
+  // Definimos 'displayName' seguro
+  const displayName = info?.name || getFeatureName(q);
+
+  // Si info no existe (caso raro de desajuste de IDs), usamos datos genéricos
+  const cap = info?.cap || "Desconocido";
+  const flag = info?.flag || null;
+
+  if (game.mode === "capitals") {
+    box.innerText = `¿Dónde está la capital: ${cap}?`;
+  } else if (game.mode === "flags") {
+    if (flag) {
+      box.innerHTML = `<span style="vertical-align:middle; margin-right:8px;">Ubica:</span> <img src="flags/${flag}" class="hud-flag" alt="Bandera">`;
+    } else {
+      box.innerText = `¿Dónde está ${displayName}? (Sin bandera)`;
+    }
+  } else {
+    // Modo normal (Names)
+    box.innerText = `¿Dónde está ${displayName}?`;
+  }
+}
+
+function checkAnswer(layer) {
+  const q = game.questions[game.current];
+  const targetId = getFeatureId(q);
+  const clickedId = getFeatureId(layer.feature);
+
+  if (clickedId === targetId) {
+    game.correct++;
+    layer.setStyle({ fillColor: "#48bb78", fillOpacity: 0.9 });
+  } else {
+    layer.setStyle({ fillColor: "#f56565", fillOpacity: 0.9 });
+  }
+
+  game.current++;
+
+  document.getElementById("hud-progress").innerText =
+    `${game.current}/${game.questions.length}`;
+  document.getElementById("hud-correct").innerText = game.correct;
+  document.getElementById("hud-percent").innerText =
+    Math.round((game.correct / game.current) * 100) + "%";
+
+  setTimeout(nextQuestion, 800);
 }
 
 function showGameOver() {
-    clearInterval(game.timer);
-    document.getElementById("end-score").innerText = `${game.correct} / ${game.questions.length}`;
-    document.getElementById("modal-gameover").classList.remove("hidden");
+  clearInterval(game.timer);
+  const total = game.questions.length;
+  const score = game.correct;
+  const timeStr = updateTimer();
+
+  document.getElementById("end-score").innerText = `${score} / ${total}`;
+  document.getElementById("end-time").innerText = timeStr;
+
+  const newRecordMsg = document.getElementById("new-record-msg");
+  if (score === total) {
+    const isNew = saveScore(game.region, game.mode, game.seconds);
+    document.getElementById("end-title").innerText = "¡Perfecto! 🎉";
+    newRecordMsg.classList.toggle("hidden", !isNew);
+  } else {
+    document.getElementById("end-title").innerText = "Fin del Juego";
+    newRecordMsg.classList.add("hidden");
+  }
+  
+  document.getElementById("modal-gameover").classList.remove("hidden");
 }
 
-/* --- EVENTOS --- */
-document.addEventListener("click", e => {
-    const btn = e.target.closest("button");
-    if (!btn) return;
+function saveScore(region, mode, seconds) {
+  const key = `mq_record_${region}_${mode}`;
+  let times = JSON.parse(localStorage.getItem(key)) || [];
+  times.push(seconds);
+  times.sort((a, b) => a - b);
+  times = times.slice(0, 3);
+  localStorage.setItem(key, JSON.stringify(times));
+  return times[0] === seconds;
+}
 
-    if (btn.id === "go-learn" || btn.id === "go-play") {
-        game.flow = btn.id === "go-learn" ? "learn" : "play";
-        showScreen("screen-regions");
-    }
-    if (btn.classList.contains("reg-sel")) {
-        game.region = btn.dataset.region;
-        if (game.flow === "learn") startMap(game.region);
-        else showScreen("screen-modes");
-    }
-    if (btn.classList.contains("mode-sel")) {
-        game.mode = btn.dataset.mode;
-        startMap(game.region);
-    }
-    if (btn.id === "btn-pause") {
-        if (game.flow === "learn") location.reload();
-        else { game.paused = true; document.getElementById("modal-pause").classList.remove("hidden"); }
-    }
-    if (btn.id === "resume-game") { game.paused = false; document.getElementById("modal-pause").classList.add("hidden"); }
-    if (btn.id === "exit-game" || btn.id === "btn-end-home") location.reload();
-});
+function renderAchievements() {
+  const grid = document.getElementById("achievements-grid");
+  grid.innerHTML = "";
 
-document.body.className = `theme-${game.theme}`;
+  const regions = [
+    { id: "ar", name: "Argentina", type: "country" },
+    { id: "br", name: "Brasil", type: "country" },
+    { id: "ca", name: "Canadá", type: "country" },
+    { id: "ar-tucuman", name: "Tucumán", type: "subdivision" },
+    { id: "br-santacatarina", name: "Sta. Catarina", type: "subdivision" },
+    { id: "ca-bc", name: "British C.", type: "subdivision" }
+  ];
+  
+  const allModes = [
+    { id: "names", name: "Nombres" },
+    { id: "capitals", name: "Caps/Cabeceras" },
+    { id: "flags", name: "Banderas" }
+  ];
 
+  regions.forEach(reg => {
+    let activeModes = allModes;
+    if (reg.type === "subdivision") {
+        activeModes = allModes.filter(m => m.id !== "flags");
+    }
+
+    activeModes.forEach(mod => {
+      const key = `mq_record_${reg.id}_${mod.id}`;
+      const records = JSON.parse(localStorage.getItem(key)) || [];
+      const isUnlocked = records.length > 0;
       
+      const card = document.createElement("div");
+      card.className = `ach-card ${isUnlocked ? "unlocked" : "locked"}`;
+      
+      let timesHtml = isUnlocked 
+        ? `<div class="ach-times">${records.map((t, i) => `<div><span>#${i+1}</span> ${formatTime(t)}</div>`).join('')}</div>`
+        : `<div class="ach-times">Sin completar</div>`;
+
+      const flagImg = `<img src="flags/${reg.id}.png" class="ach-flag" onerror="this.style.display='none'">`;
+
+      card.innerHTML = `
+        <div class="ach-header">
+          ${flagImg}
+          <div>
+            <div class="ach-country">${reg.name}</div>
+            <div class="ach-mode">${mod.name}</div>
+          </div>
+          <div class="ach-icon"><i class="fas ${isUnlocked ? 'fa-check-circle' : 'fa-lock'}"></i></div>
+        </div>
+        ${timesHtml}
+      `;
+      grid.appendChild(card);
+    });
+  });
+}
