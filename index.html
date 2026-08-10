@@ -61,7 +61,8 @@
         <header class="screen-header">
             <button id="back-to-start" class="btn-icon"><i class="fas fa-arrow-left"></i></button>
             <h2>Selecciona un Mapa</h2>
-            <div style="width: 40px;"></div> </header>
+            <div style="width: 40px;"></div> 
+        </header>
         
         <div class="regions-grid">
             <h3>Países</h3>
@@ -78,6 +79,10 @@
                     <img src="flags/ca.png" alt="Canadá">
                     <span>Canadá</span>
                 </button>
+                <button class="reg-sel card" data-region="cl" data-type="country">
+                    <img src="flags/cl.png" alt="Chile">
+                    <span>Chile</span>
+                </button>
             </div>
 
             <h3>Provincias y Estados</h3>
@@ -85,14 +90,6 @@
                 <button class="reg-sel card" data-region="ar-tucuman" data-type="subdivision">
                     <img src="flags/ar-tucuman.png" onerror="this.src='flags/placeholder.png'" alt="Tucumán">
                     <span>Tucumán (AR)</span>
-                </button>
-                <button class="reg-sel card" data-region="br-santacatarina" data-type="subdivision">
-                    <img src="flags/br-santacatarina.png" onerror="this.src='flags/placeholder.png'" alt="Santa Catarina">
-                    <span>Sta. Catarina (BR)</span>
-                </button>
-                <button class="reg-sel card" data-region="ca-bc" data-type="subdivision">
-                    <img src="flags/ca-bc.png" onerror="this.src='flags/placeholder.png'" alt="British Columbia">
-                    <span>B. Columbia (CA)</span>
                 </button>
             </div>
         </div>
@@ -150,8 +147,7 @@
                 <button id="close-ach" class="btn-icon"><i class="fas fa-times"></i></button>
             </header>
             <div class="achievements-scroll">
-                <div id="achievements-grid" class="ach-grid">
-                    </div>
+                <div id="achievements-grid" class="ach-grid"></div>
             </div>
         </div>
     </div>
