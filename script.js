@@ -73,6 +73,24 @@ const regionData = {
     "nunavut": { name: "Nunavut", cap: "Iqaluit", flag: "ca-nunavut.png" },
     "northwest territories": { name: "Northwest Territories", cap: "Yellowknife", flag: "ca-nwt.png" }
   },
+  cl: {
+    "arica y parinacota": { name: "Arica y Parinacota", cap: "Arica", flag: "cl-arica.png" },
+    "tarapaca": { name: "Tarapacá", cap: "Iquique", flag: "cl-tarapaca.png" },
+    "antofagasta": { name: "Antofagasta", cap: "Antofagasta", flag: "cl-antofagasta.png" },
+    "atacama": { name: "Atacama", cap: "Copiapó", flag: "cl-atacama.png" },
+    "coquimbo": { name: "Coquimbo", cap: "La Serena", flag: "cl-coquimbo.png" },
+    "valparaiso": { name: "Valparaíso", cap: "Valparaíso", flag: "cl-valparaiso.png" },
+    "region metropolitana de santiago": { name: "Región Metropolitana de Santiago", cap: "Santiago", flag: "cl-santiago.png" },
+    "libertador general bernardo o'higgins": { name: "O'Higgins", cap: "Rancagua", flag: "cl-ohiggins.png" },
+    "maule": { name: "Maule", cap: "Talca", flag: "cl-maule.png" },
+    "nuble": { name: "Ñuble", cap: "Chillán", flag: "cl-nuble.png" },
+    "bio-bio": { name: "Bío-Bío", cap: "Concepción", flag: "cl-biobio.png" },
+    "la araucania": { name: "La Araucanía", cap: "Temuco", flag: "cl-araucania.png" },
+    "los rios": { name: "Los Ríos", cap: "Valdivia", flag: "cl-losrios.png" },
+    "los lagos": { name: "Los Lagos", cap: "Puerto Montt", flag: "cl-loslagos.png" },
+    "aisen del general carlos ibanez del campo": { name: "Aysén", cap: "Coyhaique", flag: "cl-aysen.png" },
+    "magallanes y de la antartica chilena": { name: "Magallanes", cap: "Punta Arenas", flag: "cl-magallanes.png" }
+  },
 
   // --- SUBDIVISIONES ---
   "ar-tucuman": {
@@ -93,67 +111,6 @@ const regionData = {
     "486": { name: "Tafí Viejo", cap: "Tafí Viejo" },
     "487": { name: "Tafí del Valle", cap: "Tafí del Valle" },
     "490": { name: "Trancas", cap: "Trancas" }
-  },
-
-  "ca-bc": {
-    "alberni-clayoquot": { name: "Alberni-Clayoquot", cap: "Port Alberni" },
-    "bulkley-nechako": { name: "Bulkley-Nechako", cap: "Burns Lake" },
-    "capital": { name: "Capital", cap: "Victoria" },
-    "cariboo": { name: "Cariboo", cap: "Williams Lake" },
-    "central coast": { name: "Central Coast", cap: "Bella Coola" },
-    "central kootenay": { name: "Central Kootenay", cap: "Nelson" },
-    "central okanagan": { name: "Central Okanagan", cap: "Kelowna" },
-    "columbia-shuswap": { name: "Columbia-Shuswap", cap: "Salmon Arm" },
-    "comox valley": { name: "Comox Valley", cap: "Courtenay" },
-    "cowichan valley": { name: "Cowichan Valley", cap: "Duncan" },
-    "east kootenay": { name: "East Kootenay", cap: "Cranbrook" },
-    "fraser valley": { name: "Fraser Valley", cap: "Chilliwack" },
-    "fraser-fort george": { name: "Fraser-Fort George", cap: "Prince George" },
-    
-    // Mapeos para BC
-    "metro vancouver": { name: "Metro Vancouver", cap: "Burnaby" },
-    "kitimat-stikine": { name: "Kitimat-Stikine", cap: "Terrace" },
-    "kootenay boundary": { name: "Kootenay Boundary", cap: "Trail" },
-    "mount waddington": { name: "Mount Waddington", cap: "Port McNeill" },
-    "nanaimo": { name: "Nanaimo", cap: "Nanaimo" },
-    "north okanagan": { name: "North Okanagan", cap: "Coldstream" },
-    "northern rockies": { name: "Northern Rockies", cap: "Fort Nelson" },
-    "okanagan-similkameen": { name: "Okanagan-Similkameen", cap: "Penticton" },
-    "peace river": { name: "Peace River", cap: "Dawson Creek" },
-    "qathet": { name: "qathet", cap: "Powell River" },
-    "squamish-lillooet": { name: "Squamish-Lillooet", cap: "Pemberton" },
-    "strathcona": { name: "Strathcona", cap: "Campbell River" },
-    "sunshine coast": { name: "Sunshine Coast", cap: "Sechelt" },
-    "thompson-nicola": { name: "Thompson-Nicola", cap: "Kamloops" },
-    "stikine": { name: "Stikine", cap: "-" },
-    "skeena-queen charlotte": { name: "Skeena-Queen Charlotte", cap: "Prince Rupert" }
-  },
-  
-  "br-santacatarina": {
-    "florianopolis": { name: "Florianópolis", cap: "Florianópolis" },
-    "blumenau": { name: "Blumenau", cap: "Blumenau" },
-    "criciuma": { name: "Criciúma", cap: "Criciúma" },
-    "joinville": { name: "Joinville", cap: "Joinville" },
-    "chapeco": { name: "Chapecó", cap: "Chapecó" },
-    "concordia": { name: "Concórdia", cap: "Concórdia" },
-    "xanxere": { name: "Xanxerê", cap: "Xanxerê" },
-    "sao miguel do oeste": { name: "São Miguel do Oeste", cap: "São Miguel do Oeste" },
-    "maravilha": { name: "Maravilha", cap: "Maravilha" },
-    "sao lourenco do oeste": { name: "São Lourenço do Oeste", cap: "São Lourenço do Oeste" },
-    "videira": { name: "Videira", cap: "Videira" },
-    "joacaba": { name: "Joaçaba", cap: "Joaçaba" },
-    "cacador": { name: "Caçador", cap: "Caçador" },
-    "curitibanos": { name: "Curitibanos", cap: "Curitibanos" },
-    "lages": { name: "Lages", cap: "Lages" },
-    "mafra": { name: "Mafra", cap: "Mafra" },
-    "sao bento do sul": { name: "São Bento do Sul", cap: "São Bento do Sul" },
-    "itajai": { name: "Itajaí", cap: "Itajaí" },
-    "brusque": { name: "Brusque", cap: "Brusque" },
-    "ibirama": { name: "Ibirama", cap: "Presidente Getúlio" },
-    "rio do sul": { name: "Rio do Sul", cap: "Rio do Sul" },
-    "ituporanga": { name: "Ituporanga", cap: "Ituporanga" },
-    "tubarao": { name: "Tubarão", cap: "Tubarão" },
-    "ararangua": { name: "Araranguá", cap: "Araranguá" }
   }
 };
 
@@ -205,28 +162,9 @@ function getFeatureId(feature) {
 
   let id;
 
-  // --- CASO 1: TUCUMÁN ---
   if (reg === "ar-tucuman") {
     id = p.id;
-  } 
-  // --- CASO 2: BRITISH COLUMBIA (Canadá) ---
-  else if (reg === "ca-bc") {
-    let raw = p.CDNAME || p.RD_NAME || p.ADMIN_AREA_NAME || p.name || "Desconocido";
-    id = normalize(raw);
-
-    const aliases = {
-      "greater vancouver": "metro vancouver",
-      "powell river": "qathet"
-    };
-
-    if (aliases[id]) {
-      return aliases[id];
-    }
-    return id;
-  }
-  // --- CASO 3: PAÍSES Y SANTA CATARINA (Uso por Nombre) ---
-  else {
-    // CORRECCIÓN AQUÍ: Agregamos 'nome_rgi' y 'NM_MUNICIP' para que coincida con lo que el mapa tiene.
+  } else {
     let name = p.NM_MUN || p.NM_MUNICIP || p.nome_rgi || p.name || p.nombre || p.NAM || p.nam || p.nom || p.departamento || p.provincia || "Desconocido";
     return normalize(name);
   }
@@ -236,10 +174,6 @@ function getFeatureId(feature) {
 
 function getFeatureName(feature) {
   const p = feature.properties || {};
-  
-  if (game.region === "ca-bc") {
-      return p.CDNAME || p.RD_NAME || p.name || "Desconocido";
-  }
   
   return (
     p.NM_MUN ||
@@ -253,11 +187,7 @@ function getFeatureName(feature) {
 }
 
 function getRegionKey(region) {
-  const aliases = {
-    "br-sc": "br-santacatarina",
-    "br-santa-catarina": "br-santacatarina"
-  };
-  return aliases[region] || region;
+  return region;
 }
 
 function showScreen(id) {
@@ -266,7 +196,6 @@ function showScreen(id) {
   );
   document.getElementById(id)?.classList.remove("hidden");
 
-  // Control visibilidad HUD
   if (id === "screen-game") {
     showHUD();
   } else {
@@ -322,16 +251,14 @@ document.addEventListener("click", e => {
   const btn = e.target.closest("button");
   if (!btn) return;
 
-  // Botón "Aprender" o "Jugar"
   if (btn.id === "go-learn" || btn.id === "go-play") {
     game.flow = btn.id === "go-learn" ? "learn" : "play";
     showScreen("screen-regions");
   }
 
-  // SELECCIÓN DE REGIÓN
   if (btn.classList.contains("reg-sel")) {
     const region = btn.dataset.region;
-    const type = btn.dataset.type; // 'country' o 'subdivision'
+    const type = btn.dataset.type;
 
     game.region = region;
     game.regionType = type;
@@ -339,7 +266,6 @@ document.addEventListener("click", e => {
     if (game.flow === "learn") {
       startMap(region);
     } else {
-      // Si es subdivisión, ocultamos el botón de banderas
       const btnFlags = document.getElementById("btn-mode-flags");
       
       if (type === "subdivision") {
@@ -352,13 +278,11 @@ document.addEventListener("click", e => {
     }
   }
 
-  // SELECCIÓN DE MODO
   if (btn.classList.contains("mode-sel")) {
     game.mode = btn.dataset.mode;
     startMap(game.region);
   }
 
-  // BOTONES DE RETORNO Y CONTROL
   if (btn.id === "back-to-start") showScreen("screen-start");
   if (btn.id === "back-to-regions") showScreen("screen-regions");
 
@@ -428,20 +352,16 @@ async function startMap(region) {
 
   let filename = `${region}.json`;
   if (region === "ar-tucuman") filename = "departamentos-tucuman.json";
-  if (region === "br-santacatarina") filename = "br-sc.geojson";
-  if (region === "ca-bc") filename = "ca-bc.json";
 
   try {
     const res = await fetch(`data/${filename}`);
     if (!res.ok) throw new Error("Error cargando archivo: " + filename);
     const data = await res.json();
 
-    // FILTRO DE SEGURIDAD: Solo cargamos zonas que existen en tus datos
     game.questions = (data.features || [])
       .filter(f => {
          const id = getFeatureId(f);
          const regionKey = getRegionKey(game.region);
-         // Verifica si tenemos datos para esta zona (evita islas huerfanas)
          return f.geometry && regionData[regionKey] && regionData[regionKey][id];
       }) 
       .sort(() => Math.random() - 0.5);
@@ -455,15 +375,11 @@ async function startMap(region) {
       }),
       onEachFeature: (feature, layer) => {
         const rawName = getFeatureName(feature);
-        
-        // --- TOOLTIP ELIMINADO ---
-        // layer.bindTooltip(rawName, { sticky: true, direction: 'top' });
 
         layer.on("click", () => {
           if (game.flow === "play") {
             checkAnswer(layer);
           } else {
-            // Modo Aprender: Mostrar Popup CON bandera si existe
             const id = getFeatureId(feature);
             const regionKey = getRegionKey(game.region);
             const info = regionData[regionKey]?.[id];
@@ -473,10 +389,9 @@ async function startMap(region) {
               return;
             }
 
-            // HTML para la bandera en el popup
             const flagHtml = info.flag ? 
               `<div style="text-align:center; margin-bottom:5px;">
-                 <img src="flags/${info.flag}" style="width:40px; border:1px solid #ccc;">
+                 <img src="flags/${info.flag}" style="width:40px; border:1px solid #ccc;" onerror="this.style.display='none'">
                </div>` : "";
 
             layer.bindPopup(`
@@ -538,11 +453,7 @@ function nextQuestion() {
   const info = regionData[regionKey]?.[id];
 
   const box = document.getElementById("question-text");
-
-  // Definimos 'displayName' seguro
   const displayName = info?.name || getFeatureName(q);
-
-  // Si info no existe (caso raro de desajuste de IDs), usamos datos genéricos
   const cap = info?.cap || "Desconocido";
   const flag = info?.flag || null;
 
@@ -555,7 +466,6 @@ function nextQuestion() {
       box.innerText = `¿Dónde está ${displayName}? (Sin bandera)`;
     }
   } else {
-    // Modo normal (Names)
     box.innerText = `¿Dónde está ${displayName}?`;
   }
 }
@@ -623,9 +533,8 @@ function renderAchievements() {
     { id: "ar", name: "Argentina", type: "country" },
     { id: "br", name: "Brasil", type: "country" },
     { id: "ca", name: "Canadá", type: "country" },
-    { id: "ar-tucuman", name: "Tucumán", type: "subdivision" },
-    { id: "br-santacatarina", name: "Sta. Catarina", type: "subdivision" },
-    { id: "ca-bc", name: "British C.", type: "subdivision" }
+    { id: "cl", name: "Chile", type: "country" },
+    { id: "ar-tucuman", name: "Tucumán", type: "subdivision" }
   ];
   
   const allModes = [
