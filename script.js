@@ -73,14 +73,14 @@ const regionData = {
     "nunavut": { name: "Nunavut", cap: "Iqaluit", flag: "ca-nunavut.png" },
     "northwest territories": { name: "Northwest Territories", cap: "Yellowknife", flag: "ca-nwt.png" }
   },
-  cl: {
+   cl: {
     "arica y parinacota": { name: "Arica y Parinacota", cap: "Arica", flag: "cl-arica.png" },
     "tarapaca": { name: "Tarapacá", cap: "Iquique", flag: "cl-tarapaca.png" },
     "antofagasta": { name: "Antofagasta", cap: "Antofagasta", flag: "cl-antofagasta.png" },
     "atacama": { name: "Atacama", cap: "Copiapó", flag: "cl-atacama.png" },
     "coquimbo": { name: "Coquimbo", cap: "La Serena", flag: "cl-coquimbo.png" },
     "valparaiso": { name: "Valparaíso", cap: "Valparaíso", flag: "cl-valparaiso.png" },
-    "region metropolitana de santiago": { name: "Región Metropolitana de Santiago", cap: "Santiago", flag: "cl-santiago.png" },
+    "region metropolitana de santiago": { name: "Región Metropolitana", cap: "Santiago", flag: "cl-santiago.png" },
     "libertador general bernardo o'higgins": { name: "O'Higgins", cap: "Rancagua", flag: "cl-ohiggins.png" },
     "maule": { name: "Maule", cap: "Talca", flag: "cl-maule.png" },
     "nuble": { name: "Ñuble", cap: "Chillán", flag: "cl-nuble.png" },
@@ -89,7 +89,10 @@ const regionData = {
     "los rios": { name: "Los Ríos", cap: "Valdivia", flag: "cl-losrios.png" },
     "los lagos": { name: "Los Lagos", cap: "Puerto Montt", flag: "cl-loslagos.png" },
     "aisen del general carlos ibanez del campo": { name: "Aysén", cap: "Coyhaique", flag: "cl-aysen.png" },
-    "magallanes y de la antartica chilena": { name: "Magallanes", cap: "Punta Arenas", flag: "cl-magallanes.png" }
+    // Mapeos para Magallanes (incluye variaciones de tildes y nombres largos)
+    "magallanes y de la antartica chilena": { name: "Magallanes", cap: "Punta Arenas", flag: "cl-magallanes.png" },
+    "magallanes y de la antartica chilena.": { name: "Magallanes", cap: "Punta Arenas", flag: "cl-magallanes.png" },
+    "magallanes": { name: "Magallanes", cap: "Punta Arenas", flag: "cl-magallanes.png" }
   },
 
   // --- SUBDIVISIONES ---
