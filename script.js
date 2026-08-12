@@ -90,9 +90,7 @@ const regionData = {
     "los lagos": { name: "Los Lagos", cap: "Puerto Montt", flag: "cl-loslagos.png" },
     "aisen del general carlos ibanez del campo": { name: "Aysén", cap: "Coyhaique", flag: "cl-aysen.png" },
     // Mapeos para Magallanes (incluye variaciones de tildes y nombres largos)
-    "magallanes y de la antartica chilena": { name: "Magallanes", cap: "Punta Arenas", flag: "cl-magallanes.png" },
-    "magallanes y de la antartica chilena.": { name: "Magallanes", cap: "Punta Arenas", flag: "cl-magallanes.png" },
-    "magallanes": { name: "Magallanes", cap: "Punta Arenas", flag: "cl-magallanes.png" }
+    "magallanes y la antartica chilena": { name: "Magallanes", cap: "Punta Arenas", flag: "cl-magallanes.png" }
   },
 
   // --- SUBDIVISIONES ---
